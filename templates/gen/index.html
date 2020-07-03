@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Top 8 Banner Generator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+    <style>
+        .cajita {
+            border-color: black;
+            border-style: solid;
+            padding-bottom: 20px;
+        }
+        .nocajitanomod4 {
+            border-right : 0px;
+        }
+        .nocajitadesu {
+            border-bottom : 0px;
+        }
+        .nocajota {
+            border-top : 0px;
+        }
+        .cajilla {
+            padding-bottom: 20px;
+            padding-top: 20px;
+            height: 100%;
+            display: inline-grid;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 style="text-align: center">Top 8 Banner Generator</h1>
+    <form method="post">
+    {% csrf_token %}
+    <div class="row" style="width: 80%; margin-left: 10%">
+
+        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+            <p>Player 1</p>
+            {{ form.name1.label_tag }}
+            {{ form.name1.errors }}
+            {{ form.name1 }}
+            {{ form.twitter1.label }}
+            {{ form.twitter1.errors }}
+            {{ form.twitter1 }}
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                {{ form.char1.label_tag }}
+                {{ form.char1.errors }}
+                {{ form.char1 }}
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                {{ form.color1.label_tag }}
+                {{ form.color1.errors }}
+                {{ form.color1 }}
+                </div>
+            </div>
+        </div>
+
+        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+            <p>Player 2</p>
+            {{ form.name2.label_tag }}
+            {{ form.name2.errors }}
+            {{ form.name2 }}
+            {{ form.twitter2.label }}
+            {{ form.twitter2.errors }}
+            {{ form.twitter2 }}
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                {{ form.char2.label_tag }}
+                {{ form.char2.errors }}
+                {{ form.char2 }}
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                {{ form.color2.label_tag }}
+                {{ form.color2.errors }}
+                {{ form.color2 }}
+                </div>
+            </div>
+        </div>
+
+        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+            <p>Player 3</p>
+            {{ form.name3.label_tag }}
+            {{ form.name3.errors }}
+            {{ form.name3 }}
+            {{ form.twitter3.label }}
+            {{ form.twitter3.errors }}
+            {{ form.twitter3 }}
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                {{ form.char3.label_tag }}
+                {{ form.char3.errors }}
+                {{ form.char3 }}
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                {{ form.color3.label_tag }}
+                {{ form.color3.errors }}
+                {{ form.color3 }}
+                </div>
+            </div>
+        </div>
+
+        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+            <p>Player 4</p>
+            {{ form.name4.label_tag }}
+            {{ form.name4.errors }}
+            {{ form.name4 }}
+            {{ form.twitter4.label }}
+            {{ form.twitter4.errors }}
+            {{ form.twitter4 }}
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                {{ form.char4.label_tag }}
+                {{ form.char4.errors }}
+                {{ form.char4 }}
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                {{ form.color4.label_tag }}
+                {{ form.color4.errors }}
+                {{ form.color4 }}
+                </div>
+            </div>
+        </div>
+
+        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+            <p>Player 5</p>
+            {{ form.name5.label_tag }}
+            {{ form.name5.errors }}
+            {{ form.name5 }}
+            {{ form.twitter5.label }}
+            {{ form.twitter5.errors }}
+            {{ form.twitter5 }}
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                {{ form.char5.label_tag }}
+                {{ form.char5.errors }}
+                {{ form.char5 }}
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                {{ form.color5.label_tag }}
+                {{ form.color5.errors }}
+                {{ form.color5 }}
+                </div>
+            </div>
+        </div>
+
+        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+            <p>Player 6</p>
+            {{ form.name6.label_tag }}
+            {{ form.name6.errors }}
+            {{ form.name6 }}
+            {{ form.twitter6.label }}
+            {{ form.twitter6.errors }}
+            {{ form.twitter6 }}
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                {{ form.char6.label_tag }}
+                {{ form.char6.errors }}
+                {{ form.char6 }}
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                {{ form.color6.label_tag }}
+                {{ form.color6.errors }}
+                {{ form.color6 }}
+                </div>
+            </div>
+        </div>
+
+        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+            <p>Player 7</p>
+            {{ form.name7.label_tag }}
+            {{ form.name7.errors }}
+            {{ form.name7 }}
+            {{ form.twitter7.label }}
+            {{ form.twitter7.errors }}
+            {{ form.twitter7 }}
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                {{ form.char7.label_tag }}
+                {{ form.char7.errors }}
+                {{ form.char7 }}
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                {{ form.color7.label_tag }}
+                {{ form.color7.errors }}
+                {{ form.color7 }}
+                </div>
+            </div>
+        </div>
+
+        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+            <p>Player 8</p>
+            {{ form.name8.label_tag }}
+            {{ form.name8.errors }}
+            {{ form.name8 }}
+            {{ form.twitter8.label }}
+            {{ form.twitter8.errors }}
+            {{ form.twitter8 }}
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                {{ form.char8.label_tag }}
+                {{ form.char8.errors }}
+                {{ form.char8 }}
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                {{ form.color8.label_tag }}
+                {{ form.color8.errors }}
+                {{ form.color8 }}
+                </div>
+            </div>
+        </div>
+
+        <div class="cajilla col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                {{ form.ttext.label_tag }}
+                {{ form.ttext.errors }}
+                {{ form.ttext }}
+        </div>
+        <div class="cajilla col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                {{ form.btext.label_tag }}
+                {{ form.btext.errors }}
+                {{ form.btext }}
+        </div>
+        <div class="cajilla col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                {{ form.url.label_tag }}
+                {{ form.url.errors }}
+                {{ form.url }}
+        </div>
+
+        <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                {{ form.lcolor1.label_tag }}
+                {{ form.locolor1.errors }}
+                {{ form.lcolor1 }}
+        </div>
+
+        <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                {{ form.lcolor2.label_tag }}
+                {{ form.locolor2.errors }}
+                {{ form.lcolor2 }}
+        </div>
+
+        <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                Follow the Designer:<br>
+                <a href="https://twitter.com/Elenriqu3?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @Elenriqu3</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </div>
+        <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                Follow the Programmer:<br>
+                <a href="https://twitter.com/Riokaru?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @Riokaru</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </div>
+
+    </div>
+
+    <input type="submit" value="Generate" style="margin-left: 10%;
+                                                 margin-top: 30px;
+                                                 margin-bottom: 30px;
+                                                 width: 20%; height: 50px">
+    <a href="https://www.ssbwiki.com/Alternate_costume_(SSBU)" target="_blank">Color Guide</a>
+	</form>
+
+    <h1 style="text-align: center">Sample</h1>
+	<div class="row" style="width: 80%; margin-left: 10%">
+	    <img src="https://i.imgur.com/fIjBmKa.png">
+	</div>
+
+</body>
