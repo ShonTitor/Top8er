@@ -59,3 +59,5 @@ class GenForm(forms.Form):
 
     lcolor1 = RGBColorField(label="Main Color", initial="#ff281a")
     lcolor2 = RGBColorField(label="Highlight Color", initial="#ffb60c")
+
+    background = forms.ImageField(label="Background Image", required=False)

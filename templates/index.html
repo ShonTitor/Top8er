@@ -33,7 +33,7 @@
 <body>
 
     <h1 style="text-align: center">Top 8 Banner Generator</h1>
-    <form method="post">
+    <form enctype="multipart/form-data" method="post" action="">
     {% csrf_token %}
     <div class="row" style="width: 80%; margin-left: 10%">
 
@@ -229,16 +229,22 @@
                 {{ form.url }}
         </div>
 
-        <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="cajilla col-xs-12 col-sm-12 col-md-2 col-lg-2">
                 {{ form.lcolor1.label_tag }}
                 {{ form.locolor1.errors }}
                 {{ form.lcolor1 }}
         </div>
 
-        <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div class="cajilla col-xs-12 col-sm-12 col-md-2 col-lg-2">
                 {{ form.lcolor2.label_tag }}
                 {{ form.locolor2.errors }}
                 {{ form.lcolor2 }}
+        </div>
+
+        <div class="cajilla col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                {{ form.background.label_tag }}
+                {{ form.background.errors }}
+                {{ form.background }}
         </div>
 
         <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3">

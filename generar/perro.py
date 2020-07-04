@@ -57,20 +57,21 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
         POSTXT = halve(POSTXT)
 
     # La que tal
-    c = Image.new('RGBA', SIZE, (0, 0, 0, 0))
+    c = Image.new('RGBA', SIZE, (0, 0, 0, 255))
 
     # Fondo
-    a  = Image.open(os.path.join(template,"bg.png"))
-    c.paste(a, (0,0), mask=a)
-
     if custombg :
-        f = Image.open(os.path.join(template, custombg))
+        f = Image.open(custombg, mode="r")
+        #f = Image.open(os.path.join(template, custombg))
         ancho, largo = f.size
         ancho, largo = SIZE[0], int(ancho*SIZE[0]/ancho)
         f = f.resize((ancho, largo), resample=Image.ANTIALIAS)
         c.paste(f, (0,int((SIZE[1]-largo)/2)))
-        f = Image.new('RGBA', SIZE, (0, 0, 0, 180))
-        c.paste(f, (0,0), mask=f)
+        f = Image.new('RGBA', SIZE, (0, 0, 0, 255))
+        c = Image.blend(c, f, 0.8)
+    else :
+        a  = Image.open(os.path.join(template,"bg.png"))
+        c.paste(a, (0,0), mask=a)
 
     # Pa escribir
     draw = ImageDraw.Draw(c)

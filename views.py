@@ -6,7 +6,7 @@ from .generar.perro import *
 
 def index(request):
     if request.method == 'POST':
-        form = GenForm(request.POST)
+        form = GenForm(request.POST, request.FILES)
         if form.is_valid():
             names = []
             twitter = []
@@ -38,9 +38,14 @@ def index(request):
                 c2 = None
             else :
                 c2 = request.POST["lcolor2"]
+            if "background" not in request.FILES :
+                bg = None
+            else :
+                bg = request.FILES["background"]
             img = generate_banner(datos,
                                   customcolor= c1,
-                                  customcolor2=c2
+                                  customcolor2=c2,
+                                  custombg=bg
                                   )
             #img = base64.b64encode(img.tobytes())
             buffered = BytesIO()
@@ -48,7 +53,7 @@ def index(request):
             img = base64.b64encode(buffered.getvalue())
             img = str(img)[2:-1]
             context = { "img" : img }
-            return render(request, os.path.join('gen','gg.html') , context)
+            return render(request, 'gg.html' , context)
     else :
         form = GenForm()
 
@@ -57,4 +62,4 @@ def index(request):
                "chars" : ['Banjo & Kazooie', 'Bayonetta', 'Bowser', 'Bowser Jr', 'Byleth', 'Captain Falcon', 'Chrom', 'Cloud', 'Corrin', 'Daisy', 'Dark Pit', 'Dark Samus', 'Diddy Kong', 'Donkey Kong', 'Dr Mario', 'Duck Hunt', 'Falco', 'Fox', 'Ganondorf', 'Greninja', 'Hero', 'Ice Climbers', 'Ike', 'Incineroar', 'Inkling', 'Isabelle', 'Jigglypuff', 'Joker', 'Ken', 'King Dedede', 'King K Rool', 'Kirby', 'Link', 'Little Mac', 'Lucario', 'Lucas', 'Lucina', 'Luigi', 'Mario', 'Marth', 'Mega Man', 'Meta Knight', 'Mewtwo', 'Mii Brawler', 'Mii Gunner', 'Mii Swordfighter', 'Mr Game and Watch', 'Ness', 'Olimar', 'Pac-Man', 'Palutena', 'Peach', 'Pichu', 'Pikachu', 'Piranha Plant', 'Pit', 'Pokémon Trainer', 'Richter', 'Ridley', 'ROB', 'Robin', 'Rosalina and Luma', 'Roy', 'Ryu', 'Samus', 'Sheik', 'Shulk', 'Simon', 'Snake', 'Sonic', 'Terry', 'Toon Link', 'Villager', 'Wario', 'Wii Fit Trainer', 'Wolf', 'Yoshi', 'Young Link', 'Zelda', 'Zero Suit Samus'],
                "form" : form
                }
-    return render(request, os.path.join('gen','index.html') , context)
+    return render(request, 'index.html' , context)
