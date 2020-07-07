@@ -28,7 +28,7 @@ def index(request):
             datos = { "players" : players,
                         "toptext" : request.POST["ttext"],
                         "bottomtext" : request.POST["btext"],
-                        "url" : "https://riokaru.pythonanywhere.com/"
+                        "url" : request.POST["url"]
                     }
             if request.POST["lcolor1"] == "#ff281a" :
                 c1 = None
