@@ -64,11 +64,15 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
         f = Image.open(custombg, mode="r")
         #f = Image.open(os.path.join(template, custombg))
         ancho, largo = f.size
-        ancho, largo = SIZE[0], int(ancho*SIZE[0]/ancho)
+        a,b = int(ancho*SIZE[1]/largo), int(largo*SIZE[0]/ancho)
+        if a < SIZE[0] :
+            ancho, largo = SIZE[0], b
+        else :
+            ancho, largo = a, SIZE[1]
         f = f.resize((ancho, largo), resample=Image.ANTIALIAS)
-        c.paste(f, (0,int((SIZE[1]-largo)/2)))
+        c.paste(f, ( int((SIZE[0]-ancho)/2), int((SIZE[1]-largo)/2) ) )
         f = Image.new('RGBA', SIZE, (0, 0, 0, 255))
-        c = Image.blend(c, f, 0.8)
+        c = Image.blend(c, f, 0.75)
     else :
         a  = Image.open(os.path.join(template,"bg.png"))
         c.paste(a, (0,0), mask=a)
@@ -296,6 +300,5 @@ if __name__ == "__main__":
     print(t2-t1)
     #img = img.resize(halve(img.size))
     img.show()
-    img.save("derp.png")
 
     input()
