@@ -1,8 +1,29 @@
+import re
 from django import forms
 from colorful.forms import RGBColorField
+from .generar.getsets import check_event
 
-class GenForm(forms.Form):
-    chars = ['Banjo & Kazooie', 'Bayonetta', 'Bowser', 'Bowser Jr', 'Byleth', 'Captain Falcon', 'Chrom', 'Cloud', 'Corrin', 'Daisy', 'Dark Pit', 'Dark Samus', 'Diddy Kong', 'Donkey Kong', 'Dr Mario', 'Duck Hunt', 'Falco', 'Fox', 'Ganondorf', 'Greninja', 'Hero', 'Ice Climbers', 'Ike', 'Incineroar', 'Inkling', 'Isabelle', 'Jigglypuff', 'Joker', 'Ken', 'King Dedede', 'King K Rool', 'Kirby', 'Link', 'Little Mac', 'Lucario', 'Lucas', 'Lucina', 'Luigi', 'Mario', 'Marth', 'Mega Man', 'Meta Knight', 'Mewtwo', 'Mii Brawler', 'Mii Gunner', 'Mii Swordfighter', 'Min Min', 'Mr Game and Watch', 'Ness', 'Olimar', 'Pac-Man', 'Palutena', 'Peach', 'Pichu', 'Pikachu', 'Piranha Plant', 'Pit', 'Pokémon Trainer', 'Richter', 'Ridley', 'ROB', 'Robin', 'Rosalina and Luma', 'Roy', 'Ryu', 'Samus', 'Sheik', 'Shulk', 'Simon', 'Snake', 'Sonic', 'Terry', 'Toon Link', 'Villager', 'Wario', 'Wii Fit Trainer', 'Wolf', 'Yoshi', 'Young Link', 'Zelda', 'Zero Suit Samus']
+class AncestorForm(forms.Form) :
+    lcolor1 = RGBColorField(label="Main Color", initial="#ff281a")
+    lcolor2 = RGBColorField(label="Highlight Color", initial="#ffb60c")
+
+    background = forms.ImageField(label="Background Image", required=False)
+
+class SmashggForm(AncestorForm) :
+    event = forms.RegexField(label="smash.gg link", regex = "https://smash.gg/tournament/[^/]+/event/[^/]+.*")
+    def clean(self):
+        cleaned_data = super().clean()
+        try :
+            e = cleaned_data.get("event")
+            match = re.search("https://smash.gg/tournament/[^/]+/event/[^/]+", e)
+            if not check_event(e[17:match.end()]) :
+                msg = "Event not found or has too few players."
+                self.add_error('event', msg)
+        except :
+            return cleaned_data
+
+class GenForm(AncestorForm):
+    chars = ['Banjo & Kazooie', 'Bayonetta', 'Bowser', 'Bowser Jr', 'Byleth', 'Captain Falcon', 'Chrom', 'Cloud', 'Corrin', 'Daisy', 'Dark Pit', 'Dark Samus', 'Diddy Kong', 'Donkey Kong', 'Dr Mario', 'Duck Hunt', 'Falco', 'Fox', 'Ganondorf', 'Greninja', 'Hero', 'Ice Climbers', 'Ike', 'Incineroar', 'Inkling', 'Isabelle', 'Jigglypuff', 'Joker', 'Ken', 'King Dedede', 'King K Rool', 'Kirby', 'Link', 'Little Mac', 'Lucario', 'Lucas', 'Lucina', 'Luigi', 'Mario', 'Marth', 'Mega Man', 'Meta Knight', 'Mewtwo', 'Mii Brawler', 'Mii Gunner', 'Mii Swordfighter', 'Min Min', 'Mr Game & Watch', 'Ness', 'Olimar', 'Pac-Man', 'Palutena', 'Peach', 'Pichu', 'Pikachu', 'Piranha Plant', 'Pit', 'Pokémon Trainer', 'Richter', 'Ridley', 'ROB', 'Robin', 'Rosalina & Luma', 'Roy', 'Ryu', 'Samus', 'Sheik', 'Shulk', 'Simon', 'Snake', 'Sonic', 'Terry', 'Toon Link', 'Villager', 'Wario', 'Wii Fit Trainer', 'Wolf', 'Yoshi', 'Young Link', 'Zelda', 'Zero Suit Samus']
     chars = tuple([(i, i) for i in chars])
     numeritos = tuple([(str(i), str(i)) for i in range(8)])
 
@@ -53,11 +74,6 @@ class GenForm(forms.Form):
     char8 = forms.ChoiceField(label='Character', choices=chars)
     color8 = forms.ChoiceField(label='Color', choices=numeritos)
 
-    ttext = forms.CharField(label='Top Text', max_length=50, required=False)
+    ttext = forms.CharField(label='Top Left Text', max_length=50, required=False)
     btext = forms.CharField(label='Bottom Text', max_length=70, required=False)
-    url = forms.CharField(label='URL', max_length=40, required=False, initial="riokaru.pythonanywhere.com")
-
-    lcolor1 = RGBColorField(label="Main Color", initial="#ff281a")
-    lcolor2 = RGBColorField(label="Highlight Color", initial="#ffb60c")
-
-    background = forms.ImageField(label="Background Image", required=False)
+    url = forms.CharField(label='Top Right', max_length=40, required=False, initial="riokaru.pythonanywhere.com")

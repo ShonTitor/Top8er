@@ -3,3 +3,4 @@
 /generar/__pycache__/*
 /generar/Fighter Portraits/*
 *.pyc
+*.apikey

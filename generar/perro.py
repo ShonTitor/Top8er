@@ -180,7 +180,7 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
             draw_text(c, draw, (POSTWI[i][0]+lmarg, POSTWI[i][1]+tmarg),
                       players[i]["twitter"], font=font, fill=fontcolor, shadow=True)
         sizefont = int(size[0]*0.26)
-        texto = players[i]["tag"]
+        texto = players[i]["tag"].replace(". ", ".").replace(" | ", "|")
         if len(texto) > 7 :
             sizefont = int(sizefont*7/len(texto))
         font = ImageFont.truetype(fonttc, sizefont)
@@ -217,7 +217,7 @@ if __name__ == "__main__":
                   ("Yoshi", 1)]
     """
 
-    """
+    
     texto = ["morrocoYo", "GARU", "Pancakes", "VeXx",
              "BTO", "Vunioq", "Nandok", "Kellios"]
     #texto = ["ElMatadorDeBarquisimeto69" for i in range(8)]
@@ -226,7 +226,7 @@ if __name__ == "__main__":
                   ("Joker", 0),
                   ("Inkling", 5),
                   ("Inkling", 2),
-                  ("Mr Game and Watch", 0),
+                  ("Mr Game & Watch", 0),
                   ("Samus", 0),
                   ("Sonic", 1),
                   ("Terry", 0)]
@@ -242,7 +242,7 @@ if __name__ == "__main__":
              "bottomtext" : "22 de Febrero de 2020 - Caracas, Venezuela - 89 participantes",
              "url" : "facebook.com/groups/smashvenezuela",
              }
-    """
+    
 
     """
     texto = ["CartezSoul", "Riokaru", "Luigic7", "Reyn",
@@ -280,7 +280,7 @@ if __name__ == "__main__":
              "toptext" : "Conyazo3 Tournament - Street Fighter 3rd Strike - Top 8",
              "bottomtext" : "3 de Marzo de 2033 - Caracas, Memezuela - 33 participantes"}
     """
-
+    """
     texto = [s[:-1] for s in ["Min "*(i+1) for i in range(8)]]
     personajes = [("Min Min", i) for i in range(8)]
     twitter = ["MinMin0"+str(i+1) for i in range(8)]
@@ -292,6 +292,7 @@ if __name__ == "__main__":
              "bottomtext" : "Min Min Min Min Min Min Min Min",
              "url" : "http://riokaru.pythonanywhere.com/",
              }
+    """
 
     import time
     t1 = time.time()
