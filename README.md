@@ -6,8 +6,8 @@ This is a Django app that generates Top 8 result banners for Super Smash Bros Ul
 
 ## Features
 
-- Spots under each player's name for their twitter handle.
-- Bottom Left, Top Left and Top Right texts to put information of the tournament or anything really.
+- Boxes under each player's name for their twitter handle.
+- Bottom Left, Top Left and Top Right texts to insert details regarding tournaments or other related information.
 - Custom layout colors and custom background.
 - Option to generate a banner for a smash.gg tournemant given a link. It looks for top 8's players name, character and twitter handle and the event's name, date, city, number of participants and url.
 
