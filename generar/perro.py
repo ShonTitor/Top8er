@@ -5,17 +5,9 @@ def draw_text(img, draw, pos, texto, font=None, fill=None,
               halo=True, shadow=True) :
     if shadow :
         #offset = int(font.size*0.06)
-        offset = int((font.size**0.5)*0.8)
+        offset = int((font.size**0.5)*0.55)
         draw.text((pos[0]+offset, pos[1]+offset), texto, font=font, fill=(0,0,0))
     draw.text(pos, texto, font=font, fill=fill)
-
-def halve(t, n=2) :
-    if type(t) is tuple : return (t[0]//n, t[1]//n)
-    elif type(t) is list :
-        t2 = []
-        for i in t :
-            t2.append(halve(i,n))
-        return t2
 
 def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
                     fontcolor=(255,255,255), shadow=True) :
@@ -28,33 +20,22 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
 
     # Constantes
     portraits = os.path.join(path, "Fighter Portraits")
-    SIZE = (5692,3200)
-    HALF = (SIZE[0]//2, SIZE[1]//2)
+    SIZE = (1423,800)
 
-    BIG = (1910, 1910)
-    MED = (1031, 1031)
-    SMA = (769, 769)
+    BIG = (477, 477)
+    MED = (257, 257)
+    SMA = (192, 192)
 
-    POS = [(211, 541), (2211, 540), (3325, 540), (4438, 540),
-           (2208, 1763), (3038, 1763), (3869, 1763), (4700, 1763)]
+    POS = [(53, 135), (553, 135), (832, 135), (1110, 135),
+           (553, 441), (760, 441), (968, 441), (1176, 441)]
 
-    SIZETWI = [(1932,159), (1031, 117), (1031, 117), (1031, 117),
-               (771, 104), (771, 104), (771, 104), (771, 104)]
+    SIZETWI = [(483, 39), (257, 29), (257, 29), (257, 29),
+               (192, 26), (192, 26), (192, 26), (192, 26)]
 
-    POSTWI = [(211, 2496), (2211, 1592), (3325, 1592), (4438, 1592),
-              (2208, 2551), (3038, 2551), (3869, 2551), (4700, 2551)]
+    POSTWI = [(52, 624), (552, 398), (831, 398), (1109, 398),
+              (552, 637), (759, 637), (967, 637), (1175, 637)]
 
-    POSTXT = [(100, 100), (100, 3025), (3400, 110), (4300, 2900)]
-
-    half = False
-    if half :
-        SIZE = halve(SIZE)
-        BIG = halve(BIG)
-        MED = halve(MED)
-        SMA = halve(SMA)
-        POS = halve(POS)
-        POSTWI = halve(POSTWI)
-        POSTXT = halve(POSTXT)
+    POSTXT = [(25, 25), (25, 756), (850, 27), (1075, 725)]
 
     # La que tal
     c = Image.new('RGBA', SIZE, (0, 0, 0, 255))
@@ -62,7 +43,6 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
     # Fondo
     if custombg :
         f = Image.open(custombg, mode="r")
-        #f = Image.open(os.path.join(template, custombg))
         ancho, largo = f.size
         a,b = int(ancho*SIZE[1]/largo), int(largo*SIZE[0]/ancho)
         if a < SIZE[0] :
@@ -132,12 +112,12 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
     c.paste(a, (0,0), mask=a)
 
     # Textos de arriba y abajo
-    fuente = ImageFont.truetype(fonttc, 120)
+    fuente = ImageFont.truetype(fonttc, 30)
     draw_text(c, draw, POSTXT[0], datos["toptext"], font=fuente, fill=fontcolor, shadow=True)
     draw_text(c, draw, POSTXT[1], datos["bottomtext"], font=fuente, fill=fontcolor, shadow=False)
 
-    fuente = ImageFont.truetype(fonttc, 100)
-    urlmarg = (40-len(datos["url"]))*25
+    fuente = ImageFont.truetype(fonttc, 25)
+    urlmarg = (40-len(datos["url"]))*6
     draw_text(c, draw, (POSTXT[2][0]+urlmarg,POSTXT[2][1]), datos["url"], font=fuente, fill=fontcolor, shadow=False)
     draw_text(c, draw, POSTXT[3], "Design by:  @Elenriqu3\nGenerator by: @Riokaru", font=fuente, fill=fontcolor, shadow=True)
 
@@ -162,18 +142,14 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
             if pajarito.size[1] != SIZETWI[i][1] :
                 psize = ((pajarito.size[0]*SIZETWI[i][1])//pajarito.size[1],
                          SIZETWI[i][1])
-                pajarito = pajarito.resize(psize)
+                pajarito = pajarito.resize(psize, resample=Image.ANTIALIAS)
             c.paste(pajarito,
                     (int(POSTWI[i][0]+SIZETWI[i][0]*0.02), POSTWI[i][1]),
                     mask=pajarito)
 
-            #a  = Image.open(os.path.join(template,"t"+str(i)+".png"))
-            #c.paste(a, (0,0), mask=a)
-
-
             lon = len(players[i]["twitter"])
-            sizef = (110*SIZETWI[i][1])//SIZETWI[0][1]
-            tmarg = (25*SIZETWI[i][1])//SIZETWI[0][1]
+            sizef = (27*SIZETWI[i][1])//SIZETWI[0][1]
+            tmarg = (6*SIZETWI[i][1])//SIZETWI[0][1]
             lmarg = (SIZETWI[i][0]-0.5*sizef*lon+pajarito.size[0])//2
 
             font = ImageFont.truetype(fonttc, sizef)
@@ -187,7 +163,6 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
         draw_text(c, draw, (POS[i][0] + (size[0]-0.5*sizefont*len(texto))//2,
                    POS[i][1]+int(size[0]*0.995)-sizefont),
                    texto, font=font, fill=fontcolor)
-    c = c.resize(halve(c.size, 4), resample=Image.ANTIALIAS)
     return c
 
 if __name__ == "__main__":
@@ -220,8 +195,6 @@ if __name__ == "__main__":
     
     texto = ["morrocoYo", "GARU", "Pancakes", "VeXx",
              "BTO", "Vunioq", "Nandok", "Kellios"]
-    #texto = ["ElMatadorDeBarquisimeto69" for i in range(8)]
-    #texto = ["A" for i in range(8)]
     personajes = [("Robin", 0),
                   ("Joker", 0),
                   ("Inkling", 5),
@@ -232,7 +205,6 @@ if __name__ == "__main__":
                   ("Terry", 0)]
     twitter = ["@DanielRimeris", "@GARU_Sw", "@movpancakes", "@RisingVexx",
                "@HoyerBTO", "@Vunioq", "@Nandok_95", "@CarlosDQC"]
-    #twitter = ["@DanielRimeris69" for i in range(8)]
     players = [{"tag" : texto[i],
               "char" : personajes[i],
               "twitter" : twitter[i]} for i in range(8)]
@@ -299,7 +271,6 @@ if __name__ == "__main__":
     img = generate_banner(datos, customcolor="#00bbfa", customcolor2="#001736")# customcolor="#287346", customcolor2="#ede07c")
     t2 = time.time()
     print(t2-t1)
-    #img = img.resize(halve(img.size))
     img.show()
 
     input()
