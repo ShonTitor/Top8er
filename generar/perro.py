@@ -168,16 +168,19 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
 
         s_off = 0
         for char in players[i]['secondaries'] :
-            ruta_i = os.path.join(icons, char[0])
-            ruta_i = os.path.join(ruta_i, str(char[1])+".png")
-            ic = Image.open(ruta_i)
-            if size != BIG :
-                i_size = (64*MED[0])//BIG[0]
-                ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
-            else :
-                i_size = 64
-            c.paste(ic, (POS[i][0]+size[0]-i_size, POS[i][1]+s_off*i_size), mask=ic)
-            s_off += 1
+            try :
+                ruta_i = os.path.join(icons, char[0])
+                ruta_i = os.path.join(ruta_i, str(char[1])+".png")
+                ic = Image.open(ruta_i)
+                if size != BIG :
+                    i_size = (64*MED[0])//BIG[0]
+                    ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
+                else :
+                    i_size = 64
+                c.paste(ic, (POS[i][0]+size[0]-i_size, POS[i][1]+s_off*i_size), mask=ic)
+                s_off += 1
+            except :
+                pass
     return c
 
 if __name__ == "__main__":
