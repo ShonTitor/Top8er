@@ -32,6 +32,7 @@ def index(request):
                 names = []
                 twitter = []
                 chars = []
+                seconds = [[] for i in range(8)]
                 for i in range(1,9) :
                     names.append(request.POST["name"+str(i)])
                     if request.POST["twitter"+str(i)] == "" :
@@ -41,9 +42,17 @@ def index(request):
                     chars.append( (request.POST["char"+str(i)],
                                    request.POST["color"+str(i)])
                                 )
+                    for k in range(1,3) :
+                        if request.POST["extra"+str(i)+str(k)] == "None" :
+                            continue
+                        else :
+                            seconds[i-1].append((request.POST["extra"+str(i)+str(k)],
+                                               request.POST["extra_color"+str(i)+str(k)]))
+                    
                 players = [{"tag" : names[j],
                             "char" : chars[j],
-                            "twitter" : twitter[j]
+                            "twitter" : twitter[j],
+                            "secondaries" : seconds[j]
                                 }
                            for j in range(8)]
                 datos = { "players" : players,

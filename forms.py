@@ -23,57 +23,84 @@ class SmashggForm(AncestorForm) :
             return cleaned_data
 
 class GenForm(AncestorForm):
-    chars = ['Banjo & Kazooie', 'Bayonetta', 'Bowser', 'Bowser Jr', 'Byleth', 'Captain Falcon', 'Chrom', 'Cloud', 'Corrin', 'Daisy', 'Dark Pit', 'Dark Samus', 'Diddy Kong', 'Donkey Kong', 'Dr Mario', 'Duck Hunt', 'Falco', 'Fox', 'Ganondorf', 'Greninja', 'Hero', 'Ice Climbers', 'Ike', 'Incineroar', 'Inkling', 'Isabelle', 'Jigglypuff', 'Joker', 'Ken', 'King Dedede', 'King K Rool', 'Kirby', 'Link', 'Little Mac', 'Lucario', 'Lucas', 'Lucina', 'Luigi', 'Mario', 'Marth', 'Mega Man', 'Meta Knight', 'Mewtwo', 'Mii Brawler', 'Mii Gunner', 'Mii Swordfighter', 'Min Min', 'Mr Game & Watch', 'Ness', 'Olimar', 'Pac-Man', 'Palutena', 'Peach', 'Pichu', 'Pikachu', 'Piranha Plant', 'Pit', 'Pokémon Trainer', 'Richter', 'Ridley', 'ROB', 'Robin', 'Rosalina & Luma', 'Roy', 'Ryu', 'Samus', 'Sheik', 'Shulk', 'Simon', 'Snake', 'Sonic', 'Steve', 'Terry', 'Toon Link', 'Villager', 'Wario', 'Wii Fit Trainer', 'Wolf', 'Yoshi', 'Young Link', 'Zelda', 'Zero Suit Samus']
+    chars = ['Random', 'Banjo & Kazooie', 'Bayonetta', 'Bowser', 'Bowser Jr', 'Byleth', 'Captain Falcon', 'Chrom', 'Cloud', 'Corrin', 'Daisy', 'Dark Pit', 'Dark Samus', 'Diddy Kong', 'Donkey Kong', 'Dr Mario', 'Duck Hunt', 'Falco', 'Fox', 'Ganondorf', 'Greninja', 'Hero', 'Ice Climbers', 'Ike', 'Incineroar', 'Inkling', 'Isabelle', 'Jigglypuff', 'Joker', 'Ken', 'King Dedede', 'King K Rool', 'Kirby', 'Link', 'Little Mac', 'Lucario', 'Lucas', 'Lucina', 'Luigi', 'Mario', 'Marth', 'Mega Man', 'Meta Knight', 'Mewtwo', 'Mii Brawler', 'Mii Gunner', 'Mii Swordfighter', 'Min Min', 'Mr Game & Watch', 'Ness', 'Olimar', 'Pac-Man', 'Palutena', 'Peach', 'Pichu', 'Pikachu', 'Piranha Plant', 'Pit', 'Pokémon Trainer', 'Richter', 'Ridley', 'ROB', 'Robin', 'Rosalina & Luma', 'Roy', 'Ryu', 'Samus', 'Sheik', 'Shulk', 'Simon', 'Snake', 'Sonic', 'Steve', 'Terry', 'Toon Link', 'Villager', 'Wario', 'Wii Fit Trainer', 'Wolf', 'Yoshi', 'Young Link', 'Zelda', 'Zero Suit Samus']
+    e_chars = ['None']+chars[1:]
     chars = tuple([(i, i) for i in chars])
+    e_chars = tuple([(i, i) for i in e_chars])
     numeritos = tuple([(str(i), str(i)) for i in range(8)])
 
     name1 = forms.CharField(label='Player Name', max_length=23)
     twitter1 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
-    char1 = forms.ChoiceField(label='Character', choices=chars)
-    color1 = forms.ChoiceField(label='Color', choices=numeritos)
-
+    char1 = forms.ChoiceField(label='Main Character', choices=chars)
+    color1 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
+    extra11 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+    extra_color11 = forms.ChoiceField(label='Secondary Character Color', choices=numeritos, required=False)
+    extra12 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+    extra_color12 = forms.ChoiceField(label='Tertiary Character Color', choices=numeritos, required=False)
 
     name2 = forms.CharField(label='Player Name', max_length=23)
     twitter2 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
-    char2 = forms.ChoiceField(label='Character', choices=chars)
-    color2 = forms.ChoiceField(label='Color', choices=numeritos)
-
+    char2 = forms.ChoiceField(label='Main Character', choices=chars)
+    color2 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
+    extra21 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+    extra_color21 = forms.ChoiceField(label='Secondary Character Color', choices=numeritos, required=False)
+    extra22 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+    extra_color22 = forms.ChoiceField(label='Tertiary Character Color', choices=numeritos, required=False)
 
     name3 = forms.CharField(label='Player Name', max_length=23)
     twitter3 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
-    char3 = forms.ChoiceField(label='Character', choices=chars)
-    color3 = forms.ChoiceField(label='Color', choices=numeritos)
-
+    char3 = forms.ChoiceField(label='Main Character', choices=chars)
+    color3 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
+    extra31 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+    extra_color31 = forms.ChoiceField(label='Secondary Character Color', choices=numeritos, required=False)
+    extra32 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+    extra_color32 = forms.ChoiceField(label='Tertiary Character Color', choices=numeritos, required=False)
 
     name4 = forms.CharField(label='Player Name', max_length=23)
     twitter4 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
-    char4 = forms.ChoiceField(label='Character', choices=chars)
-    color4 = forms.ChoiceField(label='Color', choices=numeritos)
-
+    char4 = forms.ChoiceField(label='Main Character', choices=chars)
+    color4 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
+    extra41 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+    extra_color41 = forms.ChoiceField(label='Secondary Character Color', choices=numeritos, required=False)
+    extra42 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+    extra_color42 = forms.ChoiceField(label='Tertiary Character Color', choices=numeritos, required=False)
 
     name5 = forms.CharField(label='Player Name', max_length=23)
     twitter5 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
-    char5 = forms.ChoiceField(label='Character', choices=chars)
-    color5 = forms.ChoiceField(label='Color', choices=numeritos)
-
+    char5 = forms.ChoiceField(label='Main Character', choices=chars)
+    color5 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
+    extra51 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+    extra_color51 = forms.ChoiceField(label='Secondary Character Color', choices=numeritos, required=False)
+    extra52 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+    extra_color52 = forms.ChoiceField(label='Tertiary Character Color', choices=numeritos, required=False)
 
     name6 = forms.CharField(label='Player Name', max_length=23)
     twitter6 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
-    char6 = forms.ChoiceField(label='Character', choices=chars)
-    color6 = forms.ChoiceField(label='Color', choices=numeritos)
-
+    char6 = forms.ChoiceField(label='Main Character', choices=chars)
+    color6 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
+    extra61 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+    extra_color61 = forms.ChoiceField(label='Secondary Character Color', choices=numeritos, required=False)
+    extra62 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+    extra_color62 = forms.ChoiceField(label='Tertiary Character Color', choices=numeritos, required=False)
 
     name7 = forms.CharField(label='Player Name', max_length=23)
     twitter7 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
-    char7 = forms.ChoiceField(label='Character', choices=chars)
-    color7 = forms.ChoiceField(label='Color', choices=numeritos)
-
+    char7 = forms.ChoiceField(label='Main Character', choices=chars)
+    color7 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
+    extra71 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+    extra_color71 = forms.ChoiceField(label='Secondary Character Color', choices=numeritos, required=False)
+    extra72 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+    extra_color72 = forms.ChoiceField(label='Tertiary Character Color', choices=numeritos, required=False)
 
     name8 = forms.CharField(label='Player Name', max_length=23)
     twitter8 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
-    char8 = forms.ChoiceField(label='Character', choices=chars)
-    color8 = forms.ChoiceField(label='Color', choices=numeritos)
-
+    char8 = forms.ChoiceField(label='Main Character', choices=chars)
+    color8 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
+    extra81 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+    extra_color81 = forms.ChoiceField(label='Secondary Character Color', choices=numeritos, required=False)
+    extra82 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+    extra_color82 = forms.ChoiceField(label='Tertiary Character Color', choices=numeritos, required=False)
+    
     ttext = forms.CharField(label='Top Left Text', max_length=50, required=False)
     btext = forms.CharField(label='Bottom Text', max_length=70, required=False)
     url = forms.CharField(label='Top Right', max_length=40, required=False, initial="riokaru.pythonanywhere.com")

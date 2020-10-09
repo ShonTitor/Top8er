@@ -20,6 +20,7 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
 
     # Constantes
     portraits = os.path.join(path, "Fighter Portraits")
+    icons = os.path.join(path, "Stock Icons")
     SIZE = (1423,800)
 
     BIG = (477, 477)
@@ -73,6 +74,7 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
         ruta = os.path.join(portraits, char[0])
         ruta = os.path.join(ruta, str(char[1])+".png")
         d = Image.open(ruta).resize(size, resample=Image.ANTIALIAS)
+        
         # Intento de sombra
         if shadow :
             if customcolor : shadowcolor = customcolor
@@ -163,6 +165,19 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
         draw_text(c, draw, (POS[i][0] + (size[0]-0.5*sizefont*len(texto))//2,
                    POS[i][1]+int(size[0]*0.995)-sizefont),
                    texto, font=font, fill=fontcolor)
+
+        s_off = 0
+        for char in players[i]['secondaries'] :
+            ruta_i = os.path.join(icons, char[0])
+            ruta_i = os.path.join(ruta_i, str(char[1])+".png")
+            ic = Image.open(ruta_i)
+            if size != BIG :
+                i_size = (64*MED[0])//BIG[0]
+                ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
+            else :
+                i_size = 64
+            c.paste(ic, (POS[i][0]+size[0]-i_size, POS[i][1]+s_off*i_size), mask=ic)
+            s_off += 1
     return c
 
 if __name__ == "__main__":
@@ -205,9 +220,12 @@ if __name__ == "__main__":
                   ("Terry", 0)]
     twitter = ["@DanielRimeris", "@GARU_Sw", "@movpancakes", "@RisingVexx",
                "@HoyerBTO", "@Vunioq", "@Nandok_95", "@CarlosDQC"]
+    pockets = [[("Bowser", 0)], [("Falco", 0), ("Fox", 0)], [("Megaman", 1)], [("Marth", 2)],
+               [], [], [], []]
     players = [{"tag" : texto[i],
               "char" : personajes[i],
-              "twitter" : twitter[i]} for i in range(8)]
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
 
     datos = {"players" : players,
              "toptext" : "Show Me your Moves - Ultimate Singles - Top 8",
@@ -272,5 +290,6 @@ if __name__ == "__main__":
     t2 = time.time()
     print(t2-t1)
     img.show()
+    img.save("sample.png")
 
     input()

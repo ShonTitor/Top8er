@@ -130,7 +130,8 @@ def event_data(slug) :
                 if char == "Pokemon Trainer" : char = "Pokémon Trainer"
                 players.append({"tag" : name,
                                "char" : (char, 0),
-                                "twitter" : twi
+                                "twitter" : twi,
+                                "secondaries" : []
                                })
     event = data["event"]
     btext = []
