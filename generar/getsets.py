@@ -80,7 +80,9 @@ def event_query(slug) :
 
 def event_data(slug) :
     freq = {}
-    data = event_query(slug)["data"]
+    data = event_query(slug)
+    #print(data)
+    data = data["data"]
     if data["event"] is None : return None
     char_data = json.loads(requests.get(url="https://api.smash.gg/characters").content)
     for node in data["event"]["sets"]['nodes'] :
@@ -165,9 +167,9 @@ def event_data(slug) :
 
 if __name__ == "__main__":
     from perro import generate_banner
-    #slug = "tournament/genesis-7-1/event/ultimate-singles"
+    slug = "tournament/genesis-7-1/event/ultimate-singles"
     #slug = "tournament/ceo-2019-fighting-game-championships/event/super-smash-bros-ultimate-singles"
-    slug = "tournament/bowser-castle-1/event/smash-ultimate-singles"
+    #slug = "tournament/bowser-castle-1/event/smash-ultimate-singles"
     #slug = "https://smash.gg/tournament/genesis-7-1/event/ultimate-singles/brackets/719802/1162721"
 
     print(check_event(slug))
