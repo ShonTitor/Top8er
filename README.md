@@ -2,6 +2,8 @@
 
 This is a Django app that generates Top 8 result banners for Super Smash Bros Ultimate Tournaments using Pillow. The banner template parts used were made by [EDM](https://twitter.com/Elenriqu3). Character portraits are not included in this repository. You can see the app working [here](https://riokaru.pythonanywhere.com/).
 
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E1E4K0N2)
+
 ![alt text](https://i.imgur.com/XUnYuR0.png "Top 8")
 
 ## Features
