@@ -36,7 +36,7 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
     POSTWI = [(52, 624), (552, 398), (831, 398), (1109, 398),
               (552, 637), (759, 637), (967, 637), (1175, 637)]
 
-    POSTXT = [(25, 25), (25, 756), (850, 27), (1075, 725)]
+    POSTXT = [(53, 45), (53, 756), (875, 50), (1075, 725)]
 
     # La que tal
     c = Image.new('RGBA', SIZE, (0, 0, 0, 255))
@@ -174,11 +174,16 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
                 ruta_i = os.path.join(ruta_i, str(char[1])+".png")
                 ic = Image.open(ruta_i)
                 if size != BIG :
-                    i_size = (64*MED[0])//BIG[0]
+                    i_size = 32 #(64*MED[0])//BIG[0]
                     ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
+                    if size == MED :
+                        rmarg = 8
+                    else :
+                        rmarg = 6
                 else :
                     i_size = 64
-                c.paste(ic, (POS[i][0]+size[0]-i_size, POS[i][1]+s_off*i_size), mask=ic)
+                    rmarg = 14
+                c.paste(ic, (POS[i][0]+size[0]-i_size-rmarg, POS[i][1]+s_off*(i_size+4)+rmarg), mask=ic)
                 s_off += 1
             except :
                 pass
@@ -224,8 +229,8 @@ if __name__ == "__main__":
                   ("Terry", 0)]
     twitter = ["@DanielRimeris", "@GARU_Sw", "@movpancakes", "@RisingVexx",
                "@HoyerBTO", "@Vunioq", "@Nandok_95", "@CarlosDQC"]
-    pockets = [[("Bowser", 0)], [("Falco", 0), ("Fox", 0)], [("Mega Man", 1)], [("Marth", 2)],
-               [("Donkey Kong", 0)], [], [], []]
+    pockets = [[("Bowser", 0), ("Wario", 0)], [("Falco", 0), ("Fox", 0)], [("Mega Man", 1)], [("Marth", 2)],
+               [("Donkey Kong", 0), ("Luigi", 0)], [], [], []]
     players = [{"tag" : texto[i],
               "char" : personajes[i],
               "twitter" : twitter[i],
