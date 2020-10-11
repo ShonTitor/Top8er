@@ -23,8 +23,8 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
     icons = os.path.join(path, "Stock Icons")
     SIZE = (1423,800)
 
-    BIG = (477, 477)
-    MED = (257, 257)
+    BIG = (483, 483)
+    MED = (258, 258)
     SMA = (192, 192)
 
     POS = [(53, 135), (553, 135), (832, 135), (1110, 135),
@@ -166,6 +166,7 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
                    POS[i][1]+int(size[0]*0.995)-sizefont),
                    texto, font=font, fill=fontcolor)
 
+        # extras
         s_off = 0
         for char in players[i]['secondaries'] :
             try :
@@ -223,8 +224,8 @@ if __name__ == "__main__":
                   ("Terry", 0)]
     twitter = ["@DanielRimeris", "@GARU_Sw", "@movpancakes", "@RisingVexx",
                "@HoyerBTO", "@Vunioq", "@Nandok_95", "@CarlosDQC"]
-    pockets = [[("Bowser", 0)], [("Falco", 0), ("Fox", 0)], [("Megaman", 1)], [("Marth", 2)],
-               [], [], [], []]
+    pockets = [[("Bowser", 0)], [("Falco", 0), ("Fox", 0)], [("Mega Man", 1)], [("Marth", 2)],
+               [("Donkey Kong", 0)], [], [], []]
     players = [{"tag" : texto[i],
               "char" : personajes[i],
               "twitter" : twitter[i],
