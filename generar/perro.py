@@ -36,7 +36,7 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
     POSTWI = [(52, 624), (552, 398), (831, 398), (1109, 398),
               (552, 637), (759, 637), (967, 637), (1175, 637)]
 
-    POSTXT = [(53, 35), (53, 756), (875, 40), (1075, 725)]
+    POSTXT = [(53, 45), (53, 730), (875, 50), (1075, 725)]
 
     # La que tal
     c = Image.new('RGBA', SIZE, (0, 0, 0, 255))
