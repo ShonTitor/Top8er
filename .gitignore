@@ -1,7 +1,6 @@
 /__pychache__/*
 /migrations/__pychache__/*
 /generar/__pycache__/*
-/generar/Fighter Portraits/*/
-/generar/Fighter Stock Icons/*/
+/generar/assets/*/
 *.pyc
 *.apikey

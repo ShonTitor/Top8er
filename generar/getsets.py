@@ -88,16 +88,17 @@ def event_data(slug) :
     for node in data["event"]["sets"]['nodes'] :
         if node["games"] is None : continue
         for game in node["games"] :
-            for selection in game["selections"] :
-                player = selection["entrant"]["name"]
-                char = selection["selectionValue"]
-                if player in freq :
-                    if char in freq[player] :
-                        freq[player][char] += 1
+            if game["selections"] :
+                for selection in game["selections"] :
+                    player = selection["entrant"]["name"]
+                    char = selection["selectionValue"]
+                    if player in freq :
+                        if char in freq[player] :
+                            freq[player][char] += 1
+                        else :
+                            freq[player][char] = 1
                     else :
-                        freq[player][char] = 1
-                else :
-                    freq[player] = {char : 1}
+                        freq[player] = {char : 1}
 
     most = {}
     search = set()
@@ -130,12 +131,16 @@ def event_data(slug) :
                         twi = "@"+P[0]["user"]["authorizations"][0]["externalUsername"]
                 char = vaina[name].replace(".", "")
                 if char == "Pokemon Trainer" : char = "Pokémon Trainer"
+                if char == "Ori" : char = "Ori and Sein"
                 players.append({"tag" : name,
                                "char" : (char, 0),
                                 "twitter" : twi,
                                 "secondaries" : []
                                })
     event = data["event"]
+    gid = int(event["videogame"]["id"])
+    if gid in [1,2,3,4,5,1386] : game = "ssbu"
+    else : game = "roa"
     btext = []
     if event["startAt"] :
         fecha = datetime.fromtimestamp(event["startAt"])
@@ -148,6 +153,9 @@ def event_data(slug) :
     btext = " - ".join(btext)
     ttexts = [event["tournament"]["name"], " - " + event["name"], " - Top 8"]
     ttext = ""
+
+    
+    
     for t in ttexts  :
         if len(ttext) + len(t) < 50 :
             ttext += t
@@ -160,7 +168,8 @@ def event_data(slug) :
         "players" : players,
         "toptext" : ttext,
         "bottomtext" : btext,
-        "url" : link
+        "url" : link,
+        "game" : game
         }
     return datos
 

@@ -1,13 +1,16 @@
 import os, base64, re
 from io import BytesIO
 from django.shortcuts import render, HttpResponse, loader
-from .forms import GenForm, SmashggForm
+from .forms import makeform, SmashggForm
 from .generar.perro import generate_banner
 from .generar.getsets import event_data
 
-def index(request):
+def hestia(request, game, FormClass, hasextra=True):
+    if hasextra : has_extra = "true"
+    else : has_extra = "false"
+    
     if request.method == 'POST':
-        form = GenForm(request.POST, request.FILES)
+        form = FormClass(request.POST, request.FILES)
         form2 = SmashggForm(request.POST, request.FILES)
         v1 = form.is_valid()
         v2 = form2.is_valid()
@@ -24,6 +27,11 @@ def index(request):
                 bg = None
             else :
                 bg = request.FILES["background"]
+            try :                
+                darkbg = request.POST["darken_bg"]
+                if darkbg == "on" : darkbg = True
+                else : darkbg = False
+            except : darkbg = False
             if v2 :
                 event = request.POST["event"]
                 match = re.search("https://smash.gg/tournament/[^/]+/event/[^/]+", request.POST["event"])
@@ -42,12 +50,13 @@ def index(request):
                     chars.append( (request.POST["char"+str(i)],
                                    request.POST["color"+str(i)])
                                 )
-                    for k in range(1,3) :
-                        if request.POST["extra"+str(i)+str(k)] == "None" :
-                            continue
-                        else :
-                            seconds[i-1].append((request.POST["extra"+str(i)+str(k)],
-                                               request.POST["extra_color"+str(i)+str(k)]))
+                    if hasextra :
+                        for k in range(1,3) :
+                            if request.POST["extra"+str(i)+str(k)] == "None" :
+                                continue
+                            else :
+                                seconds[i-1].append((request.POST["extra"+str(i)+str(k)],
+                                                   request.POST["extra_color"+str(i)+str(k)]))
                     
                 players = [{"tag" : names[j],
                             "char" : chars[j],
@@ -58,12 +67,14 @@ def index(request):
                 datos = { "players" : players,
                             "toptext" : request.POST["ttext"],
                             "bottomtext" : request.POST["btext"],
-                            "url" : request.POST["url"]
+                            "url" : request.POST["url"],
+                            "game" : game
                         }
             img = generate_banner(datos,
                                     customcolor= c1,
                                     customcolor2=c2,
-                                    custombg=bg
+                                    custombg=bg,
+                                    darkenbg=darkbg
                                     )
             #img = base64.b64encode(img.tobytes())
             buffered = BytesIO()
@@ -74,9 +85,9 @@ def index(request):
             return render(request, 'gg.html' , context)
 
         else :
-            context = {}
+            context = { "hasextra" : has_extra }
             if "event" in request.POST :
-                form = GenForm()
+                form = FormClass()
                 context["off"] = 1
             else :
                 form2 = SmashggForm()
@@ -89,11 +100,24 @@ def index(request):
             
             
     else :
-        form = GenForm()
+        form = FormClass()
         form2 = SmashggForm()
     context = {
                "form" : form,
                "form2" : form2,
-               "off" : 2
+               "off" : 2,
+               "hasextra" : has_extra
                }
     return render(request, 'index.html' , context)
+
+def index(request) :
+    FormClass = makeform()
+    return hestia(request, "ssbu", FormClass)
+
+def roa(request) :
+    c = ["Absa", "Clairen", "Elliana", "Etalus",
+         "Forsburn", "Kragg", "Maypul", "Orcane",
+         "Ori and Sein", "Ranno", "Shovel Knight",
+         "Sylvanos", "Wrastor", "Zetterburn"]
+    FormClass = makeform(chars=c, numerito=21)
+    return hestia(request, "roa", FormClass, hasextra=False)

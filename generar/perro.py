@@ -9,8 +9,11 @@ def draw_text(img, draw, pos, texto, font=None, fill=None,
         draw.text((pos[0]+offset, pos[1]+offset), texto, font=font, fill=(0,0,0))
     draw.text(pos, texto, font=font, fill=fill)
 
-def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
+def generate_banner(datos,
+                    custombg=None, darkenbg=True,
+                    customcolor=None, customcolor2=None,
                     fontcolor=(255,255,255), shadow=True) :
+    game = datos["game"]
     players = datos["players"]
 
     path = os.path.realpath(__file__)
@@ -19,8 +22,8 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
     fonttc = os.path.join(path, "font.ttc")
 
     # Constantes
-    portraits = os.path.join(path, "Fighter Portraits")
-    icons = os.path.join(path, "Stock Icons")
+    portraits = os.path.join(path, "assets", game, "portraits")
+    icons = os.path.join(path, "assets", game, "icons")
     SIZE = (1423,800)
 
     BIG = (483, 483)
@@ -52,10 +55,11 @@ def generate_banner(datos, custombg=None, customcolor=None, customcolor2=None,
             ancho, largo = a, SIZE[1]
         f = f.resize((ancho, largo), resample=Image.ANTIALIAS)
         c.paste(f, ( int((SIZE[0]-ancho)/2), int((SIZE[1]-largo)/2) ) )
-        f = Image.new('RGBA', SIZE, (0, 0, 0, 255))
-        c = Image.blend(c, f, 0.75)
+        if darkenbg :
+            f = Image.new('RGBA', SIZE, (0, 0, 0, 255))
+            c = Image.blend(c, f, 0.75)
     else :
-        a  = Image.open(os.path.join(template,"bg.png"))
+        a  = Image.open(os.path.join(path, "assets", game, "bg.png"))
         c.paste(a, (0,0), mask=a)
 
     # Pa escribir
@@ -216,7 +220,7 @@ if __name__ == "__main__":
                   ("Yoshi", 1)]
     """
 
-    
+    """
     texto = ["morrocoYo", "GARU", "Pancakes", "VeXx",
              "BTO", "Vunioq", "Nandok", "Kellios"]
     personajes = [("Robin", 0),
@@ -229,8 +233,8 @@ if __name__ == "__main__":
                   ("Terry", 0)]
     twitter = ["@DanielRimeris", "@GARU_Sw", "@movpancakes", "@RisingVexx",
                "@HoyerBTO", "@Vunioq", "@Nandok_95", "@CarlosDQC"]
-    pockets = [[("Bowser", 0), ("Wario", 0)], [("Falco", 0), ("Fox", 0)], [("Mega Man", 1)], [("Marth", 2)],
-               [("Donkey Kong", 0), ("Luigi", 0)], [], [], []]
+    pockets = [[("Bowser", 5)], [("Falco", 5), ("Fox", 3)], [("Mega Man", 1)], [("Marth", 2)],
+               [], [], [], []]
     players = [{"tag" : texto[i],
               "char" : personajes[i],
               "twitter" : twitter[i],
@@ -241,6 +245,7 @@ if __name__ == "__main__":
              "bottomtext" : "22 de Febrero de 2020 - Caracas, Venezuela - 89 participantes",
              "url" : "facebook.com/groups/smashvenezuela",
              }
+    """
     
 
     """
@@ -293,9 +298,27 @@ if __name__ == "__main__":
              }
     """
 
+    texto = ["Absa", "Clairen", "Elliana", "Etalus",
+             "Forsburn", "Kragg", "Maypul", "Orcane"]
+    personajes = [(texto[i], i) for i in range(7)] + [("Orcane",8)]
+    twitter = ["@danfornace" for i in range(8)]
+    pockets = [[] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "@danfornace I made this graphic generator for RoA ",
+             "bottomtext" : "Please notice me @danfornace",
+             "url" : "riokaru.pythonanywhere.com",
+             "game" : "roa"
+             }
+
     import time
     t1 = time.time()
-    img = generate_banner(datos, customcolor="#00bbfa", customcolor2="#001736")# customcolor="#287346", customcolor2="#ede07c")
+    #img = generate_banner(datos, customcolor="#00bbfa", customcolor2="#001736")# customcolor="#287346", customcolor2="#ede07c")
+    img = generate_banner(datos, customcolor=(179,165,230), customcolor2=(38,28,83))# customcolor="#287346", customcolor2="#ede07c")
     t2 = time.time()
     print(t2-t1)
     img.show()
