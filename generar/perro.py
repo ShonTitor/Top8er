@@ -42,7 +42,7 @@ def generate_banner(datos,
     POSTXT = [(53, 45), (53, 730), (875, 50), (1075, 725)]
 
     # La que tal
-    c = Image.new('RGBA', SIZE, (0, 0, 0, 255))
+    c = Image.new('RGB', SIZE, (0, 0, 0))
 
     # Fondo
     if custombg :
@@ -116,6 +116,7 @@ def generate_banner(datos,
 
     a = Image.open(os.path.join(template,"numeros.png"))
     c.paste(a, (0,0), mask=a)
+    #c = Image.alpha_composite(a,c)
 
     # Textos de arriba y abajo
     fuente = ImageFont.truetype(fonttc, 30)
