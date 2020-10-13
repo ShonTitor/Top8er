@@ -42,7 +42,7 @@ def generate_banner(datos,
     POSTXT = [(53, 45), (53, 730), (875, 50), (1075, 725)]
 
     # La que tal
-    c = Image.new('RGB', SIZE, (0, 0, 0))
+    c = Image.new('RGBA', SIZE, (0, 0, 0))
 
     # Fondo
     if custombg :
