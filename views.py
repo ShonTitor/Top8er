@@ -27,11 +27,29 @@ def hestia(request, game, FormClass, hasextra=True):
                 bg = None
             else :
                 bg = request.FILES["background"]
+
+            # toggles
             try :                
-                darkbg = request.POST["darken_bg"]
-                if darkbg == "on" : darkbg = True
-                else : darkbg = False
+                request.POST["darken_bg"]
+                darkbg = True
             except : darkbg = False
+
+            try :                
+                request.POST["cshadow"]
+                cshadow = True
+            except : cshadow = False
+
+            try :                
+                request.POST["prmode"]
+                pr = True
+            except : pr = False
+
+            try :       
+                request.POST["blacksquares"]
+                blacksq = True
+            except : blacksq = False
+
+            
             if v2 :
                 event = request.POST["event"]
                 match = re.search("https://smash.gg/tournament/[^/]+/event/[^/]+", request.POST["event"])
@@ -71,10 +89,13 @@ def hestia(request, game, FormClass, hasextra=True):
                             "game" : game
                         }
             img = generate_banner(datos,
-                                    customcolor= c1,
-                                    customcolor2=c2,
-                                    custombg=bg,
-                                    darkenbg=darkbg
+                                  customcolor= c1,
+                                  customcolor2=c2,
+                                  custombg=bg,
+                                  darkenbg=darkbg,
+                                  shadow=cshadow,
+                                  prmode=pr,
+                                  blacksquares=blacksq
                                     )
             #img = base64.b64encode(img.tobytes())
             buffered = BytesIO()

@@ -9,7 +9,7 @@ def draw_text(img, draw, pos, texto, font=None, fill=None,
         draw.text((pos[0]+offset, pos[1]+offset), texto, font=font, fill=(0,0,0))
     draw.text(pos, texto, font=font, fill=fill)
 
-def generate_banner(datos,
+def generate_banner(datos, prmode=False, blacksquares=True,
                     custombg=None, darkenbg=True,
                     customcolor=None, customcolor2=None,
                     fontcolor=(255,255,255), shadow=True) :
@@ -62,6 +62,8 @@ def generate_banner(datos,
         a  = Image.open(os.path.join(path, "assets", game, "bg.png"))
         c.paste(a, (0,0), mask=a)
 
+    c = c.convert('RGB')
+
     # Pa escribir
     draw = ImageDraw.Draw(c)
 
@@ -71,8 +73,9 @@ def generate_banner(datos,
         elif i < 4 : size = MED
         else : size = SMA
 
-        shape = [POS[i], (POS[i][0]+size[0], POS[i][1]+size[1])]
-        draw.rectangle(shape, fill=(0,0,0))
+        if blacksquares :
+            shape = [POS[i], (POS[i][0]+size[0], POS[i][1]+size[1])]
+            draw.rectangle(shape, fill=(0,0,0))
 
         char = players[i]["char"]
         ruta = os.path.join(portraits, char[0])
@@ -114,7 +117,10 @@ def generate_banner(datos,
     else :
         c.paste(a, (0,0), mask=a)
 
-    a = Image.open(os.path.join(template,"numeros.png"))
+    if prmode :
+        a = Image.open(os.path.join(template,"numerospr.png"))
+    else :
+        a = Image.open(os.path.join(template,"numeros.png"))
     c.paste(a, (0,0), mask=a)
     #c = Image.alpha_composite(a,c)
 
@@ -319,7 +325,7 @@ if __name__ == "__main__":
     import time
     t1 = time.time()
     #img = generate_banner(datos, customcolor="#00bbfa", customcolor2="#001736")# customcolor="#287346", customcolor2="#ede07c")
-    img = generate_banner(datos, customcolor=(179,165,230), customcolor2=(38,28,83))# customcolor="#287346", customcolor2="#ede07c")
+    img = generate_banner(datos, shadow=False, prmode=True, blacksquares=False, customcolor=(179,165,230), customcolor2=(38,28,83))# customcolor="#287346", customcolor2="#ede07c")
     t2 = time.time()
     print(t2-t1)
     img.show()

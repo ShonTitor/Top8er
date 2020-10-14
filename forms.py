@@ -8,6 +8,9 @@ class AncestorForm(forms.Form) :
     lcolor2 = RGBColorField(label="Highlight Color", initial="#ffb60c")
     background = forms.ImageField(label="Background Image", required=False)
     darken_bg = forms.BooleanField(label="Darken Background", widget=forms.CheckboxInput, initial=True, required=False)
+    blacksquares = forms.BooleanField(label="Black Background for characters", widget=forms.CheckboxInput, initial=True, required=False)
+    prmode = forms.BooleanField(label="PR Mode", widget=forms.CheckboxInput, initial=False, required=False)
+    charshadow = forms.BooleanField(label="Character Shadow", widget=forms.CheckboxInput, initial=True, required=False)
 
 class SmashggForm(AncestorForm) :
     event = forms.RegexField(label="smash.gg link", regex = "https://smash.gg/tournament/[^/]+/event/[^/]+.*")
