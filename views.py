@@ -35,7 +35,7 @@ def hestia(request, game, FormClass, hasextra=True):
             except : darkbg = False
 
             try :                
-                request.POST["cshadow"]
+                request.POST["charshadow"]
                 cshadow = True
             except : cshadow = False
 
