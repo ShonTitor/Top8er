@@ -12,7 +12,7 @@ class AncestorForm(forms.Form) :
     prmode = forms.BooleanField(label="PR Mode", widget=forms.CheckboxInput, initial=False, required=False)
     charshadow = forms.BooleanField(label="Character Shadow", widget=forms.CheckboxInput, initial=True, required=False)
 
-class SmashggForm(AncestorForm) :
+class SmashggForm(forms.Form) :
     event = forms.RegexField(label="smash.gg link", regex = "https://smash.gg/tournament/[^/]+/event/[^/]+.*")
     def clean(self):
         cleaned_data = super().clean()
@@ -20,7 +20,7 @@ class SmashggForm(AncestorForm) :
             e = cleaned_data.get("event")
             match = re.search("https://smash.gg/tournament/[^/]+/event/[^/]+", e)
             if not check_event(e[17:match.end()]) :
-                msg = "Event not found or has too few players."
+                msg = "Event not found, has too few players or an iguana bit a cable."
                 self.add_error('event', msg)
         except :
             return cleaned_data

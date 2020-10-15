@@ -27,7 +27,7 @@ def generate_banner(datos, prmode=False, blacksquares=True,
     SIZE = (1423,800)
 
     BIG = (483, 483)
-    MED = (258, 258)
+    MED = (257, 257)
     SMA = (192, 192)
 
     POS = [(53, 135), (553, 135), (832, 135), (1110, 135),

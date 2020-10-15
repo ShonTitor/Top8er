@@ -14,7 +14,29 @@ def hestia(request, game, FormClass, hasextra=True):
         form2 = SmashggForm(request.POST, request.FILES)
         v1 = form.is_valid()
         v2 = form2.is_valid()
-        if v1 or v2 :
+
+        if v2 :
+            event = request.POST["event"]
+            match = re.search("https://smash.gg/tournament/[^/]+/event/[^/]+", request.POST["event"])
+            datos = event_data(event[17:match.end()])
+            init_data = {}
+
+            init_data["ttext"] = datos["toptext"]
+            init_data["btext"] = datos["bottomtext"]
+            init_data["url"] = datos["url"]
+
+            for i in range(8) :
+                init_data["name"+str(i+1)] = datos["players"][i]["tag"]
+                init_data["twitter"+str(i+1)] = datos["players"][i]["twitter"]
+                init_data["char"+str(i+1)] = datos["players"][i]["char"][0]
+            
+            context = { "hasextra" : has_extra,
+                        "form" : FormClass(initial=init_data),
+                        "form2" : SmashggForm(),
+                        "off" : 2
+                      }
+            return render(request, 'index.html' , context)
+        if v1 :
             if request.POST["lcolor1"] == "#ff281a" :
                 c1 = None
             else :
@@ -49,45 +71,39 @@ def hestia(request, game, FormClass, hasextra=True):
                 blacksq = True
             except : blacksq = False
 
-            
-            if v2 :
-                event = request.POST["event"]
-                match = re.search("https://smash.gg/tournament/[^/]+/event/[^/]+", request.POST["event"])
-                datos = event_data(event[17:match.end()])
-            elif v1 :
-                names = []
-                twitter = []
-                chars = []
-                seconds = [[] for i in range(8)]
-                for i in range(1,9) :
-                    names.append(request.POST["name"+str(i)])
-                    if request.POST["twitter"+str(i)] == "" :
-                        twitter.append(None)
-                    else :
-                        twitter.append(request.POST["twitter"+str(i)])
-                    chars.append( (request.POST["char"+str(i)],
-                                   request.POST["color"+str(i)])
-                                )
-                    if hasextra :
-                        for k in range(1,3) :
-                            if request.POST["extra"+str(i)+str(k)] == "None" :
-                                continue
-                            else :
-                                seconds[i-1].append((request.POST["extra"+str(i)+str(k)],
-                                                   request.POST["extra_color"+str(i)+str(k)]))
-                    
-                players = [{"tag" : names[j],
-                            "char" : chars[j],
-                            "twitter" : twitter[j],
-                            "secondaries" : seconds[j]
-                                }
-                           for j in range(8)]
-                datos = { "players" : players,
-                            "toptext" : request.POST["ttext"],
-                            "bottomtext" : request.POST["btext"],
-                            "url" : request.POST["url"],
-                            "game" : game
-                        }
+            names = []
+            twitter = []
+            chars = []
+            seconds = [[] for i in range(8)]
+            for i in range(1,9) :
+                names.append(request.POST["name"+str(i)])
+                if request.POST["twitter"+str(i)] == "" :
+                    twitter.append(None)
+                else :
+                    twitter.append(request.POST["twitter"+str(i)])
+                chars.append( (request.POST["char"+str(i)],
+                               request.POST["color"+str(i)])
+                            )
+                if hasextra :
+                    for k in range(1,3) :
+                        if request.POST["extra"+str(i)+str(k)] == "None" :
+                            continue
+                        else :
+                            seconds[i-1].append((request.POST["extra"+str(i)+str(k)],
+                                               request.POST["extra_color"+str(i)+str(k)]))
+                
+            players = [{"tag" : names[j],
+                        "char" : chars[j],
+                        "twitter" : twitter[j],
+                        "secondaries" : seconds[j]
+                            }
+                       for j in range(8)]
+            datos = { "players" : players,
+                        "toptext" : request.POST["ttext"],
+                        "bottomtext" : request.POST["btext"],
+                        "url" : request.POST["url"],
+                        "game" : game
+                    }
             img = generate_banner(datos,
                                   customcolor= c1,
                                   customcolor2=c2,
