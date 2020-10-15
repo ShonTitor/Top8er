@@ -19,6 +19,11 @@
     		color: white;
     	}
     	a { color : white; }
+
+    	a:hover {
+			color: lightcoral;
+		}
+
     	input {
     		border-radius: 3px;
     	}
@@ -107,6 +112,12 @@
 
 		.plshide { display : none; }
 
+		.tab1 { 
+			width : 80%;
+			margin-left: 10%;
+			display: none;
+		 }
+
     </style>
 
     <script type="text/javascript">
@@ -155,11 +166,19 @@
 			$(".manualform").click(function() {
 				$(".form1").show();
 				$(".form2").hide();
+				$(".tab1").hide();
 			});
 
 			$(".sggform").click(function() {
-				$(".form2").show();
 				$(".form1").hide();
+				$(".form2").show();
+				$(".tab1").hide();
+			});
+
+			$(".othergames").click(function() {
+				$(".form1").hide();
+				$(".form2").hide();
+				$(".tab1").show();
 			});
 
 		});
@@ -193,6 +212,7 @@
 
     <button class="toggleforms manualform" style="margin-left: 10%">Enter data manually</button>
     <button class="toggleforms sggform">Enter smash.gg link</button>
+    <button class="toggleforms othergames">Other Games</button>
     <form class="form2" enctype="multipart/form-data" method="post" action="">
     {% csrf_token %}
     <div class="row" style="width: 80%; margin-left: 10%">
@@ -579,6 +599,13 @@
     </div>
 
 	</form>
+
+	<div class="tab1">
+		<ul>
+		<li><a href="https://riokaru.pythonanywhere.com/">Super Smash Bros Ultimate</a></li>
+		<li><a href="https://riokaru.pythonanywhere.com/rivals">Rivals of Ather</a><br></li>
+		</ul>
+	</div>
 
     <div class="row" style="width: 80%; margin-left: 10%; margin-bottom: 2%">
     	<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"></div>
