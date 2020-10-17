@@ -112,7 +112,7 @@
 
 		.plshide { display : none; }
 
-		.tab1 { 
+		.tab1, .tab2 { 
 			width : 80%;
 			margin-left: 10%;
 			display: none;
@@ -124,7 +124,25 @@
 
     	var dictsote = {'Banjo & Kazooie': ['Brown', 'Pink', 'Black', 'Red', 'White', 'Yellow', 'Blue', 'Green'], 'Bayonetta': ['Black', 'Original', 'Yellow', 'Green', 'Red', 'Pink', 'White', 'Blue'], 'Bowser': ['Default', 'Black', 'Yellow', 'Green', 'Grey', 'Orange', 'Red', 'Blue'], 'Bowser Jr': ['Junior', 'Larry', 'Roy', 'Wendy', 'Iggy', 'Morton', 'Lemmy', 'Ludwig'], 'Byleth': ['Male', 'Female', 'Blue', 'Red', 'Yellow', 'Green', 'Black', 'Grey'], 'Captain Falcon': ['Indigo', 'Black', 'Red', 'Green', 'Blue', 'White', 'Yellow', 'Cyan'], 'Chrom': ['Blue', 'Red', 'Green', 'Yellow', 'Black', 'Purple', 'White', 'Cyan'], 'Cloud': ['Original', 'Advent', 'Blue', 'Advent Blue', 'Red', 'Advent Black', 'Brown', 'Advent Purple'], 'Corrin': ['Male', 'Female', 'Red', 'Orange', 'Blue', 'Pink', 'Green', 'Black'], 'Daisy': ['Orange', 'Green', 'Pink', 'Blue', 'Red', 'Purple', 'White', 'Black'], 'Dark Pit': ['Black', 'Green', 'Brown', 'Yellow', 'Red', 'Blue', 'White', 'Purple'], 'Dark Samus': ['Blue', 'Green', 'Purple', 'Red', 'Yellow', 'Grey', 'Black', 'Pink'], 'Diddy Kong': ['Red', 'White', 'Pink', 'Purple', 'Green', 'Blue', 'Yellow', 'Cyan'], 'Donkey Kong': ['Brown', 'Black', 'Red', 'Blue', 'Green', 'White', 'Yellow', 'Pink'], 'Dr Mario': ['White', 'Red', 'Blue', 'Green', 'Black', 'Yellow', 'Purple', 'Pink'], 'Duck Hunt': ['Default', 'Black', 'Blue', 'Brown', 'White', 'Tan', 'Yellow', 'Red'], 'Falco': ['Gray', 'Orange', 'Blue', 'Red', 'Green', 'Black', 'White', 'Pink'], 'Fox': ['Default', 'Black', 'Red', 'Green', 'Orange', 'White', 'Yellow', 'Purple'], 'Ganondorf': ['Default', 'Violet', 'Blue', 'Green', 'Purple', 'Brown', 'White', 'Grey'], 'Greninja': ['Blue', 'Red', 'Pink', 'Black', 'Violet', 'Green', 'Grey', 'Purple'], 'Hero': ['Luminary', 'Erdrick', 'Solo', 'Eight', 'Luminary Red', 'Erdrick White', 'Solo Orange', 'Eight Blue'], 'Ice Climbers': ['Purple', 'Blue', 'Green', 'Indigo', 'Red', 'Brown', 'White', 'Orange'], 'Ike': ['Default', 'Brown', 'Purple', 'Red', 'Yellow', 'Green', 'Blue', 'Black'], 'Incineroar': ['Red', 'Green', 'Black', 'Blue', 'Orange', 'Purple', 'Grey', 'White'], 'Inkling': ['Orange', 'Blue', 'Yellow', 'Green', 'Pink', 'Cyan', 'Purple', 'Indigo'], 'Isabelle': ['Green', 'Yellow', 'Pink', 'Red', 'Purple', 'Teal', 'Grey', 'Blue'], 'Jigglypuff': ['Default', 'Red', 'White', 'Blue', 'Green', 'Pink', 'Nurse', 'Glasses'], 'Joker': ['Black', 'Purple', 'Blue', 'Yellow', 'Red', 'White', 'School', 'School White'], 'Ken': ['Red', 'Grey', 'Blue', 'White', 'Green', 'Yellow', 'Cyan', 'Black'], 'King Dedede': ['Red', 'Pink', 'Green', 'Purple', 'Cyan', 'Grey', 'Blue', 'Black'], 'King K Rool': ['Green', 'Orange', 'Blue', 'Yellow', 'Pink', 'Black', 'Brown', 'White'], 'Kirby': ['Pink', 'Yellow', 'Blue', 'Red', 'Green', 'White', 'Orange', 'Purple'], 'Link': ['Blue', 'Green', 'Red', 'Grey', 'Indigo', 'Teal', 'White', 'Black'], 'Little Mac': ['Default', 'Yellow', 'White', 'Blue', 'Black', 'Pink', 'Wire', 'Green'], 'Lucario': ['Blue', 'Purple', 'White', 'Grey', 'Teal', 'Navy', 'Green', 'Pink'], 'Lucas': ['Yellow', 'Orange', 'Blue', 'Red', 'Grey', 'Cyan', 'Green', 'Purple'], 'Lucina': ['Blue', 'Green', 'Black', 'White', 'Red', 'Yellow', 'Navy', 'Purple'], 'Luigi': ['Green', 'Orange', 'Pink', 'Cyan', 'White', 'Purple', 'Blue', 'Yellow'], 'Mario': ['Red', 'Striped', 'Blue', 'Black', 'Green', 'Purple', 'Yellow', 'White'], 'Marth': ['Navy', 'Red', 'Green', 'Black', 'White', 'Blue', 'Yellow', 'Purple'], 'Mega Man': ['Blue', 'Red', 'Green', 'Brown', 'Cyan', 'Chartreuse', 'Orange', 'Grey'], 'Meta Knight': ['Blue', 'White', 'Red', 'Green', 'Navy', 'Pink', 'Purple', 'Grey'], 'Mewtwo': ['Default', 'Orange', 'Blue', 'Brown', 'Pink', 'Yellow', 'Cyan', 'Purple'], 'Mii Fighter': ['Orange', 'Cyan', 'Red', 'Yellow', 'Blue', 'Green', 'Pink', 'Black'], 'Min Min': ['Orange', 'Cyan', 'Red', 'Yellow', 'Blue', 'Green', 'Pink', 'Black'], 'Mr Game & Watch': ['Black', 'Red', 'Yellow', 'Blue', 'Teal', 'Cyan', 'Green', 'White'], 'Ness': ['Red', 'White', 'Yellow', 'Green', 'Blue', 'Black', 'Cyan', 'Purple'], 'Olimar': ['Tan', 'Red', 'Green', 'Blue', 'Alph', 'Alph Green', 'Alph Pink', 'Alph Red'], 'Pac-Man': ['Default', 'Blue', 'Yellow', 'Black', 'Purple', 'White', 'Red', 'Plaid'], 'Palutena': ['White', 'Pink', 'Cyan', 'Green', 'Blue', 'Red', 'Black', 'Purple'], 'Peach': ['Pink', 'Yellow', 'Red', 'Blue', 'Green', 'White', 'Fire', 'Black'], 'Pichu': ['Yellow', 'Cyan', 'Red', 'Grey', 'Blue', 'Spiky', 'White', 'Band'], 'Pikachu': ['Default', 'Red', 'Green', 'Yellow', 'Blue', 'Glasses', 'Female', 'Libre'], 'Piranha Plant': ['Red', 'Green', 'Yellow', 'Pink', 'Black', 'White', 'Purple', 'Blue'], 'Pit': ['Default', 'Yellow', 'Red', 'Green', 'Blue', 'Black', 'White', 'Pink'], 'Pokémon Trainer': ['Default', 'Red', 'Green', 'Pink', 'Yellow', 'White', 'Blue', 'Purple'], 'Richter': ['Navy', 'Red', 'Purple', 'Green', 'Yellow', 'Blue', 'Black', 'White'], 'Ridley': ['Default', 'Meta', 'Red', 'Blue', 'Green', 'Purple', 'Yellow', 'Grey'], 'ROB': ['Tan', 'Grey', 'Yellow', 'Purple', 'Blue', 'Green', 'Cyan', 'Red'], 'Robin': ['Male', 'Female', 'Green', 'Red', 'Blue', 'Yellow', 'White', 'Pink'], 'Rosalina & Luma': ['Cyan', 'Pink', 'Yellow', 'Green', 'Red', 'Purple', 'Black', 'White'], 'Roy': ['Blue', 'Red', 'Green', 'Violet', 'Cyan', 'Purple', 'Pink', 'Yellow'], 'Ryu': ['White', 'Grey', 'Cyan', 'Black', 'Orange', 'Blue', 'Green', 'Purple'], 'Samus': ['Orange', 'Blue', 'Pink', 'Brown', 'Purple', 'Green', 'White', 'Black'], 'Sheik': ['Blue', 'Red', 'Indigo', 'Purple', 'Green', 'Black', 'Yellow', 'White'], 'Shulk': ['Red', 'White', 'Black', 'Orange', 'Blue', 'Lavender', 'Yellow', 'Trunks'], 'Simon': ['Brown', 'Red', 'Yellow', 'Black', 'Blue', 'Purple', 'Orange', 'Indigo'], 'Snake': ['Grey', 'Black', 'Red', 'Blue', 'Green', 'White', 'Chartreuse', 'Brown'], 'Sonic': ['Blue', 'Purple', 'Cyan', 'White', 'Black', 'Yellow', 'Orange', 'Green'], 'Terry': ['Red', 'Blue', 'Brown', 'Green', 'Orange', 'Grey', 'Black', 'Yellow'], 'Toon Link': ['Green', 'Red', 'Blue', 'Purple', 'Brown', 'Black', 'Grey', 'Teal'], 'Villager': ['Red', 'Pink', 'Yellow', 'Green', 'Cyan', 'Blue', 'Purple', 'Chartreuse'], 'Wario': ['Blue', 'Classic', 'Red', 'Classic Red', 'Yellow', 'Classic Cyan', 'Green', 'Classic Green'], 'Wii Fit Trainer': ['Female', 'Male', 'Green', 'Male Green', 'Red', 'Male Red', 'Yellow', 'Male Yellow'], 'Wolf': ['Purple', 'Brown', 'Red', 'Blue', 'Green', 'Orange', 'Black', 'Pink'], 'Yoshi': ['Green', 'Red', 'Blue', 'Yellow', 'Pink', 'Cyan', 'Purple', 'Crafted'], 'Young Link': ['Green', 'Red', 'Blue', 'White', 'Pink', 'Cyan', 'Orange', 'Black'], 'Zelda': ['Pink', 'Red', 'Blue', 'Violet', 'Green', 'Black', 'Purple', 'White'], 'Zero Suit Samus': ['Cyan', 'Blue', 'Red', 'Black', 'Green', 'White', 'Shorts Orange', 'Shorts Blue'], 'Mii Brawler' : ["Face", "No Face"], 'Mii Gunner' : ["Face", "No Face"], 'Mii Swordfighter' : ["Face", "No Face"], 'Steve': ['Steve', 'Alex', 'Steve White', 'Alex White', 'Steve Black', 'Alex Blue', 'Zombie', 'Enderman'], 'Random': ['Sandbag', 'Question Mark'], 'None' : [],
 
-    		'Absa': ['Normal', 'Blue', 'Red', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Twitch', 'Champion', 'Abyss', 'EA', 'Penguin', 'Ranked', 'LoA'], 'Clairen': ['Normal', 'Blue', 'Orange', 'Green', 'Purple', 'White', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Genesis', 'Hero', 'Abyss', 'EA', 'Arcade 1', 'Arcade 2', 'Arcade 3', 'Ranked', 'Infamous', 'Champion'], 'Elliana': ['Normal', 'Blue', 'Red', 'Green', 'Grey', 'Pink', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Arcade 1', 'Arcade 2', 'Arcade 3', 'Ayala', 'Abyss', 'EA', 'On The Edge', 'Ranked', 'Infamous', 'Champion'], 'Etalus': ['Normal', 'Cyan', 'Yellow', 'Green', 'Brown', 'Pink', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Champion', 'Golden', 'Abyss', 'EA', 'Panda', 'Genesis ', 'Ranked'], 'Forsburn': ['Normal', 'Blue', 'Red', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Genesis', 'AZ', 'Abyss', 'EA', 'Champion', 'Dreamscape', 'Ranked', 'LoA'], 'Kragg': ['Normal', 'Blue', 'Pink', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Summit', 'Burrito', 'Champion', 'Abyss', 'EA', 'Golden', 'Ranked'], 'Maypul': ['Normal', 'Blue', 'Red', 'Yellow', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Panda', 'Arcade 1', 'Arcade 2', 'Arcade 3', 'Abyss', 'EA', 'Ragnir', 'Golden', ' Champion', 'Ranked'], 'Orcane': ['Normal', 'Cyan', 'Red', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Summit', 'Golden', 'Abyss', 'EA', 'Pool Party', 'Champion', 'Ranked'], 'Ori and Sein': ['Normal', 'Cyan', 'Red', 'Green', 'Dark', 'Pink', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Infamous', 'Abyss', 'EA', 'Ranked', 'Champion'], 'Ranno': ['Normal', 'Blue', 'Red', 'Green', 'Grey', 'Pink', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Pool Party', 'Champion', 'Abyss', 'EA', 'Tuxedo', 'Golden', 'Ranked', 'Infamous'], 'Shovel Knight': ['Normal', 'Cyan', 'Red', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Infamous', 'Abyss', 'EA', 'Golden', 'Ranked', 'Champion'], 'Sylvanos': ['Normal', 'Blue', 'Red', 'Green', 'White', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Genesis', 'Infamous', 'Abyss', 'EA', 'Golden', 'Champion', 'Ranked'], 'Wrastor': ['Normal', 'Blue', 'Red', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Spangled', 'Champion', 'Abyss', 'EA', 'Collegiate', 'Ranked', 'Bradshaw'], 'Zetterburn': ['Normal', 'Blue', 'Red', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Champion', 'Excaliburn', 'Golden', 'Abyss', 'EA', 'Shine', 'Ranked', 'LoA']};
+    		'Absa': ['Normal', 'Blue', 'Red', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Twitch', 'Champion', 'Abyss', 'EA', 'Penguin', 'Ranked', 'LoA'], 'Clairen': ['Normal', 'Blue', 'Orange', 'Green', 'Purple', 'White', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Genesis', 'Hero', 'Abyss', 'EA', 'Arcade 1', 'Arcade 2', 'Arcade 3', 'Ranked', 'Infamous', 'Champion'], 'Elliana': ['Normal', 'Blue', 'Red', 'Green', 'Grey', 'Pink', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Arcade 1', 'Arcade 2', 'Arcade 3', 'Ayala', 'Abyss', 'EA', 'On The Edge', 'Ranked', 'Infamous', 'Champion'], 'Etalus': ['Normal', 'Cyan', 'Yellow', 'Green', 'Brown', 'Pink', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Champion', 'Golden', 'Abyss', 'EA', 'Panda', 'Genesis ', 'Ranked'], 'Forsburn': ['Normal', 'Blue', 'Red', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Genesis', 'AZ', 'Abyss', 'EA', 'Champion', 'Dreamscape', 'Ranked', 'LoA'], 'Kragg': ['Normal', 'Blue', 'Pink', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Summit', 'Burrito', 'Champion', 'Abyss', 'EA', 'Golden', 'Ranked'], 'Maypul': ['Normal', 'Blue', 'Red', 'Yellow', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Panda', 'Arcade 1', 'Arcade 2', 'Arcade 3', 'Abyss', 'EA', 'Ragnir', 'Golden', ' Champion', 'Ranked'], 'Orcane': ['Normal', 'Cyan', 'Red', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Summit', 'Golden', 'Abyss', 'EA', 'Pool Party', 'Champion', 'Ranked'], 'Ori and Sein': ['Normal', 'Cyan', 'Red', 'Green', 'Dark', 'Pink', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Infamous', 'Abyss', 'EA', 'Ranked', 'Champion'], 'Ranno': ['Normal', 'Blue', 'Red', 'Green', 'Grey', 'Pink', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Pool Party', 'Champion', 'Abyss', 'EA', 'Tuxedo', 'Golden', 'Ranked', 'Infamous'], 'Shovel Knight': ['Normal', 'Cyan', 'Red', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Infamous', 'Abyss', 'EA', 'Golden', 'Ranked', 'Champion'], 'Sylvanos': ['Normal', 'Blue', 'Red', 'Green', 'White', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Genesis', 'Infamous', 'Abyss', 'EA', 'Golden', 'Champion', 'Ranked'], 'Wrastor': ['Normal', 'Blue', 'Red', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Spangled', 'Champion', 'Abyss', 'EA', 'Collegiate', 'Ranked', 'Bradshaw'], 'Zetterburn': ['Normal', 'Blue', 'Red', 'Green', 'Grey', 'Purple', 'Christmas', 'Halloween', 'Summer', 'Valentines', 'Default Custom 1', 'Default Custom 2', 'Champion', 'Excaliburn', 'Golden', 'Abyss', 'EA', 'Shine', 'Ranked', 'LoA'],
+
+			'Squigly': ['Default', 'BlueOriginal', 'LydiaRed', 'PurpleOriginal', 'PrincessCrystal', 'GreenOriginal', 'YellowBeforeDeath', 'WhiteBlackOriginal', 'DeadMaster', 'SilverOriginal', 'RoseBrownOriginal', 'LadyZozo', 'Emily', 'LitchiFaye', 'ZoneTan', 'WhiteOriginal', 'Sucy', 'KyokoSakura', 'GumJetSet', 'Yoshika Miyako', 'AliceYAYA', 'RoseWhiteOriginal', 'Sable', 'Bettlejuice', 'NuiHarime', 'ElsaFrozen', 'RonaldMc', 'EarthWorm', 'Michael', 'KagamineRin'],
+			'Big Band': ['Default', 'KarlKolchak', 'QMkRed', 'SmoothJackson', 'BlackOriginal', 'BIgZam', 'SepiaOriginal', 'DickTracy', 'SturmAW', 'NononJaku', 'Famicom', 'MegaDrive', 'TheQuestionBlue', 'KingDedede', 'GreenOriginal', 'Robocop', 'BigCatSonic', 'BigOMecha', 'OrangeOriginal', 'PurpleOriginal', 'Negaduck', 'MetalFlotsam', 'CaptainSpaceman', 'RoboKy', 'Jotaro', 'Potemkin', 'SuperNesOG'],
+			'Eliza': ['Default', 'Cleopatra', 'ElizaTekken', 'RedOriginal', 'BlackWhiteOriginal', 'GreenRoseOriginal', 'Bloody', 'PrincessIset', 'JedahDS', 'CViper', 'TharjaFE', 'DrDoom', 'INoGG', 'Queen Odette', 'DioBrando', 'FayeValentine', 'Velvet', 'Ragyo', 'RedTransistors', 'RedwineOriginal', 'PorrimMaryam', 'PurpleOriginal', 'Urien', 'Raven', 'Elizabeth', 'AnaOW', 'Sora', 'LapisSU', 'Ajna', 'LightBlueOriginal', 'KikuriHime'],
+			'Ms Fortune': ['Default', 'BlueOriginal', 'ReikoHinomoto', 'OrangeOriginal', 'YellowWhiteOriginal', 'Shelly', 'CeltySturuluson', 'BlackRock', 'MorriganAenseland', 'FranFFXII', 'Xbox360', 'PS3', 'BlueMaryRyan', 'LeonaHeidern', 'PUSSYCAT', 'Thief', 'EtnaDisgaea', 'MamiTomoe', 'Black Orchid', 'RedWhiteOriginal', 'SheHulk', 'TradesShouhda', 'MakotoNanaya', 'FeliciasA2', 'ElenaSFIII', 'MashuKyrielight', 'Tracer'],
+			'Peacock': ['Default', 'DoubleCopy', 'Alucard', 'WhiteOriginal', 'BeigeOriginal', 'LuckyLeprechaun', 'PurpleOriginal', 'BlackandWhiteOG', 'CirnoTouhou', 'GreenOriginal', 'SuperMilkChan', 'CableMvC2', 'BlackOriginal', 'HsienKo', 'RedWhiteOriginal', 'TheWarden', 'InspectorGadget', 'SayakaMiki', 'Raspberyl', 'TheGrinch', 'Daisy', 'GreenBlueOriginal', 'TheJoker', 'NononJakuzure', 'WhensAnnie', 'Cuphead', 'Woody'],
+			'Painwheel': ['Default', 'BlueOriginal', 'RedOriginal', 'GrayOriginal', 'BlackYellowOriginal', 'GrenOriginal', 'BrainDrainOG', 'ValentineOG', 'KamenRider', 'PinkOriginal', 'DiaDeMuertos', 'SentinelMvC2', 'BrownOriginal', 'VegaSF', 'JasonVoorhees', 'Eva01', 'Haku', 'Basara', 'MangoSentinel', 'RedBrownOriginal', 'TrueZenon', 'Spiderman', 'WhiteOriginal', 'VileNemo', 'MonsterRyuko', 'LaboratoryRat', 'Hisako'],
+			'Filia': ['Default', 'BlueOriginal', 'RedWIneOriginal', 'RoseOriginal', 'BlondeOriginal', 'WhiteGrenOriginal', 'WhiteGrayOriginal', 'AlternateOG', 'Miku', 'ReiMiyamoto', 'BrownHairOG', 'Magneto', 'PurpleOriginal', 'MilliaRage', 'WhiteBlueOriginal', 'Zeruel', 'Scanty', 'Madoka', 'PurpleYellowOG', 'Fionna', 'Shantae', 'RedWhiteOriginal', 'MilliaRage', 'WhiteOriginal', 'Ryuko', 'Hitagi', 'WhitePurpleOriginal', 'Stevonnie'],
+			'Cerebella': ['Default', 'RainbowMika', 'Harley', 'Nights', 'HulkHogan', 'HugoSFIII', 'WhiteStoryOriginal', 'BlackOrangeOriginal', 'Rash', 'RedOriginal', 'America', 'BlueOriginal', 'YellowOriginal', 'Potemkin', 'WhiteCyanOriginal', 'GreenOriginal', 'Maleficent', 'HomuraAkemi', 'Brazil', 'BlackOriginal', 'WhensAnnie', 'HeavyTF2', 'GreenYellowOriginal', 'ShingenNaoe', 'IraGamagori', 'D Va', 'HarbourPrincess'],
+			'Valentine': ['Default', 'RedBlueOriginal', 'MaiShiranui', 'HallowBlue', 'PattyRose', 'EasterLH', 'BlackHistoryOriginal', 'ChristmasRed', 'NurseSilentHill', 'TrishP2', 'RedWhiteOriginal', 'SheenaFujibayashi', 'Anesthesia', 'Baiken', 'Sam', 'YowaneHaku', 'HarukoHaruhara', 'Kasumi', 'KyokoNeedle', 'Shinobu', 'Nu13', 'TakiSC', 'BrownYellowOriginal', 'GreenOriginal', 'Strider', 'BlackOriginal', 'Mercy', 'NurseJoy', 'Sheik'],
+			'Parasoul': ['Default', 'WhiteOriginal', 'MireilleBouquet', 'GermanOriginal', 'OrangeOriginal', 'BrownOriginal', 'FencingWhiteOriginal', 'BlackEgretOriginal', 'Kneesocks', 'WhiteRose', 'MitsuruKirijo', 'OliverArmstrong', 'GreenOriginal', 'KulaDiamond', 'Alruna', 'MegurineLuka', 'JessicaRabbit', 'JustinSBaileySamus', 'PoisonIvy', 'Fluttershy', 'CharAznable', 'JeanGreys', 'KyokoMinazuki', 'CaptainCommando', 'WhensAnnie', 'Daphne', 'Widowmaker'],
+			'Double': ['Default', 'SquiglyOriginal', 'RedAB', 'RedWineOriginal', 'Umbrella', 'Arakune', 'RoseEndingOG', 'Radioactive', 'Oil', 'Saya', 'Neapolitan', 'MrsVictoria', 'Water', 'Silver', 'Gold', 'Blood', 'Envy', 'Ditto', 'Rainbow', 'Skullheart', 'ChristmasTree', 'DrIchiro', 'Cubia', 'LifeFiber', 'Mystique', 'WiiFit', 'MonsterDrink'],
+			'Fukua': ['Default', 'PinkOriginal', 'PurpleWhiteOriginal', 'DecapreSF4', 'Ermac', 'ShadowLady', 'Akuma', 'MechZangief', 'PurpleGreenOriginal', 'SeanSFIII', 'Rain', 'Reptile', 'NarutoParody', 'Falco', 'Alpha152', 'ViolentKen', 'Shadow', 'EvaEarlongsShadow', 'AllenSnider', 'RedVenom', 'Honoka', 'WarMachine', 'RoboKyMk', 'RyukoMind', 'Orochi', '2BSwap', 'Daisy', 'AnnTakamaki'],
+			'Beowulf': ['Default', 'BlueOriginal', 'FireFighter', 'DudleysHp', 'GreyYellowOriginal', 'GreenOriginal', 'WhiteBlackOriginal', 'GreyDoubleOriginal', 'ElSanto', 'AlexSFIII', '1990Neon', 'Wolverine', 'JaxBriggs', 'KanjiP4', 'GreenRanger', 'Yamcha', 'JohnTalbain', 'Snake', 'SilentStorm', 'WilliamRiker', 'TheUltiamteWarrior', 'WhiteOriginal', 'Batman', 'Zubaz', 'CaptainAmerica', 'Incineroar', 'CaptainPlanet'],
+			'Robo Fortune': ['Default', 'FeiYens2P', 'Colon', 'RAcaseal', 'MariaMetro', 'Vectorman', 'VirtualBoy', 'T800', 'Monsoon', 'Aigis', 'DrosselVon', 'IronMan', 'RoboKy', 'Rx782Gundam', 'Bass', 'Motoko', 'SarahDippity', 'VariaSuit', 'GravitySuit', 'KosMos', 'Telos', 'RoseGreenOriginal', 'Kireek', 'RDash', 'Spiral', 'MegaMan', 'Pharah', 'MasterChief', 'MegaManX', 'FeiYens1P'],
+
+
+    	};
 
     	$(document).ready(function(){
 
@@ -167,18 +185,28 @@
 				$(".form1").show();
 				$(".form2").hide();
 				$(".tab1").hide();
+				$(".tab2").hide();
 			});
 
 			$(".sggform").click(function() {
 				$(".form1").hide();
 				$(".form2").show();
 				$(".tab1").hide();
+				$(".tab2").hide();
 			});
 
 			$(".othergames").click(function() {
 				$(".form1").hide();
 				$(".form2").hide();
 				$(".tab1").show();
+				$(".tab2").hide();
+			});
+
+			$(".aboutus").click(function() {
+				$(".form1").hide();
+				$(".form2").hide();
+				$(".tab1").hide();
+				$(".tab2").show();
 			});
 
 		});
@@ -187,18 +215,22 @@
 			var m = 0;
 			//alert(desu.next().next().next().next().html());
 			desu.next().next().next().next().children("option").each(function() {
-				var char = desu.val();
-				if (dictsote[char].length == 0) {
-					$(this).hide();
-					$(this).html(m);
-				}
-				else if (dictsote[char].length <= m) {
-					$(this).hide();
-					//$(this).val('0');
-				}
-				else {
-					$(this).show();
-					$(this).html(m+": "+dictsote[char][m]);
+				try {
+					var char = desu.val();
+					if (dictsote[char].length == 0) {
+						$(this).hide();
+						$(this).html(m);
+					}
+					else if (dictsote[char].length <= m) {
+						$(this).hide();
+						//$(this).val('0');
+					}
+					else {
+						$(this).show();
+						$(this).html(m+": "+dictsote[char][m]);
+					}
+				} catch (error) {
+				  console.error(error);
 				}
 				m += 1;
 			});
@@ -213,6 +245,7 @@
     <button class="toggleforms manualform" style="margin-left: 10%">Enter data manually</button>
     <button class="toggleforms sggform">Enter smash.gg link</button>
     <button class="toggleforms othergames">Other Games</button>
+    <button class="toggleforms aboutus">About Us</button>
     <form class="form2" enctype="multipart/form-data" method="post" action="">
     {% csrf_token %}
     <div class="row" style="width: 80%; margin-left: 10%">
@@ -227,7 +260,7 @@
         <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-left: 5%; padding-right: 5%
 		                                                 padding-top: 10px;
 		                                                 padding-bottom: 10px;">
-		    <input type="submit" value="Generate" style="height: 50px">
+		    <input type="submit" value="Load Data" style="height: 50px">
 		</div>
 
         <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-left: 5%; padding-right: 5%
@@ -521,25 +554,25 @@
                 {{ form.darken_bg }}
         </div>
 
-        <div class="cajilla col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                 {{ form.blacksquares.label_tag }}
                 {{ form.blacksquares.errors }}
-                {{ form.blacksquares }}
+                {{ form.blacksquares }}<br>
                 <span style="font-size: 10px">Add a solid black background to each character's portrait</span>
         </div>
 
-        <div class="cajilla col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                 {{ form.charshadow.label_tag }}
                 {{ form.charshadow.errors }}
-                {{ form.charshadow }}
+                {{ form.charshadow }}<br>
                 <span style="font-size: 10px">Add a shadow of the main layout color to each character's portrait</span>
         </div>
 
-        <div class="cajilla col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                 {{ form.prmode.label_tag }}
                 {{ form.prmode.errors }}
-                {{ form.prmode }}
-                <span style="font-size: 10px">Makes number go from 1 to 8 without repetition for PR graphics or single elimination tournaments</span>
+                {{ form.prmode }}<br>
+                <span style="font-size: 10px">Makes numbers go from 1 to 8 without repetition for PR graphics</span>
         </div>
 
         <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-left: 5%; padding-right: 5%
@@ -559,10 +592,49 @@
 	</form>
 
 	<div class="tab1">
+		<h2>Other Games</h2>
+
+		<h3>Platform Fighters</h3>
 		<ul>
 		<li><a href="https://riokaru.pythonanywhere.com/">Super Smash Bros Ultimate</a></li>
 		<li><a href="https://riokaru.pythonanywhere.com/rivals">Rivals of Ather</a><br></li>
+		<!--li><a href="https://riokaru.pythonanywhere.com/RushdownRevolt">Rushdown Revolt</a><br></li-->
 		</ul>
+
+		<h3>2D Fighters</h3>
+		<ul>
+		<li><a href="https://riokaru.pythonanywhere.com/skullgirls">Skullgirls</a><br></li>
+		</ul>
+	</div>
+
+	<div class="tab2">
+		<h3><strong>About Us</strong></h3>
+		<p>This generator was made originally for the Smash Venezuela community. As you might know, the economic situation in Venezuela is not the best. The inflation is sky-high, universities are in crisis (private and public alike) and the minimum wage is less than $1 a month (the lowest in the world). For this and more, we ask you to consider supporting us monetarily if you like our work or find it useful.</p>
+		<h4><strong>Riokaru</strong></h4>
+		<img src="https://pbs.twimg.com/profile_images/1316156815072276480/mU5kZhhp_400x400.jpg" style="float : right; height: 200px; width: auto;">
+		<p>Riokaru is a last year student of Computer Engineering at Universidad Simón Bolívar (USB) in Caracas, Venezuela. He likes functional programming and JRPGs. His main in Super Smash Bros Ultimate is Mewtwo.</p>
+		<p>BTC 12Ejox39VdAAFJhhcb9npvH8Ckqng3m57q<br>
+		   ETH 0x444E4648d4A3DBaD5e90971DcaB694E4308e611d<br>
+		   DASH XubKo25svrTqGjt1E8Zgamp8jXKMVbiPjA<br>
+		   LTC Ld8LwfN27HxfJJhqYURNL7L4yhkAK116KZ<br>
+		   BCH 1BXdvcEt3RgQzapGVifx55YJQCmrC1zfd9</p>
+		<a href="https://twitter.com/Riokaru?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @Riokaru</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+		<br>
+		<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#29abe0', 'E1E4K0N2');kofiwidget2.draw();</script> 
+		<br><br>
+		<h4><strong>EDM</strong></h4>
+		<img src="https://pbs.twimg.com/profile_images/1311017014127923200/xA_RXIxK_400x400.jpg" style="float : right; height: 200px; width: auto;">
+		<p>EDM is a graphic designer from Puerto Cabello, Venezuela currently living in Madrid, Spain. During the Wii U era he got to be a top player both in his region and the whole country. His characters in Ultimate are Falco and Joker.</p>
+        <a href="https://twitter.com/Elenriqu3?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @Elenriqu3</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <br>
+		<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+		<input type="hidden" name="cmd" value="_donations" />
+		<input type="hidden" name="business" value="elenriqu3@gmail.com" />
+		<input type="hidden" name="currency_code" value="USD" />
+		<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+		<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+		</form>
+
 	</div>
 
     <div class="row" style="width: 80%; margin-left: 10%; margin-bottom: 2%">
@@ -597,7 +669,7 @@
 
     <h1 style="text-align: center">Sample</h1>
 	<div class="row" style="width: 80%; margin-left: 10%">
-	    <img src="https://i.imgur.com/7I8yzly.png">
+	    <img src="{{ sample }}">
 	</div>
 
 </body>

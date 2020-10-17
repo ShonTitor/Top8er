@@ -5,7 +5,8 @@ from .forms import makeform, SmashggForm
 from .generar.perro import generate_banner
 from .generar.getsets import event_data
 
-def hestia(request, game, FormClass, hasextra=True):
+def hestia(request, game, FormClass, sample,
+           hasextra=True, color_guide=None, icon_sizes=None):
     if hasextra : has_extra = "true"
     else : has_extra = "false"
     
@@ -33,7 +34,9 @@ def hestia(request, game, FormClass, hasextra=True):
             context = { "hasextra" : has_extra,
                         "form" : FormClass(initial=init_data),
                         "form2" : SmashggForm(),
-                        "off" : 2
+                        "off" : 2,
+                        "sample" : sample,
+                        "color_guide" : color_guide
                       }
             return render(request, 'index.html' , context)
         if v1 :
@@ -111,9 +114,9 @@ def hestia(request, game, FormClass, hasextra=True):
                                   darkenbg=darkbg,
                                   shadow=cshadow,
                                   prmode=pr,
-                                  blacksquares=blacksq
+                                  blacksquares=blacksq,
+                                  icon_sizes=icon_sizes
                                     )
-            #img = base64.b64encode(img.tobytes())
             buffered = BytesIO()
             img.save(buffered, format="PNG")
             img = base64.b64encode(buffered.getvalue())
@@ -143,18 +146,37 @@ def hestia(request, game, FormClass, hasextra=True):
                "form" : form,
                "form2" : form2,
                "off" : 2,
-               "hasextra" : has_extra
+               "hasextra" : has_extra,
+               "sample" : sample,
+               "color_guide" : color_guide
                }
     return render(request, 'index.html' , context)
 
 def index(request) :
     FormClass = makeform()
-    return hestia(request, "ssbu", FormClass)
+    sample = "https://i.imgur.com/7I8yzly.png"
+    return hestia(request, "ssbu", FormClass, sample)
 
 def roa(request) :
     c = ["Absa", "Clairen", "Elliana", "Etalus",
          "Forsburn", "Kragg", "Maypul", "Orcane",
          "Ori and Sein", "Ranno", "Shovel Knight",
          "Sylvanos", "Wrastor", "Zetterburn"]
-    FormClass = makeform(chars=c, numerito=21)
-    return hestia(request, "roa", FormClass, hasextra=False)
+    FormClass = makeform(chars=c, numerito=21, numerito_extra=1)
+    sample = "https://i.imgur.com/zkGIcFj.png"
+    return hestia(request, "roa", FormClass, sample, hasextra=False)
+
+def sg(request) :
+    c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza',
+         'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul',
+         'Peacock', 'Robo Fortune', 'Squigly', 'Valentine']
+    FormClass = makeform(chars=c, numerito=30, numerito_extra=1)
+    sample = "https://i.imgur.com/ToqMRSw.png"
+    return hestia(request, "sg", FormClass, sample)
+
+def rr(request) :
+    c = ["Afi and Galu", "Ashani", "Ezzie", "Kidd",
+         "Raymer", "Urdah", "Weishan", "Zhurong"]
+    FormClass = makeform(chars=c, numerito=1, numerito_extra=1)
+    sample = ""
+    return hestia(request, "rr", FormClass, sample, icon_sizes=(80,50))

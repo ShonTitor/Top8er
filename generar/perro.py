@@ -12,14 +12,15 @@ def draw_text(img, draw, pos, texto, font=None, fill=None,
 def generate_banner(datos, prmode=False, blacksquares=True,
                     custombg=None, darkenbg=True,
                     customcolor=None, customcolor2=None,
-                    fontcolor=(255,255,255), shadow=True) :
+                    font="font.ttc", fontcolor=(255,255,255), shadow=True,
+                    icon_sizes=None) :
     game = datos["game"]
     players = datos["players"]
 
     path = os.path.realpath(__file__)
     path= os.path.abspath(os.path.join(path, os.pardir))
     template = os.path.join(path, "template")
-    fonttc = os.path.join(path, "font.ttc")
+    fonttc = os.path.join(path, font)
 
     # Constantes
     portraits = os.path.join(path, "assets", game, "portraits")
@@ -80,7 +81,7 @@ def generate_banner(datos, prmode=False, blacksquares=True,
         char = players[i]["char"]
         ruta = os.path.join(portraits, char[0])
         ruta = os.path.join(ruta, str(char[1])+".png")
-        d = Image.open(ruta).resize(size, resample=Image.ANTIALIAS)
+        d = Image.open(ruta).convert("RGBA").resize(size, resample=Image.ANTIALIAS)
         
         # Intento de sombra
         if shadow :
@@ -185,19 +186,22 @@ def generate_banner(datos, prmode=False, blacksquares=True,
                 ruta_i = os.path.join(ruta_i, str(char[1])+".png")
                 ic = Image.open(ruta_i)
                 if size != BIG :
-                    i_size = 32 #(64*MED[0])//BIG[0]
+                    if icon_sizes : i_size = icon_sizes[1]
+                    else : i_size = 32
                     ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
                     if size == MED :
                         rmarg = 8
                     else :
                         rmarg = 6
                 else :
-                    i_size = 64
+                    if icon_sizes : i_size = icon_sizes[0]
+                    else : i_size = 64
+                    ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
                     rmarg = 14
                 c.paste(ic, (POS[i][0]+size[0]-i_size-rmarg, POS[i][1]+s_off*(i_size+4)+rmarg), mask=ic)
                 s_off += 1
             except :
-                pass
+                print("not found: "+str(ruta_i))
     return c
 
 if __name__ == "__main__":
@@ -305,6 +309,7 @@ if __name__ == "__main__":
              }
     """
 
+    """
     texto = ["Absa", "Clairen", "Elliana", "Etalus",
              "Forsburn", "Kragg", "Maypul", "Orcane"]
     personajes = [(texto[i], i) for i in range(7)] + [("Orcane",8)]
@@ -321,11 +326,78 @@ if __name__ == "__main__":
              "url" : "riokaru.pythonanywhere.com",
              "game" : "roa"
              }
+    """
+    
+    """
+    texto = ["Afi and Galu", "Ashani", "Ezzie", "Kidd",
+             "Raymer", "Urdah", "Weishan", "Zhurong"]
+    personajes = [(texto[i], 0) for i in range(8)]
+    twitter = ["@RushdownRevolt" for i in range(8)]
+    pockets = [[(texto[(i+1)%8],0), (texto[(i+2)%8],0)] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "Top text goes here",
+             "bottomtext" : "Bottom text goes here",
+             "url" : "riokaru.pythonanywhere.com",
+             "game" : "rr"
+             }
+    cc1 = (56,75,203)
+    cc2 = (64, 235, 143)
+    """
+
+    """
+    texto = ["Player "+str(i) for i in range(1,9)]
+    #p = ["Banjo & Kazooie", "Bayonetta", "Bowser", "Bowser Jr", "Byleth", "Captain Falcon", "Chrom", "Cloud"]
+    p = ["Samus", "Sheik", "Shulk", "Simon", "Snake", "Sonic", "Steve", "Terry"]
+    personajes = [(p[i], i) for i in range(8)]
+    twitter = ["player"+str(i) for i in range(1,9)]
+    pockets = [[] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "",
+             "bottomtext" : "",
+             "url" : "riokaru.pythonanywhere.com",
+             "game" : "ssbu"
+             }
+    """
+
+    #"""
+    texto = ["Player "+str(i) for i in range(1,9)]
+    #p = ["Banjo & Kazooie", "Bayonetta", "Bowser", "Bowser Jr", "Byleth", "Captain Falcon", "Chrom", "Cloud"]
+    p = ["Samus", "Sheik", "Shulk", "Simon", "Snake", "Sonic", "Steve", "Terry"]
+    import random
+    c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza', 'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul', 'Peacock', 'Robo Fortune', 'Squigly', 'Valentine']
+    personajes = [(random.choice(c), random.randint(0,26)) for i in range(8)]
+    twitter = ["player"+str(i) for i in range(1,9)]
+    pockets = [[(random.choice(c), 0), (random.choice(c), 0)] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "",
+             "bottomtext" : "Please help me I haven't slept in 4 days",
+             "url" : "riokaru.pythonanywhere.com",
+             "game" : "sg"
+             }
+    cc1 = (215, 62, 62)
+    cc2 = (203, 198, 186)
+    #"""
 
     import time
     t1 = time.time()
     #img = generate_banner(datos, customcolor="#00bbfa", customcolor2="#001736")# customcolor="#287346", customcolor2="#ede07c")
-    img = generate_banner(datos, shadow=False, prmode=True, blacksquares=False, customcolor=(179,165,230), customcolor2=(38,28,83))# customcolor="#287346", customcolor2="#ede07c")
+    img = generate_banner(datos, icon_sizes=(80,50), shadow=True, prmode=False, blacksquares=False,
+                          customcolor=cc1, customcolor2=cc2)
     t2 = time.time()
     print(t2-t1)
     img.show()
