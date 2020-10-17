@@ -154,8 +154,9 @@ def hestia(request, game, FormClass, sample,
 
 def index(request) :
     FormClass = makeform()
-    sample = "https://i.imgur.com/7I8yzly.png"
-    return hestia(request, "ssbu", FormClass, sample)
+    sample = "https://i.imgur.com/V1KwDFu.png"
+    c_guide = "https://www.ssbwiki.com/Alternate_costume_(SSBU)"
+    return hestia(request, "ssbu", FormClass, sample, color_guide=c_guide)
 
 def roa(request) :
     c = ["Absa", "Clairen", "Elliana", "Etalus",
@@ -163,7 +164,7 @@ def roa(request) :
          "Ori and Sein", "Ranno", "Shovel Knight",
          "Sylvanos", "Wrastor", "Zetterburn"]
     FormClass = makeform(chars=c, numerito=21, numerito_extra=1)
-    sample = "https://i.imgur.com/zkGIcFj.png"
+    sample = "https://i.imgur.com/rPmXNDr.png"
     return hestia(request, "roa", FormClass, sample, hasextra=False)
 
 def sg(request) :
@@ -171,12 +172,13 @@ def sg(request) :
          'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul',
          'Peacock', 'Robo Fortune', 'Squigly', 'Valentine']
     FormClass = makeform(chars=c, numerito=30, numerito_extra=1)
-    sample = "https://i.imgur.com/ToqMRSw.png"
-    return hestia(request, "sg", FormClass, sample)
+    sample = "https://i.imgur.com/MYu9qg3.png"
+    c_guide = "https://wiki.gbl.gg/w/Skullgirls"
+    return hestia(request, "sg", FormClass, sample, color_guide=c_guide)
 
 def rr(request) :
     c = ["Afi and Galu", "Ashani", "Ezzie", "Kidd",
          "Raymer", "Urdah", "Weishan", "Zhurong"]
     FormClass = makeform(chars=c, numerito=1, numerito_extra=1)
-    sample = ""
+    sample = "https://i.imgur.com/OO0nl5w.png"
     return hestia(request, "rr", FormClass, sample, icon_sizes=(80,50))

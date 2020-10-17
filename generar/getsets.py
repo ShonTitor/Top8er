@@ -23,6 +23,7 @@ def check_event(slug) :
     payload = {"query" : query, "variables" : {"slug" : slug}}
     response = requests.post(url=url, headers=headers, json=payload)
     event = json.loads(response.content)["data"]["event"]
+    print(event)
     if event :
         if event["numEntrants"] >= 8 :
             return True
@@ -176,7 +177,8 @@ def event_data(slug) :
 
 if __name__ == "__main__":
     from perro import generate_banner
-    slug = "tournament/genesis-7-1/event/ultimate-singles"
+    #slug = "tournament/genesis-7-1/event/ultimate-singles"
+    slug = "tournament/combo-breaker-2019/event/skullgirls-2nd-encore"
     #slug = "tournament/ceo-2019-fighting-game-championships/event/super-smash-bros-ultimate-singles"
     #slug = "tournament/bowser-castle-1/event/smash-ultimate-singles"
     #slug = "https://smash.gg/tournament/genesis-7-1/event/ultimate-singles/brackets/719802/1162721"

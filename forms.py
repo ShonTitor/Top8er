@@ -97,7 +97,7 @@ def makeform(chars=None, numerito=None, numerito_extra=None, echars=None, hasext
 
         ttext = forms.CharField(label='Top Left Text', max_length=50, required=False)
         btext = forms.CharField(label='Bottom Text', max_length=70, required=False)
-        url = forms.CharField(label='Top Right', max_length=40, required=False, initial="riokaru.pythonanywhere.com")
+        url = forms.CharField(label='Top Right', max_length=40, required=False, initial="https://top8er.com/")
 
     class GenForm(NoExtraForm):
         extra11 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)

@@ -305,7 +305,7 @@ if __name__ == "__main__":
     datos = {"players" : players,
              "toptext" : "Min Min Min Min Min Min Min Min",
              "bottomtext" : "Min Min Min Min Min Min Min Min",
-             "url" : "http://riokaru.pythonanywhere.com/",
+             "url" : "https://top8er.com",
              }
     """
 
@@ -323,7 +323,7 @@ if __name__ == "__main__":
     datos = {"players" : players,
              "toptext" : "@danfornace I made this graphic generator for RoA ",
              "bottomtext" : "Please notice me @danfornace",
-             "url" : "riokaru.pythonanywhere.com",
+             "url" : "https://top8er.com",
              "game" : "roa"
              }
     """
@@ -333,7 +333,8 @@ if __name__ == "__main__":
              "Raymer", "Urdah", "Weishan", "Zhurong"]
     personajes = [(texto[i], 0) for i in range(8)]
     twitter = ["@RushdownRevolt" for i in range(8)]
-    pockets = [[(texto[(i+1)%8],0), (texto[(i+2)%8],0)] for i in range(8)]
+    #pockets = [[(texto[(i+1)%8],0), (texto[(i+2)%8],0)] for i in range(8)]
+    pockets = [[] for i in range(8)]
     players = [{"tag" : texto[i],
               "char" : personajes[i],
               "twitter" : twitter[i],
@@ -342,7 +343,7 @@ if __name__ == "__main__":
     datos = {"players" : players,
              "toptext" : "Top text goes here",
              "bottomtext" : "Bottom text goes here",
-             "url" : "riokaru.pythonanywhere.com",
+             "url" : "https://top8er.com",
              "game" : "rr"
              }
     cc1 = (56,75,203)
@@ -364,15 +365,13 @@ if __name__ == "__main__":
     datos = {"players" : players,
              "toptext" : "",
              "bottomtext" : "",
-             "url" : "riokaru.pythonanywhere.com",
+             "url" : "https://top8er.com",
              "game" : "ssbu"
              }
     """
 
     #"""
     texto = ["Player "+str(i) for i in range(1,9)]
-    #p = ["Banjo & Kazooie", "Bayonetta", "Bowser", "Bowser Jr", "Byleth", "Captain Falcon", "Chrom", "Cloud"]
-    p = ["Samus", "Sheik", "Shulk", "Simon", "Snake", "Sonic", "Steve", "Terry"]
     import random
     c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza', 'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul', 'Peacock', 'Robo Fortune', 'Squigly', 'Valentine']
     personajes = [(random.choice(c), random.randint(0,26)) for i in range(8)]
@@ -384,14 +383,35 @@ if __name__ == "__main__":
               "secondaries" :  pockets[i] } for i in range(8)]
 
     datos = {"players" : players,
-             "toptext" : "",
-             "bottomtext" : "Please help me I haven't slept in 4 days",
-             "url" : "riokaru.pythonanywhere.com",
+             "toptext" : "Top Text goes here",
+             "bottomtext" : "Bottom Text goes here",
+             "url" : "https://top8er.com",
              "game" : "sg"
              }
     cc1 = (215, 62, 62)
     cc2 = (203, 198, 186)
     #"""
+
+    """
+    texto = ["Player "+str(i) for i in range(1,9)]
+    p = ["Bowser", "Captain Falcon", "Donkey Kong", "Dr Mario", "Falco", "Fox", "Ganondorf", "Jigglypuff"]
+    personajes = [(p[i], i%4) for i in range(8)]
+    twitter = ["player"+str(i) for i in range(1,9)]
+    pockets = [[] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "Top Text goes here",
+             "bottomtext" : "Bottom Text goes here",
+             "url" : "https://top8er.com",
+             "game" : "melee"
+             }
+    cc1 = None
+    cc2 = None
+    """
 
     import time
     t1 = time.time()

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Top 8 Graphic Generator</title>
+    <title>top8er.com</title>
     <meta charset="utf-8">
     
 	 <!-- Latest compiled and minified CSS -->
@@ -141,7 +141,8 @@
 			'Beowulf': ['Default', 'BlueOriginal', 'FireFighter', 'DudleysHp', 'GreyYellowOriginal', 'GreenOriginal', 'WhiteBlackOriginal', 'GreyDoubleOriginal', 'ElSanto', 'AlexSFIII', '1990Neon', 'Wolverine', 'JaxBriggs', 'KanjiP4', 'GreenRanger', 'Yamcha', 'JohnTalbain', 'Snake', 'SilentStorm', 'WilliamRiker', 'TheUltiamteWarrior', 'WhiteOriginal', 'Batman', 'Zubaz', 'CaptainAmerica', 'Incineroar', 'CaptainPlanet'],
 			'Robo Fortune': ['Default', 'FeiYens2P', 'Colon', 'RAcaseal', 'MariaMetro', 'Vectorman', 'VirtualBoy', 'T800', 'Monsoon', 'Aigis', 'DrosselVon', 'IronMan', 'RoboKy', 'Rx782Gundam', 'Bass', 'Motoko', 'SarahDippity', 'VariaSuit', 'GravitySuit', 'KosMos', 'Telos', 'RoseGreenOriginal', 'Kireek', 'RDash', 'Spiral', 'MegaMan', 'Pharah', 'MasterChief', 'MegaManX', 'FeiYens1P'],
 
-
+			"Afi and Galu" : ['Default'], "Ashani" : ['Default'], "Ezzie" : ['Default'], "Kidd" : ['Default'],
+             "Raymer" : ['Default'], "Urdah" : ['Default'], "Weishan" : ['Default'], "Zhurong" : ['Default']
     	};
 
     	$(document).ready(function(){
@@ -240,7 +241,8 @@
 </head>
 <body>
 
-    <h1 style="text-align: center">Top 8 Graphic Generator</h1>
+    <h1 style="text-align: center">top8er.com</h1>
+    <h4 style="text-align: center">Top 8 Graphic Generator</h4>
 
     <button class="toggleforms manualform" style="margin-left: 10%">Enter data manually</button>
     <button class="toggleforms sggform">Enter smash.gg link</button>
@@ -254,7 +256,7 @@
             {{ form2.event.label_tag }}
             {{ form2.event.errors }}
             {{ form2.event }}
-            <p><strong>MUST have this form:</strong> https://smash.gg/tournament/.../event/...</p>
+            <p><strong>MUST have this format:</strong> https://smash.gg/tournament/.../event/...</p>
         </div>
 
         <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-left: 5%; padding-right: 5%
@@ -584,7 +586,9 @@
         <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-left: 5%; padding-right: 5%
 		                                                 padding-top: 10px;
 		                                                 padding-bottom: 10px;">
-		    <a href="https://www.ssbwiki.com/Alternate_costume_(SSBU)" target="_blank">Color Guide</a>
+			{% if color_guide %}
+		    <a href="{{ color_guide }}" target="_blank">Color Guide</a>
+		    {% endif %}
 		</div>
 
     </div>
@@ -595,23 +599,19 @@
 		<h2>Other Games</h2>
 
 		<h3>Platform Fighters</h3>
-		<ul>
-		<li><a href="https://riokaru.pythonanywhere.com/">Super Smash Bros Ultimate</a></li>
-		<li><a href="https://riokaru.pythonanywhere.com/rivals">Rivals of Ather</a><br></li>
-		<!--li><a href="https://riokaru.pythonanywhere.com/RushdownRevolt">Rushdown Revolt</a><br></li-->
-		</ul>
+		<a href="https://www.top8er.com/"><img src="https://i.imgur.com/Wrah6Pl.png"></a>
+		<a href="https://www.top8er.com/rivals"><img src="https://i.imgur.com/Ct5bPHG.png"></a>
+		<a href="https://www.top8er.com/RushdownRevolt"><img src="https://i.imgur.com/V3IYMCo.png"></a>
 
-		<!--h3>2D Fighters</h3>
-		<ul>
-		<li><a href="https://riokaru.pythonanywhere.com/skullgirls">Skullgirls</a><br></li>
-		</ul-->
+		<h3>2D Fighters</h3>
+		<a href="https://www.top8er.com/skullgirls"><img src="https://i.imgur.com/KOdBCXI.png"></a>
 	</div>
 
 	<div class="tab2">
 		<h3><strong>About Us</strong></h3>
 		<p>This generator was made originally for the Smash Venezuela community. As you might know, the economic situation in Venezuela is not the best. The inflation is sky-high, universities are in crisis (private and public alike) and the minimum wage is less than $1 a month (the lowest in the world). For this and more, we ask you to consider supporting us monetarily if you like our work or find it useful.</p>
 		<h4><strong>Riokaru</strong></h4>
-		<img src="https://pbs.twimg.com/profile_images/1316156815072276480/mU5kZhhp_400x400.jpg" style="float : right; height: 200px; width: auto;">
+		<img src="https://i.imgur.com/t6EFVVl.jpeg" style="float : right; height: 200px; width: auto;">
 		<p>Riokaru is a last year student of Computer Engineering at Universidad Simón Bolívar (USB) in Caracas, Venezuela. He likes functional programming and JRPGs. His main in Super Smash Bros Ultimate is Mewtwo.</p>
 		<p>BTC 12Ejox39VdAAFJhhcb9npvH8Ckqng3m57q<br>
 		   ETH 0x444E4648d4A3DBaD5e90971DcaB694E4308e611d<br>
@@ -623,7 +623,7 @@
 		<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#29abe0', 'E1E4K0N2');kofiwidget2.draw();</script> 
 		<br><br>
 		<h4><strong>EDM</strong></h4>
-		<img src="https://pbs.twimg.com/profile_images/1311017014127923200/xA_RXIxK_400x400.jpg" style="float : right; height: 200px; width: auto;">
+		<img src="https://i.imgur.com/nrEJjAn.jpeg" style="float : right; height: 200px; width: auto;">
 		<p>EDM is a graphic designer from Puerto Cabello, Venezuela currently living in Madrid, Spain. During the Wii U era he got to be a top player both in his region and the whole country. His characters in Ultimate are Falco and Joker.</p>
         <a href="https://twitter.com/Elenriqu3?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @Elenriqu3</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         <br>
