@@ -13,7 +13,7 @@ class AncestorForm(forms.Form) :
     charshadow = forms.BooleanField(label="Character Shadow", widget=forms.CheckboxInput, initial=True, required=False)
 
 class SmashggForm(forms.Form) :
-    event = forms.RegexField(label="smash.gg link", regex = "https://smash.gg/tournament/[^/]+/event/[^/]+.*")
+    event = forms.RegexField(label="smash.gg link", regex = "https://smash.gg/tournament/[^/]+/event/[^/]+.*", max_length=160)
     def clean(self):
         cleaned_data = super().clean()
         try :

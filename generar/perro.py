@@ -370,7 +370,7 @@ if __name__ == "__main__":
              }
     """
 
-    #"""
+    """
     texto = ["Player "+str(i) for i in range(1,9)]
     import random
     c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza', 'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul', 'Peacock', 'Robo Fortune', 'Squigly', 'Valentine']
@@ -390,11 +390,16 @@ if __name__ == "__main__":
              }
     cc1 = (215, 62, 62)
     cc2 = (203, 198, 186)
-    #"""
-
     """
+
+    #"""
+    import random
+    c = ['Bowser', 'Captain Falcon', 'Donkey Kong', 'Dr. Mario', 'Falco', 'Fox', 'Ganondorf',
+         'Ice Climbers', 'Jigglypuff', 'Kirby', 'Link', 'Luigi', 'Mario', 'Marth', 'Mewtwo',
+         'Mr Game & Watch', 'Ness', 'Peach', 'Pichu', 'Pikachu', 'Roy', 'Samus', 'Sheik',
+         'Yoshi', 'Young Link', 'Zelda']
     texto = ["Player "+str(i) for i in range(1,9)]
-    p = ["Bowser", "Captain Falcon", "Donkey Kong", "Dr Mario", "Falco", "Fox", "Ganondorf", "Jigglypuff"]
+    p = c[16:24] # random.choices(c,k=8)
     personajes = [(p[i], i%4) for i in range(8)]
     twitter = ["player"+str(i) for i in range(1,9)]
     pockets = [[] for i in range(8)]
@@ -411,12 +416,12 @@ if __name__ == "__main__":
              }
     cc1 = None
     cc2 = None
-    """
+    #"""
 
     import time
     t1 = time.time()
     #img = generate_banner(datos, customcolor="#00bbfa", customcolor2="#001736")# customcolor="#287346", customcolor2="#ede07c")
-    img = generate_banner(datos, icon_sizes=(80,50), shadow=True, prmode=False, blacksquares=False,
+    img = generate_banner(datos, icon_sizes=None, shadow=True, prmode=False, blacksquares=True,
                           customcolor=cc1, customcolor2=cc2)
     t2 = time.time()
     print(t2-t1)

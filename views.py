@@ -27,9 +27,12 @@ def hestia(request, game, FormClass, sample,
             init_data["url"] = datos["url"]
 
             for i in range(8) :
-                init_data["name"+str(i+1)] = datos["players"][i]["tag"]
-                init_data["twitter"+str(i+1)] = datos["players"][i]["twitter"]
-                init_data["char"+str(i+1)] = datos["players"][i]["char"][0]
+                try :
+                    init_data["name"+str(i+1)] = datos["players"][i]["tag"]
+                    init_data["twitter"+str(i+1)] = datos["players"][i]["twitter"]
+                    init_data["char"+str(i+1)] = datos["players"][i]["char"][0]
+                except :
+                    pass
             
             context = { "hasextra" : has_extra,
                         "form" : FormClass(initial=init_data),
