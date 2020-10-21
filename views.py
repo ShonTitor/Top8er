@@ -39,7 +39,8 @@ def hestia(request, game, FormClass, sample,
                         "form2" : SmashggForm(),
                         "off" : 2,
                         "sample" : sample,
-                        "color_guide" : color_guide
+                        "color_guide" : color_guide,
+                        "game" : game
                       }
             return render(request, 'index.html' , context)
         if v1 :
@@ -128,7 +129,7 @@ def hestia(request, game, FormClass, sample,
             return render(request, 'gg.html' , context)
 
         else :
-            context = { "hasextra" : has_extra }
+            context = { "hasextra" : has_extra, "game" : game }
             if "event" in request.POST :
                 form = FormClass()
                 context["off"] = 1
@@ -151,7 +152,8 @@ def hestia(request, game, FormClass, sample,
                "off" : 2,
                "hasextra" : has_extra,
                "sample" : sample,
-               "color_guide" : color_guide
+               "color_guide" : color_guide,
+               "game" : game
                }
     return render(request, 'index.html' , context)
 
@@ -162,13 +164,13 @@ def index(request) :
     return hestia(request, "ssbu", FormClass, sample, color_guide=c_guide)
 
 def roa(request) :
-    c = ["Absa", "Clairen", "Elliana", "Etalus",
+    c = ["Random", "Absa", "Clairen", "Elliana", "Etalus",
          "Forsburn", "Kragg", "Maypul", "Orcane",
          "Ori and Sein", "Ranno", "Shovel Knight",
          "Sylvanos", "Wrastor", "Zetterburn"]
     FormClass = makeform(chars=c, numerito=21, numerito_extra=1)
     sample = "https://i.imgur.com/rPmXNDr.png"
-    return hestia(request, "roa", FormClass, sample, hasextra=False)
+    return hestia(request, "roa", FormClass, sample)
 
 def sg(request) :
     c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza',
@@ -185,3 +187,14 @@ def rr(request) :
     FormClass = makeform(chars=c, numerito=1, numerito_extra=1)
     sample = "https://i.imgur.com/OO0nl5w.png"
     return hestia(request, "rr", FormClass, sample, icon_sizes=(80,50))
+
+def melee(request) :
+    c = ['Bowser', 'Captain Falcon', 'Donkey Kong', 'Dr Mario', 'Falco',
+         'Fox', 'Ganondorf', 'Ice Climbers', 'Jigglypuff', 'Kirby', 'Link',
+         'Luigi', 'Mario', 'Marth', 'Mewtwo', 'Mr Game & Watch', 'Ness',
+         'Peach', 'Pichu', 'Pikachu', 'Roy', 'Samus', 'Sheik', 'Yoshi',
+         'Young Link', 'Zelda']
+    FormClass = makeform(chars=c, numerito=6)
+    sample = "https://i.imgur.com/V1KwDFu.png"
+    c_guide = "https://www.ssbwiki.com/Alternate_costume_(SSBM)"
+    return hestia(request, "melee", FormClass, sample, icon_sizes=(48,24))

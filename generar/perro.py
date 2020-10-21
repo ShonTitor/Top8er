@@ -309,12 +309,12 @@ if __name__ == "__main__":
              }
     """
 
-    """
+    #"""
     texto = ["Absa", "Clairen", "Elliana", "Etalus",
              "Forsburn", "Kragg", "Maypul", "Orcane"]
     personajes = [(texto[i], i) for i in range(7)] + [("Orcane",8)]
     twitter = ["@danfornace" for i in range(8)]
-    pockets = [[] for i in range(8)]
+    pockets = [[(texto[i], 0), (texto[i], 0)] for i in range(8)]
     players = [{"tag" : texto[i],
               "char" : personajes[i],
               "twitter" : twitter[i],
@@ -326,7 +326,10 @@ if __name__ == "__main__":
              "url" : "https://top8er.com",
              "game" : "roa"
              }
-    """
+    cc1 = None
+    cc2 = None
+    ics = None
+    #"""
     
     """
     texto = ["Afi and Galu", "Ashani", "Ezzie", "Kidd",
@@ -392,17 +395,17 @@ if __name__ == "__main__":
     cc2 = (203, 198, 186)
     """
 
-    #"""
+    """
     import random
-    c = ['Bowser', 'Captain Falcon', 'Donkey Kong', 'Dr. Mario', 'Falco', 'Fox', 'Ganondorf',
-         'Ice Climbers', 'Jigglypuff', 'Kirby', 'Link', 'Luigi', 'Mario', 'Marth', 'Mewtwo',
-         'Mr Game & Watch', 'Ness', 'Peach', 'Pichu', 'Pikachu', 'Roy', 'Samus', 'Sheik',
-         'Yoshi', 'Young Link', 'Zelda']
+    C = {'Bowser': ['Default', 'Red', 'Blue', 'Black'], 'Captain Falcon': ['Default', 'Black', 'Red', 'White', 'Green', 'Blue'], 'Donkey Kong': ['Default', 'Black', 'Red', 'Blue', 'Green'], 'Dr Mario': ['Default', 'Red', 'Blue', 'Green', 'Black'], 'Falco': ['Default', 'Red', 'Blue', 'Green'], 'Fox': ['Default', 'Red', 'Blue', 'Green'], 'Ganondorf': ['Default', 'Red', 'Blue', 'Green', 'Purple'], 'Ice Climbers': ['Default', 'Green', 'Orange', 'Red'], 'Jigglypuff': ['Default', 'Red', 'Blue', 'Green', 'Yellow'], 'Kirby': ['Default', 'Yellow', 'Blue', 'Red', 'Green', 'White'], 'Link': ['Default', 'Red', 'Blue', 'Black', 'White'], 'Luigi': ['Default', 'White', 'Blue', 'Pink'], 'Mario': ['Default', 'Yellow', 'Black', 'Blue', 'Green'], 'Marth': ['Default', 'Red', 'Green', 'Black', 'White'], 'Mewtwo': ['Default', 'Red', 'Blue', 'Green'], 'Mr Game & Watch': ['Default', 'Red', 'Blue', 'Green'], 'Ness': ['Default', 'Yellow', 'Blue', 'Green'], 'Peach': ['Default', 'Yellow', 'White', 'Blue', 'Green'], 'Pichu': ['Default', 'Red', 'Blue', 'Green'], 'Pikachu': ['Default', 'Red', 'Blue', 'Green'], 'Roy': ['Default', 'Red', 'Blue', 'Green', 'Yellow'], 'Samus': ['Default', 'Pink', 'Black', 'Green', 'Purple'], 'Sheik': ['Default', 'Red', 'Blue', 'Green', 'White'], 'Yoshi': ['Default', 'Red', 'Blue', 'Yellow', 'Pink', 'Cyan'], 'Young Link': ['Default', 'Red', 'Blue', 'White', 'Black'], 'Zelda': ['Default', 'Red', 'Blue', 'Green', 'White']}
+    def randchar() :
+        c = random.choice(list(C.keys()))
+        n = random.randint(0,len(C[c])-1)
+        return (c,n)
     texto = ["Player "+str(i) for i in range(1,9)]
-    p = c[16:24] # random.choices(c,k=8)
-    personajes = [(p[i], i%4) for i in range(8)]
+    personajes = [randchar() for i in range(8)]
     twitter = ["player"+str(i) for i in range(1,9)]
-    pockets = [[] for i in range(8)]
+    pockets = [[randchar(), randchar()] for i in range(8)]
     players = [{"tag" : texto[i],
               "char" : personajes[i],
               "twitter" : twitter[i],
@@ -416,12 +419,13 @@ if __name__ == "__main__":
              }
     cc1 = None
     cc2 = None
-    #"""
+    ics = (48, 24)
+    """
 
     import time
     t1 = time.time()
     #img = generate_banner(datos, customcolor="#00bbfa", customcolor2="#001736")# customcolor="#287346", customcolor2="#ede07c")
-    img = generate_banner(datos, icon_sizes=None, shadow=True, prmode=False, blacksquares=True,
+    img = generate_banner(datos, icon_sizes=ics, shadow=True, prmode=False, blacksquares=True,
                           customcolor=cc1, customcolor2=cc2)
     t2 = time.time()
     print(t2-t1)
