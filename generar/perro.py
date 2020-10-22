@@ -57,7 +57,7 @@ def generate_banner(datos, prmode=False, blacksquares=True,
         f = f.resize((ancho, largo), resample=Image.ANTIALIAS)
         c.paste(f, ( int((SIZE[0]-ancho)/2), int((SIZE[1]-largo)/2) ) )
         if darkenbg :
-            f = Image.new('RGBA', SIZE, (0, 0, 0, 255))
+            f = Image.new('RGBA', SIZE, (0, 0, 0, 0))
             c = Image.blend(c, f, 0.75)
     else :
         a  = Image.open(os.path.join(path, "assets", game, "bg.png"))
@@ -309,7 +309,7 @@ if __name__ == "__main__":
              }
     """
 
-    #"""
+    """
     texto = ["Absa", "Clairen", "Elliana", "Etalus",
              "Forsburn", "Kragg", "Maypul", "Orcane"]
     personajes = [(texto[i], i) for i in range(7)] + [("Orcane",8)]
@@ -329,7 +329,7 @@ if __name__ == "__main__":
     cc1 = None
     cc2 = None
     ics = None
-    #"""
+    """
     
     """
     texto = ["Afi and Galu", "Ashani", "Ezzie", "Kidd",
@@ -395,7 +395,7 @@ if __name__ == "__main__":
     cc2 = (203, 198, 186)
     """
 
-    """
+    #"""
     import random
     C = {'Bowser': ['Default', 'Red', 'Blue', 'Black'], 'Captain Falcon': ['Default', 'Black', 'Red', 'White', 'Green', 'Blue'], 'Donkey Kong': ['Default', 'Black', 'Red', 'Blue', 'Green'], 'Dr Mario': ['Default', 'Red', 'Blue', 'Green', 'Black'], 'Falco': ['Default', 'Red', 'Blue', 'Green'], 'Fox': ['Default', 'Red', 'Blue', 'Green'], 'Ganondorf': ['Default', 'Red', 'Blue', 'Green', 'Purple'], 'Ice Climbers': ['Default', 'Green', 'Orange', 'Red'], 'Jigglypuff': ['Default', 'Red', 'Blue', 'Green', 'Yellow'], 'Kirby': ['Default', 'Yellow', 'Blue', 'Red', 'Green', 'White'], 'Link': ['Default', 'Red', 'Blue', 'Black', 'White'], 'Luigi': ['Default', 'White', 'Blue', 'Pink'], 'Mario': ['Default', 'Yellow', 'Black', 'Blue', 'Green'], 'Marth': ['Default', 'Red', 'Green', 'Black', 'White'], 'Mewtwo': ['Default', 'Red', 'Blue', 'Green'], 'Mr Game & Watch': ['Default', 'Red', 'Blue', 'Green'], 'Ness': ['Default', 'Yellow', 'Blue', 'Green'], 'Peach': ['Default', 'Yellow', 'White', 'Blue', 'Green'], 'Pichu': ['Default', 'Red', 'Blue', 'Green'], 'Pikachu': ['Default', 'Red', 'Blue', 'Green'], 'Roy': ['Default', 'Red', 'Blue', 'Green', 'Yellow'], 'Samus': ['Default', 'Pink', 'Black', 'Green', 'Purple'], 'Sheik': ['Default', 'Red', 'Blue', 'Green', 'White'], 'Yoshi': ['Default', 'Red', 'Blue', 'Yellow', 'Pink', 'Cyan'], 'Young Link': ['Default', 'Red', 'Blue', 'White', 'Black'], 'Zelda': ['Default', 'Red', 'Blue', 'Green', 'White']}
     def randchar() :
@@ -420,6 +420,42 @@ if __name__ == "__main__":
     cc1 = None
     cc2 = None
     ics = (48, 24)
+    #"""
+
+    """
+    import random
+    C = ['A.B.A', 'Anji Mito', 'Axl Low', 'Baiken', 'Bridget', 'Chipp Zanuff', 'Dizzy', 'Eddie', 'Faust', 'I-No', 'Jam Kuradoberi', 'Johnny', 'Justice', 'Kliff Undersn', 'Ky Kiske', 'May', 'Millia Rage', 'Order-Sol', 'Potemkin', 'Robo-Ky', 'Slayer', 'Sol Badguy', 'Testament', 'Venom', 'Zappa']
+    colors = ['Full Art',
+              'Default P', 'Default K', 'Default S', 'Default H', 'Default D',
+              'EX P', 'EX K', 'EX S', 'EX H', 'EX D',
+              'Slash P', 'Slash K', 'Slash S', 'Slash H', 'Slash D',
+              'Reload P', 'Reload K', 'Reload S', 'Reload H', 'Reload D',
+              'Portrait']#,'Face Art']
+    C = {c:colors for c in C}
+    def randchar() :
+        c = random.choice(list(C.keys()))
+        #c = random.choice(["Faust", "Kliff Undersn"])
+        n = random.randint(1,len(C[c])-1)
+        n = 21
+        return (c,n)
+    texto = ["Player "+str(i) for i in range(1,9)]
+    personajes = [randchar() for i in range(8)]
+    twitter = ["player"+str(i) for i in range(1,9)]
+    pockets = [[] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "Top Text goes here",
+             "bottomtext" : "Bottom Text goes here",
+             "url" : "https://top8er.com",
+             "game" : "ggxx"
+             }
+    cc1 = None
+    cc2 = None
+    ics = None
     """
 
     import time

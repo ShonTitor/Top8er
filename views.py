@@ -195,6 +195,6 @@ def melee(request) :
          'Peach', 'Pichu', 'Pikachu', 'Roy', 'Samus', 'Sheik', 'Yoshi',
          'Young Link', 'Zelda']
     FormClass = makeform(chars=c, numerito=6)
-    sample = "https://i.imgur.com/V1KwDFu.png"
+    sample = "https://i.imgur.com/ngRykN4.png"
     c_guide = "https://www.ssbwiki.com/Alternate_costume_(SSBM)"
     return hestia(request, "melee", FormClass, sample, icon_sizes=(48,24))
