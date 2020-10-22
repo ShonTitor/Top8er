@@ -9,6 +9,42 @@ def draw_text(img, draw, pos, texto, font=None, fill=None,
         draw.text((pos[0]+offset, pos[1]+offset), texto, font=font, fill=(0,0,0))
     draw.text(pos, texto, font=font, fill=fill)
 
+def text_size(text, font):
+    ascent, descent = font.getmetrics()
+
+    width = font.getmask(text).getbbox()[2]
+    height = font.getmask(text).getbbox()[3] + descent
+
+    return (width, height)
+
+def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top"):
+    x1,y1,x2,y2 = box
+    c1,c2 = (x2-x1, y2-y1)
+    lo = 1
+    hi = guess
+    guess = (lo+hi)//2
+    fuente = ImageFont.truetype(fontdir, guess)
+    x,y = text_size(text, fuente)
+    #while x > c1 or y > c2 :
+    #intentos = 1
+    while lo+1 < hi :
+        #intentos += 1
+        #guess -= 1
+        if x > c1 or y > c2 :
+            hi = guess
+        else :
+            lo = guess
+        guess = (lo+hi)//2
+        fuente = ImageFont.truetype(fontdir, guess)
+        x,y = text_size(text, fuente)
+    #print("intentos:", intentos)
+    posx, posy = x1,y1
+    if align == "center" :
+        posx += (c1-x)//2
+    if alignv == "bottom" :
+        posy += c2 -y
+    draw_text(img, draw, (posx, posy), text, font=fuente)
+
 def generate_banner(datos, prmode=False, blacksquares=True,
                     custombg=None, darkenbg=True,
                     customcolor=None, customcolor2=None,
@@ -174,9 +210,14 @@ def generate_banner(datos, prmode=False, blacksquares=True,
         if len(texto) > 7 :
             sizefont = int(sizefont*7/len(texto))
         font = ImageFont.truetype(fonttc, sizefont)
-        draw_text(c, draw, (POS[i][0] + (size[0]-0.5*sizefont*len(texto))//2,
-                   POS[i][1]+int(size[0]*0.995)-sizefont),
-                   texto, font=font, fill=fontcolor)
+
+        cajita_nombre = (POS[i][0]+5, POS[i][1], POS[i][0]+size[1]-5, POS[i][1]+size[0]-2)
+        
+        fit_text(c, draw, cajita_nombre, texto, fonttc, guess=int(size[0]*0.26),
+                 align="center", alignv="bottom")
+        #draw_text(c, draw, (POS[i][0] + (size[0]-0.5*sizefont*len(texto))//2,
+        #           POS[i][1]+int(size[0]*0.995)-sizefont),
+        #           texto, font=font, fill=fontcolor)
 
         # extras
         s_off = 0
@@ -255,7 +296,12 @@ if __name__ == "__main__":
              "toptext" : "Show Me your Moves - Ultimate Singles - Top 8",
              "bottomtext" : "22 de Febrero de 2020 - Caracas, Venezuela - 89 participantes",
              "url" : "facebook.com/groups/smashvenezuela",
+             "game" : "ssbu"
              }
+
+    cc1 = None
+    cc2 = None
+    ics = None
     """
     
 
@@ -402,7 +448,8 @@ if __name__ == "__main__":
         c = random.choice(list(C.keys()))
         n = random.randint(0,len(C[c])-1)
         return (c,n)
-    texto = ["Player "+str(i) for i in range(1,9)]
+    #texto = ["プレーヤー"+str(i) for i in range(1,9)]
+    texto = ["お"*i for i in range(1,9)]
     personajes = [randchar() for i in range(8)]
     twitter = ["player"+str(i) for i in range(1,9)]
     pockets = [[randchar(), randchar()] for i in range(8)]
