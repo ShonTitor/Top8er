@@ -56,42 +56,42 @@ def makeform(chars=None, numerito=None, numerito_extra=None, echars=None, hasext
 
     class NoExtraForm(AncestorForm) :    
         name1 = forms.CharField(label='Player Name', max_length=23)
-        twitter1 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
+        twitter1 = forms.CharField(label='Twitter Handle', max_length=16, required=False)
         char1 = forms.ChoiceField(label='Main Character', choices=chars)
         color1 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
 
         name2 = forms.CharField(label='Player Name', max_length=23)
-        twitter2 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
+        twitter2 = forms.CharField(label='Twitter Handle', max_length=16, required=False)
         char2 = forms.ChoiceField(label='Main Character', choices=chars)
         color2 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
 
         name3 = forms.CharField(label='Player Name', max_length=23)
-        twitter3 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
+        twitter3 = forms.CharField(label='Twitter Handle', max_length=16, required=False)
         char3 = forms.ChoiceField(label='Main Character', choices=chars)
         color3 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
 
         name4 = forms.CharField(label='Player Name', max_length=23)
-        twitter4 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
+        twitter4 = forms.CharField(label='Twitter Handle', max_length=16, required=False)
         char4 = forms.ChoiceField(label='Main Character', choices=chars)
         color4 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
 
         name5 = forms.CharField(label='Player Name', max_length=23)
-        twitter5 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
+        twitter5 = forms.CharField(label='Twitter Handle', max_length=16, required=False)
         char5 = forms.ChoiceField(label='Main Character', choices=chars)
         color5 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
 
         name6 = forms.CharField(label='Player Name', max_length=23)
-        twitter6 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
+        twitter6 = forms.CharField(label='Twitter Handle', max_length=16, required=False)
         char6 = forms.ChoiceField(label='Main Character', choices=chars)
         color6 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
 
         name7 = forms.CharField(label='Player Name', max_length=23)
-        twitter7 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
+        twitter7 = forms.CharField(label='Twitter Handle', max_length=16, required=False)
         char7 = forms.ChoiceField(label='Main Character', choices=chars)
         color7 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
 
         name8 = forms.CharField(label='Player Name', max_length=23)
-        twitter8 = forms.CharField(label='Twitter Handle', max_length=15, required=False)
+        twitter8 = forms.CharField(label='Twitter Handle', max_length=16, required=False)
         char8 = forms.ChoiceField(label='Main Character', choices=chars)
         color8 = forms.ChoiceField(label='Main Character Color', choices=numeritos)
 
