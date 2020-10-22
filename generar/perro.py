@@ -27,6 +27,7 @@ def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top"
     x,y = text_size(text, fuente)
     #while x > c1 or y > c2 :
     #intentos = 1
+    lold, hiold = lo, hi
     while lo+1 < hi :
         #intentos += 1
         #guess -= 1
@@ -34,6 +35,9 @@ def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top"
             hi = guess
         else :
             lo = guess
+        if (lold, hiold) == (lo, hi) :
+            guess = lo
+            break
         guess = (lo+hi)//2
         fuente = ImageFont.truetype(fontdir, guess)
         x,y = text_size(text, fuente)
