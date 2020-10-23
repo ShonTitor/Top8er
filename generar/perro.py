@@ -1,4 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
+from fontTools.ttLib import TTFont
+from fontTools.unicode import Unicode
 import os
 
 def draw_text(img, draw, pos, texto, font=None, fill=None,
@@ -9,22 +11,38 @@ def draw_text(img, draw, pos, texto, font=None, fill=None,
         draw.text((pos[0]+offset, pos[1]+offset), texto, font=font, fill=(0,0,0))
     draw.text(pos, texto, font=font, fill=fill)
 
-def text_size(text, font):
-    ascent, descent = font.getmetrics()
+def has_glyph(font, glyph):
+    for table in font['cmap'].tables:
+        if ord(glyph) in table.cmap.keys():
+            return True
+    return False
 
-    width = font.getmask(text).getbbox()[2]
-    height = font.getmask(text).getbbox()[3] + descent
+def best_font(text) :
+    f1 = os.path.join('fonts','DFGothic-SU-WING-RKSJ-H-03.ttf')
+    f2 = os.path.join('fonts','sansthirteenblack.ttf')
+    font1 = TTFont(f1)
+    font2 = TTFont(f2)
+    count1 = 0
+    count2 = 0
+    for c in list(text) :
+        if not has_glyph(font1, c) :
+            count1 += 1
+        if not has_glyph(font2, c) :
+            count2 += 1
+    if count2 < count1 : return f2
+    else : return f1
+    
 
-    return (width, height)
-
-def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top"):
+def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top",
+             shadow=True):
+    #fontdir = best_font(text)
     x1,y1,x2,y2 = box
     c1,c2 = (x2-x1, y2-y1)
     lo = 1
     hi = guess
     guess = (lo+hi)//2
     fuente = ImageFont.truetype(fontdir, guess)
-    x,y = text_size(text, fuente)
+    x,y = draw.textsize(text, font=fuente) #text_size(text, fuente)
     #while x > c1 or y > c2 :
     #intentos = 1
     lold, hiold = lo, hi
@@ -40,13 +58,18 @@ def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top"
             break
         guess = (lo+hi)//2
         fuente = ImageFont.truetype(fontdir, guess)
-        x,y = text_size(text, fuente)
+        x,y = draw.textsize(text, font=fuente) #text_size(text, fuente)
     #print("intentos:", intentos)
     posx, posy = x1,y1
+    
     if align == "center" :
         posx += (c1-x)//2
     if alignv == "bottom" :
-        posy += c2 -y
+        posy += c2-y
+    elif alignv == "middle" :
+        posy += (c2-y)//2
+
+        
     draw_text(img, draw, (posx, posy), text, font=fuente)
 
 def generate_banner(datos, prmode=False, blacksquares=True,
@@ -57,10 +80,14 @@ def generate_banner(datos, prmode=False, blacksquares=True,
     game = datos["game"]
     players = datos["players"]
 
+
     path = os.path.realpath(__file__)
     path= os.path.abspath(os.path.join(path, os.pardir))
     template = os.path.join(path, "template")
-    fonttc = os.path.join(path, font)
+    if font :
+        fonttc = os.path.join(path, 'fonts', font)
+    else :
+        fonttc = os.path.join(path, 'fonts', "font.ttc")
 
     # Constantes
     portraits = os.path.join(path, "assets", game, "portraits")
@@ -206,16 +233,32 @@ def generate_banner(datos, prmode=False, blacksquares=True,
             tmarg = (6*SIZETWI[i][1])//SIZETWI[0][1]
             lmarg = (SIZETWI[i][0]-0.5*sizef*lon+pajarito.size[0])//2
 
+            """
+            xmarg = pajarito.size[0]*1.2
+            tmarg = (SIZETWI[i][1])/SIZETWI[0][1]
+            bmarg = (SIZETWI[i][1])/SIZETWI[0][1]
+
+            cajita_twitter = (POSTWI[i][0]+xmarg, POSTWI[i][1]+tmarg,
+                              POSTWI[i][0]+SIZETWI[i][0]-xmarg, POSTWI[i][1]+SIZETWI[i][1]-bmarg)
+
+            fit_text(c, draw, cajita_twitter, players[i]["twitter"], fonttc, guess=54,
+                     align="center", alignv="middle")
+            """
+
             font = ImageFont.truetype(fonttc, sizef)
             draw_text(c, draw, (POSTWI[i][0]+lmarg, POSTWI[i][1]+tmarg),
                       players[i]["twitter"], font=font, fill=fontcolor, shadow=True)
-        sizefont = int(size[0]*0.26)
+
         texto = players[i]["tag"].replace(". ", ".").replace(" | ", "|")
+        """
+        sizefont = int(size[0]*0.26)
         if len(texto) > 7 :
             sizefont = int(sizefont*7/len(texto))
         font = ImageFont.truetype(fonttc, sizefont)
+        """
 
-        cajita_nombre = (POS[i][0]+5, POS[i][1], POS[i][0]+size[1]-5, POS[i][1]+size[0]-2)
+        cajita_nombre = (POS[i][0]+12, POS[i][1],
+                         POS[i][0]+size[0]-12, POS[i][1]+size[1]*0.98)
         
         fit_text(c, draw, cajita_nombre, texto, fonttc, guess=int(size[0]*0.26),
                  align="center", alignv="bottom")
@@ -256,29 +299,14 @@ if __name__ == "__main__":
     customcolor = (255, 201, 14)
     fontcolor = (255,255,255)
     shadow = True
-
-    """
-    texto = ["Morrocoyo", "Morrocoyoo","Morrocoyooo", "Morrocoyoooo",
-             "Morrocoyooooo", "Morrocoyoooooo", "Morrocoyooooooo",
-             "Morrocoyoooooooo"]
-    texto = ["$Scruzz" for i in range(8)]
-    texto = ["Morrocoyo", "Garu", "Vexx", "Kellios",
-             "CarvaGrease", "Luigic7", "Lalter", "CartezSoul"]
-    texto = ["$Cruz", "SexCruz", "XXXCruz", "Scruz",
-             "CCruz", "ZCruz", "KCruz", "QKCruz"]
-    personajes = [("Banjo & Kazooie", 0),
-                  ("Incineroar", 2),
-                  ("Terry", 1),
-                  ("Piranha Plant", 0),
-                  ("Dark Samus", 2),
-                  ("Dr Mario", 4),
-                  ("Captain Falcon", 4),
-                  ("Yoshi", 1)]
-    """
+    fuente = None
+    ics = None
 
     """
     texto = ["morrocoYo", "GARU", "Pancakes", "VeXx",
              "BTO", "Vunioq", "Nandok", "Kellios"]
+    texto = ["morrocoÑo", "GARÜ", "Pおncakes", "VeXx",
+             "BTØ", "Vünioq", "Ñandok", "Kellios"]
     personajes = [("Robin", 0),
                   ("Joker", 0),
                   ("Inkling", 5),
@@ -289,6 +317,7 @@ if __name__ == "__main__":
                   ("Terry", 0)]
     twitter = ["@DanielRimeris", "@GARU_Sw", "@movpancakes", "@RisingVexx",
                "@HoyerBTO", "@Vunioq", "@Nandok_95", "@CarlosDQC"]
+    #twitter = ["A"*15 for i in range(8)]
     pockets = [[("Bowser", 5)], [("Falco", 5), ("Fox", 3)], [("Mega Man", 1)], [("Marth", 2)],
                [], [], [], []]
     players = [{"tag" : texto[i],
@@ -306,6 +335,8 @@ if __name__ == "__main__":
     cc1 = None
     cc2 = None
     ics = None
+    #fuente = "sansthirteenblack.ttf"
+    #fuente = "sansblack.ttf"
     """
     
 
@@ -401,6 +432,8 @@ if __name__ == "__main__":
              }
     cc1 = (56,75,203)
     cc2 = (64, 235, 143)
+    ics = (80,50)
+    fuente = "sansthirteenblack.ttf"
     """
 
     """
@@ -452,8 +485,8 @@ if __name__ == "__main__":
         c = random.choice(list(C.keys()))
         n = random.randint(0,len(C[c])-1)
         return (c,n)
-    #texto = ["プレーヤー"+str(i) for i in range(1,9)]
-    texto = ["お"*i for i in range(1,9)]
+    texto = ["プレーヤー"+str(i) for i in range(1,9)]
+    #texto = ["お"*i for i in range(1,9)]
     personajes = [randchar() for i in range(8)]
     twitter = ["player"+str(i) for i in range(1,9)]
     pockets = [[randchar(), randchar()] for i in range(8)]
@@ -513,7 +546,7 @@ if __name__ == "__main__":
     t1 = time.time()
     #img = generate_banner(datos, customcolor="#00bbfa", customcolor2="#001736")# customcolor="#287346", customcolor2="#ede07c")
     img = generate_banner(datos, icon_sizes=ics, shadow=True, prmode=False, blacksquares=True,
-                          customcolor=cc1, customcolor2=cc2)
+                          customcolor=cc1, customcolor2=cc2, font=fuente)
     t2 = time.time()
     print(t2-t1)
     img.show()
