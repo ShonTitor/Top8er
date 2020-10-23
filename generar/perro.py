@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
-from fontTools.ttLib import TTFont
-from fontTools.unicode import Unicode
+#from fontTools.ttLib import TTFont
+#from fontTools.unicode import Unicode
 import os
 
 def draw_text(img, draw, pos, texto, font=None, fill=None,
@@ -17,6 +17,7 @@ def has_glyph(font, glyph):
             return True
     return False
 
+"""
 def best_font(text) :
     f1 = os.path.join('fonts','DFGothic-SU-WING-RKSJ-H-03.ttf')
     f2 = os.path.join('fonts','sansthirteenblack.ttf')
@@ -31,6 +32,7 @@ def best_font(text) :
             count2 += 1
     if count2 < count1 : return f2
     else : return f1
+"""
     
 
 def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top",
