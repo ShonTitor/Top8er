@@ -100,7 +100,7 @@ def generate_banner(datos, prmode=False, blacksquares=True,
         yog_sothoth = datos["toptext"]+datos["bottomtext"]+datos["url"]
         for player in datos['players'] :
             yog_sothoth += player['tag']
-        f1 = os.path.join(path, 'fonts','DFGothic-SU-WING-RKSJ-H-03.ttf')
+        f1 = os.path.join(path, 'fonts','DFGothic-SU-WIN-RKSJ-H-01.ttf')
         f2 = os.path.join(path, 'fonts','sansthirteenblack.ttf')
         fonttc = best_font(yog_sothoth, f1, f2)
 
