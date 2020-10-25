@@ -17,9 +17,7 @@ def has_glyph(font, glyph):
             return True
     return False
 
-def best_font(text) :
-    f1 = os.path.join('fonts','DFGothic-SU-WING-RKSJ-H-03.ttf')
-    f2 = os.path.join('fonts','sansthirteenblack.ttf')
+def best_font(text, f1, f2) :
     font1 = TTFont(f1)
     font2 = TTFont(f2)
     count1 = 0
@@ -31,25 +29,19 @@ def best_font(text) :
             count2 += 1
     if count2 < count1 : return f2
     else : return f1
-    
 
-def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top",
-             shadow=True):
-    #fontdir = best_font(text)
-    x1,y1,x2,y2 = box
-    c1,c2 = (x2-x1, y2-y1)
+def fitting_font(draw, width, height, text, fontdir, guess) :
     lo = 1
     hi = guess
     guess = (lo+hi)//2
     fuente = ImageFont.truetype(fontdir, guess)
-    x,y = draw.textsize(text, font=fuente) #text_size(text, fuente)
-    #while x > c1 or y > c2 :
+    x,y = draw.textsize(text, font=fuente)
     #intentos = 1
     lold, hiold = lo, hi
     while lo+1 < hi :
         #intentos += 1
         #guess -= 1
-        if x > c1 or y > c2 :
+        if x > width or y > height :
             hi = guess
         else :
             lo = guess
@@ -60,34 +52,57 @@ def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top"
         fuente = ImageFont.truetype(fontdir, guess)
         x,y = draw.textsize(text, font=fuente) #text_size(text, fuente)
     #print("intentos:", intentos)
+    return fuente
+
+        
+def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top",
+             shadow=True, forcedfont=None):
+    #fontdir = best_font(text)
+    x1,y1,x2,y2 = box
+    width,height = (x2-x1, y2-y1)
+
+    if forcedfont is None :
+        fuente = fitting_font(draw, width, height, text, fontdir, guess)
+    else :
+        fuente = forcedfont
+        
+    x,y = draw.textsize(text, font=fuente)
+
     posx, posy = x1,y1
     
     if align == "center" :
-        posx += (c1-x)//2
-    if alignv == "bottom" :
-        posy += c2-y
-    elif alignv == "middle" :
-        posy += (c2-y)//2
-
+        posx += (width-x)//2
+    elif align == "right" :
+        posx += width-x
         
-    draw_text(img, draw, (posx, posy), text, font=fuente)
+    if alignv == "bottom" :
+        posy += height-y
+    elif alignv == "middle" :
+        posy += (height-y)//2
+
+    draw_text(img, draw, (posx, posy), text, font=fuente, shadow=True)
 
 def generate_banner(datos, prmode=False, blacksquares=True,
                     custombg=None, darkenbg=True,
                     customcolor=None, customcolor2=None,
-                    font="font.ttc", fontcolor=(255,255,255), shadow=True,
+                    font=None, fontcolor=(255,255,255), shadow=True,
                     icon_sizes=None) :
     game = datos["game"]
     players = datos["players"]
 
 
     path = os.path.realpath(__file__)
-    path= os.path.abspath(os.path.join(path, os.pardir))
+    path = os.path.abspath(os.path.join(path, os.pardir))
     template = os.path.join(path, "template")
     if font :
         fonttc = os.path.join(path, 'fonts', font)
     else :
-        fonttc = os.path.join(path, 'fonts', "font.ttc")
+        yog_sothoth = datos["toptext"]+datos["bottomtext"]+datos["url"]
+        for player in datos['players'] :
+            yog_sothoth += player['tag']
+        f1 = os.path.join(path, 'fonts','DFGothic-SU-WING-RKSJ-H-03.ttf')
+        f2 = os.path.join(path, 'fonts','sansthirteenblack.ttf')
+        fonttc = best_font(yog_sothoth, f1, f2)
 
     # Constantes
     portraits = os.path.join(path, "assets", game, "portraits")
@@ -194,13 +209,23 @@ def generate_banner(datos, prmode=False, blacksquares=True,
 
     # Textos de arriba y abajo
     fuente = ImageFont.truetype(fonttc, 30)
-    draw_text(c, draw, POSTXT[0], datos["toptext"], font=fuente, fill=fontcolor, shadow=True)
-    draw_text(c, draw, POSTXT[1], datos["bottomtext"], font=fuente, fill=fontcolor, shadow=False)
+    #draw_text(c, draw, POSTXT[0], datos["toptext"], font=fuente, fill=fontcolor, shadow=True)
+    #draw_text(c, draw, POSTXT[1], datos["bottomtext"], font=fuente, fill=fontcolor, shadow=False)
+
+    fit_text(c, draw, (53, 45, 803, 80), datos["toptext"], fonttc,
+             align="left", alignv="middle")
+    fit_text(c, draw, (53, 730, 997, 765), datos["bottomtext"], fonttc,
+             align="left", alignv="middle")
 
     fuente = ImageFont.truetype(fonttc, 25)
     urlmarg = (40-len(datos["url"]))*6
-    draw_text(c, draw, (POSTXT[2][0]+urlmarg,POSTXT[2][1]), datos["url"], font=fuente, fill=fontcolor, shadow=False)
-    draw_text(c, draw, POSTXT[3], "Design by:  @Elenriqu3\nGenerator by: @Riokaru", font=fuente, fill=fontcolor, shadow=True)
+    #draw_text(c, draw, (POSTXT[2][0]+urlmarg,POSTXT[2][1]), datos["url"], font=fuente, fill=fontcolor, shadow=False)
+    #draw_text(c, draw, POSTXT[3], "Design by:  @Elenriqu3\nGenerator by: @Riokaru", font=fuente, fill=fontcolor, shadow=True)
+
+    fit_text(c, draw, (1075, 726, 1361, 778), "Design by:  @Elenriqu3\nGenerator by: @Riokaru", fonttc,
+             align="right", alignv="middle")
+    fit_text(c, draw, (876, 45, 1367, 80), datos["url"], fonttc,
+             align="right", alignv="middle")
 
     # Ciclo de nombres
     pajarito = Image.open(os.path.join(template,"pajarito.png"))
@@ -228,26 +253,30 @@ def generate_banner(datos, prmode=False, blacksquares=True,
                     (int(POSTWI[i][0]+SIZETWI[i][0]*0.02), POSTWI[i][1]),
                     mask=pajarito)
 
-            lon = len(players[i]["twitter"])
-            sizef = (27*SIZETWI[i][1])//SIZETWI[0][1]
-            tmarg = (6*SIZETWI[i][1])//SIZETWI[0][1]
-            lmarg = (SIZETWI[i][0]-0.5*sizef*lon+pajarito.size[0])//2
+            #lon = len(players[i]["twitter"])
+            #sizef = (27*SIZETWI[i][1])//SIZETWI[0][1]
+            #tmarg = (6*SIZETWI[i][1])//SIZETWI[0][1]
+            #lmarg = (SIZETWI[i][0]-0.5*sizef*lon+pajarito.size[0])//2
 
-            """
+            #"""
             xmarg = pajarito.size[0]*1.2
-            tmarg = (SIZETWI[i][1])/SIZETWI[0][1]
-            bmarg = (SIZETWI[i][1])/SIZETWI[0][1]
+            tmarg = 0.1*SIZETWI[i][1]
+            bmarg = 0.1*SIZETWI[i][1]
 
             cajita_twitter = (POSTWI[i][0]+xmarg, POSTWI[i][1]+tmarg,
                               POSTWI[i][0]+SIZETWI[i][0]-xmarg, POSTWI[i][1]+SIZETWI[i][1]-bmarg)
 
-            fit_text(c, draw, cajita_twitter, players[i]["twitter"], fonttc, guess=54,
-                     align="center", alignv="middle")
-            """
+            width = cajita_twitter[2]-cajita_twitter[0]
+            height = cajita_twitter[3]-cajita_twitter[1]
+            ffont = fitting_font(draw, width, height, "A!"*8, fonttc, guess=54)
 
-            font = ImageFont.truetype(fonttc, sizef)
-            draw_text(c, draw, (POSTWI[i][0]+lmarg, POSTWI[i][1]+tmarg),
-                      players[i]["twitter"], font=font, fill=fontcolor, shadow=True)
+            fit_text(c, draw, cajita_twitter, players[i]["twitter"], fonttc, guess=54,
+                     align="center", alignv="middle", forcedfont=ffont, shadow=False)
+            #"""
+
+            #font = ImageFont.truetype(fonttc, sizef)
+            #draw_text(c, draw, (POSTWI[i][0]+lmarg, POSTWI[i][1]+tmarg),
+            #          players[i]["twitter"], font=font, fill=fontcolor, shadow=True)
 
         texto = players[i]["tag"].replace(". ", ".").replace(" | ", "|")
         """
@@ -302,11 +331,10 @@ if __name__ == "__main__":
     fuente = None
     ics = None
 
-    """
+    #"""
     texto = ["morrocoYo", "GARU", "Pancakes", "VeXx",
              "BTO", "Vunioq", "Nandok", "Kellios"]
-    texto = ["morrocoÑo", "GARÜ", "Pおncakes", "VeXx",
-             "BTØ", "Vünioq", "Ñandok", "Kellios"]
+    #texto = ["morrocoYó", "GARÜ", "Páncakes", "VëXx", "BTØ", "VüniØq", "Ñandok", "KëlliØs"]
     personajes = [("Robin", 0),
                   ("Joker", 0),
                   ("Inkling", 5),
@@ -317,6 +345,7 @@ if __name__ == "__main__":
                   ("Terry", 0)]
     twitter = ["@DanielRimeris", "@GARU_Sw", "@movpancakes", "@RisingVexx",
                "@HoyerBTO", "@Vunioq", "@Nandok_95", "@CarlosDQC"]
+    #twitter = ["@DanielRimeris69"]*8
     #twitter = ["A"*15 for i in range(8)]
     pockets = [[("Bowser", 5)], [("Falco", 5), ("Fox", 3)], [("Mega Man", 1)], [("Marth", 2)],
                [], [], [], []]
@@ -327,17 +356,25 @@ if __name__ == "__main__":
 
     datos = {"players" : players,
              "toptext" : "Show Me your Moves - Ultimate Singles - Top 8",
+             #"toptext" : "あ"*40,
              "bottomtext" : "22 de Febrero de 2020 - Caracas, Venezuela - 89 participantes",
+             #"bottomtext" : "あ"*50,
              "url" : "facebook.com/groups/smashvenezuela",
+             #"url" : "あ"*40,
              "game" : "ssbu"
              }
 
     cc1 = None
     cc2 = None
     ics = None
-    #fuente = "sansthirteenblack.ttf"
     #fuente = "sansblack.ttf"
-    """
+    #fuente = "sansthirteenblack.ttf"
+    #fuente = "DFGothic-SU-WIN-RKSJ-H-01.ttf"
+    #fuente = "DFGothic-SU-WINP-RKSJ-H-02.ttf"
+    #fuente = "DFGothic-SU-WING-RKSJ-H-03.ttf"
+    #fuente = "BlackHoleBB.ttf"
+    #fuente = "ComicSansMSRegular.ttf"
+    #"""
     
 
     """
@@ -478,7 +515,7 @@ if __name__ == "__main__":
     cc2 = (203, 198, 186)
     """
 
-    #"""
+    """
     import random
     C = {'Bowser': ['Default', 'Red', 'Blue', 'Black'], 'Captain Falcon': ['Default', 'Black', 'Red', 'White', 'Green', 'Blue'], 'Donkey Kong': ['Default', 'Black', 'Red', 'Blue', 'Green'], 'Dr Mario': ['Default', 'Red', 'Blue', 'Green', 'Black'], 'Falco': ['Default', 'Red', 'Blue', 'Green'], 'Fox': ['Default', 'Red', 'Blue', 'Green'], 'Ganondorf': ['Default', 'Red', 'Blue', 'Green', 'Purple'], 'Ice Climbers': ['Default', 'Green', 'Orange', 'Red'], 'Jigglypuff': ['Default', 'Red', 'Blue', 'Green', 'Yellow'], 'Kirby': ['Default', 'Yellow', 'Blue', 'Red', 'Green', 'White'], 'Link': ['Default', 'Red', 'Blue', 'Black', 'White'], 'Luigi': ['Default', 'White', 'Blue', 'Pink'], 'Mario': ['Default', 'Yellow', 'Black', 'Blue', 'Green'], 'Marth': ['Default', 'Red', 'Green', 'Black', 'White'], 'Mewtwo': ['Default', 'Red', 'Blue', 'Green'], 'Mr Game & Watch': ['Default', 'Red', 'Blue', 'Green'], 'Ness': ['Default', 'Yellow', 'Blue', 'Green'], 'Peach': ['Default', 'Yellow', 'White', 'Blue', 'Green'], 'Pichu': ['Default', 'Red', 'Blue', 'Green'], 'Pikachu': ['Default', 'Red', 'Blue', 'Green'], 'Roy': ['Default', 'Red', 'Blue', 'Green', 'Yellow'], 'Samus': ['Default', 'Pink', 'Black', 'Green', 'Purple'], 'Sheik': ['Default', 'Red', 'Blue', 'Green', 'White'], 'Yoshi': ['Default', 'Red', 'Blue', 'Yellow', 'Pink', 'Cyan'], 'Young Link': ['Default', 'Red', 'Blue', 'White', 'Black'], 'Zelda': ['Default', 'Red', 'Blue', 'Green', 'White']}
     def randchar() :
@@ -504,7 +541,7 @@ if __name__ == "__main__":
     cc1 = None
     cc2 = None
     ics = (48, 24)
-    #"""
+    """
 
     """
     import random
