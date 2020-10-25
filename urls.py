@@ -8,5 +8,6 @@ urlpatterns = [
     path('skullgirls', views.sg, name='skullgirls'),
     path('RushdownRevolt', views.rr, name='RushdownRevolt'),
     path('melee', views.melee, name='melee'),
-    path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain"))
+    path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
+    path('google6f9c6e66eb07f5ce.html', TemplateView.as_view(template_name="google6f9c6e66eb07f5ce.html"))
 ]
