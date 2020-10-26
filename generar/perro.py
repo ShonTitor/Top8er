@@ -206,7 +206,7 @@ def generate_banner(datos, prmode=False, blacksquares=True,
         a = Image.open(os.path.join(template,"numerospr.png"))
     else :
         a = Image.open(os.path.join(template,"numeros.png"))
-    if fontcolor1 != (255, 255, 255) :
+    if fontcolor1 != (255, 255, 255) and fontcolor1 != "#ffffff" :
         aa = Image.new('RGBA', SIZE, fontcolor1)
         c.paste(aa, (0,0), mask=a)
     else :
