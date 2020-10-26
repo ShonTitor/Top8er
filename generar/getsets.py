@@ -203,6 +203,8 @@ def challonge_data(slug) :
         datos = datos["tournament"]
     else :
         return False
+
+    
     players = [p["participant"] for p in datos["participants"]]
     npart = len(players)
     players = [(p["final_rank"], p["seed"], p["name"])
@@ -215,7 +217,11 @@ def challonge_data(slug) :
                "secondaries" : []
                } for p in players]
     ttext = datos["name"] + " - Top 8"
-    btext = " - ".join([datos["completed_at"][:10].replace('-','/'), str(npart)+" participants"])
+
+    if "complete_at" in datos :
+        btext = " - ".join([datos["completed_at"][:10].replace('-','/'), str(npart)+" participants"])
+    else :
+        btext = str(npart)+" participants"
     url = datos['full_challonge_url']
     
     datos = {
