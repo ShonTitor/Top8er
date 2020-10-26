@@ -11,6 +11,14 @@ class AncestorForm(forms.Form) :
     blacksquares = forms.BooleanField(label="Black Background for characters", widget=forms.CheckboxInput, initial=True, required=False)
     prmode = forms.BooleanField(label="PR Mode", widget=forms.CheckboxInput, initial=False, required=False)
     charshadow = forms.BooleanField(label="Character Shadow", widget=forms.CheckboxInput, initial=True, required=False)
+    fonts = [("auto", "Auto"),
+             ("DFGothic-SU-WIN-RKSJ-H-01.ttf", "SSBU font (japanese characters)"),
+             ("sansthirteenblack.ttf", "SansThirteenBlack (european characters)")]
+    fontt = forms.ChoiceField(label='Font Type', choices=fonts)
+    fcolor1  = RGBColorField(label="Font Color", initial="#ffffff")
+    fscolor1 = RGBColorField(label="Font Shadow Color", initial="#000000")
+    fcolor2  = RGBColorField(label="Font Color", initial="#ffffff")
+    fscolor2 = RGBColorField(label="Font Shadow Color", initial="#000000")
 
 class SmashggForm(forms.Form) :
     event = forms.RegexField(label="External link",

@@ -138,6 +138,20 @@
 			display: none;
 		 }
 
+		 .layopt, .fontopt { display : none; }
+
+		 .moreopt {
+		 	background-color: darkred;
+			border: 0;
+			color: white;
+			border-radius: 5px;
+			padding: 5px;
+			cursor: pointer;
+			width: 100%;
+			margin-top: 5px;
+			margin-bottom: 5px;
+		 }
+
     </style>
 
     <script type="text/javascript">
@@ -240,6 +254,28 @@
 				$(".tab1").hide();
 				$(".tab2").hide();
 				$(".tab3").show();
+			});
+
+			$(".togglelayopt").click(function() {
+				if ($(".layopt").is(":hidden")) {
+					$(".layopt").css('display', 'flex');
+					$(this).html("- Layout Options");
+				}
+				else {
+					$(".layopt").hide();
+					$(this).html("+ Layout Options");
+				}
+			});
+
+			$(".togglefontopt").click(function() {
+				if ($(".fontopt").is(":hidden")) {
+					$(".fontopt").css('display', 'flex');
+					$(this).html("- Font Options");
+				}
+				else {
+					$(".fontopt").hide();
+					$(this).html("+ Font Options");
+				}
 			});
 
 		});
@@ -573,47 +609,114 @@
                 {{ form.url }}
         </div>
 
-        <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                {{ form.lcolor1.label_tag }}
-                {{ form.locolor1.errors }}
-                {{ form.lcolor1 }}
-        </div>
+        <!-- Layout Options -->
 
-        <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                {{ form.lcolor2.label_tag }}
-                {{ form.locolor2.errors }}
-                {{ form.lcolor2 }}
-        </div>
+        <span class="moreopt togglelayopt col-md-12">+ Layout Options</span>
 
-        <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                {{ form.background.label_tag }}
-                {{ form.background.errors }}
-                {{ form.background }}
-                <span style="font-size: 10px">Darken background for better readability</span>
-                {{ form.darken_bg.errors }}
-                {{ form.darken_bg }}
-        </div>
+        <div class="row col-md-12">
 
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                {{ form.blacksquares.label_tag }}
-                {{ form.blacksquares.errors }}
-                {{ form.blacksquares }}<br>
-                <span style="font-size: 10px">Add a solid black background to each character's portrait</span>
-        </div>
+        <div class="layopt col-xs-12 col-sm-12 col-md-12 col-lg-12 row">
 
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                {{ form.charshadow.label_tag }}
-                {{ form.charshadow.errors }}
-                {{ form.charshadow }}<br>
-                <span style="font-size: 10px">Add a shadow of the main layout color to each character's portrait</span>
-        </div>
+	        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+	                {{ form.lcolor1.label_tag }}
+	                {{ form.locolor1.errors }}<br>
+	                {{ form.lcolor1 }}
+	        </div>
 
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                {{ form.prmode.label_tag }}
-                {{ form.prmode.errors }}
-                {{ form.prmode }}<br>
-                <span style="font-size: 10px">Makes numbers go from 1 to 8 without repetition for PR graphics</span>
-        </div>
+	        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+	                {{ form.lcolor2.label_tag }}
+	                {{ form.locolor2.errors }}<br>
+	                {{ form.lcolor2 }}
+	        </div>
+
+
+	        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+	                {{ form.background.label_tag }}
+	                {{ form.background.errors }}
+	                {{ form.background }}<br>
+	                {{ form.darken_bg.errors }}
+	                {{ form.darken_bg }}
+	                <span style="font-size: 10px">Darken background for better readability</span>
+	        </div>
+
+	        <!-- Checkboxes -->
+
+		        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+		        		<br>
+		                {{ form.blacksquares.label_tag }}
+		                {{ form.blacksquares.errors }}
+		                {{ form.blacksquares }}<br>
+		                <span style="font-size: 10px">Add a solid black background to each character's portrait</span><br>
+		        </div>
+
+		        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+		        		<br>
+		                {{ form.charshadow.label_tag }}
+		                {{ form.charshadow.errors }}
+		                {{ form.charshadow }}<br>
+		                <span style="font-size: 10px">Add a shadow of the main layout color to each character's portrait</span><br>
+		        </div>
+
+		        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+		        		<br>
+		                {{ form.prmode.label_tag }}
+		                {{ form.prmode.errors }}
+		                {{ form.prmode }}<br>
+		                <span style="font-size: 10px">Makes numbers go from 1 to 8 without repetition for PR graphics</span><br>
+		        </div>
+
+		    </div>
+
+	    </div>
+
+        <!-- Font options -->
+
+        <span class="moreopt togglefontopt col-md-12">+ Font Options</span>
+
+        <div class="fontopt col-xs-12 col-sm-12 col-md-12 col-lg-12 row">
+
+	        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+	                {{ form.fontt.label_tag }}
+	                {{ form.fontt.errors }}
+	                {{ form.fontt }}<br>
+	        </div>
+
+
+	        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 row">
+
+	        <h4 class="col-md-12">Player Text Colors</h4>
+	        <div class="col-md-12" style="font-size: 10px">Affects player names, twitter handles and position numbers</div>
+
+	        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+	                {{ form.fcolor1.label_tag }}
+	                {{ form.fcolor1.errors }}
+	                {{ form.fcolor1 }}<br>
+	        </div>
+
+	        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+	                {{ form.fscolor1.label_tag }}
+	                {{ form.fscolor1.errors }}
+	                {{ form.fscolor1 }}<br>
+        	</div>
+
+        	<h4 class="col-md-12">Extra Text Colors</h4>
+        	<div class="col-md-12" style="font-size: 10px">Affects text in the corners</div>
+
+	        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+	                {{ form.fcolor2.label_tag }}
+	                {{ form.fcolor2.errors }}
+	                {{ form.fcolor2 }}<br>
+	        </div>
+
+	        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+	                {{ form.fscolor2.label_tag }}
+	                {{ form.fscolor2.errors }}
+	                {{ form.fscolor2 }}<br>
+        	</div>
+
+        	</div>
+
+    	</div>
 
         <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-left: 5%; padding-right: 5%
 		                                                 padding-top: 10px;
@@ -637,13 +740,13 @@
 		<h2>Other Games</h2>
 
 		<h3>Platform Fighters</h3>
-		<a href="https://www.top8er.com/"><img src="https://i.imgur.com/Wrah6Pl.png"></a>
-		<a href="https://www.top8er.com/melee"><img src="https://i.imgur.com/HoHdXyg.png" style="width: 225px; height: auto;"></a>
-		<a href="https://www.top8er.com/rivals"><img src="https://i.imgur.com/Ct5bPHG.png"></a>
-		<a href="https://www.top8er.com/RushdownRevolt"><img src="https://i.imgur.com/V3IYMCo.png"></a>
+		<a href="https://www.top8er.com/"><img src="https://i.imgur.com/Wrah6Pl.png" alt="Super Smash Bros Ultimate"></a>
+		<a href="https://www.top8er.com/melee"><img src="https://i.imgur.com/HoHdXyg.png" style="width: 225px; height: auto;" alt="Super Smash Bros Melee"></a>
+		<a href="https://www.top8er.com/rivals"><img src="https://i.imgur.com/Ct5bPHG.png" alt="Rivals of Aether"></a>
+		<a href="https://www.top8er.com/RushdownRevolt"><img src="https://i.imgur.com/V3IYMCo.png" alt="Rushdown Revolt"></a>
 
 		<h3>2D Fighters</h3>
-		<a href="https://www.top8er.com/skullgirls"><img src="https://i.imgur.com/KOdBCXI.png"></a>
+		<a href="https://www.top8er.com/skullgirls"><img src="https://i.imgur.com/KOdBCXI.png" alt="Skullgirls"></a>
 	</div>
 
 	<div class="tab2">
@@ -689,7 +792,7 @@
 		<h4>Graphic Assets</h4>
 		<ul>
 			<li><a href="https://twitter.com/Elenriqu3">EDM</a> for the layout design as well as guiding me to make adjustments</li>
-			<li>Nintendo and Sora Ltd. for the Super Smash Ultimate font used here</li>
+			<li>Nintendo and Sora Ltd. for the Super Smash Bros Ultimate font used here</li>
 			<li><a href="https://www.fontzillion.com/foundry/manfred-klein">Manfred Klein</a> for his 'Sans Thirteen Black' font</li>
 			<li><a href='https://twitter.com/playvortexgames'>The Vortex Games team</a> for preparing and sending <a href='https://twitter.com/RushdownRevolt'>Rushdown Revolt's</a> assets ready to use</li>
 			<li>All game assets belong to their respective creators</li>

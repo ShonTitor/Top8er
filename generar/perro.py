@@ -3,12 +3,12 @@ from fontTools.ttLib import TTFont
 from fontTools.unicode import Unicode
 import os
 
-def draw_text(img, draw, pos, texto, font=None, fill=None,
-              halo=True, shadow=True) :
+def draw_text(img, draw, pos, texto, font=None,
+              fill=(255, 255, 255), shadow=(0,0,0)) :
     if shadow :
         #offset = int(font.size*0.06)
         offset = int((font.size**0.5)*0.55)
-        draw.text((pos[0]+offset, pos[1]+offset), texto, font=font, fill=(0,0,0))
+        draw.text((pos[0]+offset, pos[1]+offset), texto, font=font, fill=shadow)
     draw.text(pos, texto, font=font, fill=fill)
 
 def has_glyph(font, glyph):
@@ -56,7 +56,7 @@ def fitting_font(draw, width, height, text, fontdir, guess) :
 
         
 def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top",
-             shadow=True, forcedfont=None):
+             fill=(255, 255, 255), shadow=(0,0,0), forcedfont=None):
     #fontdir = best_font(text)
     x1,y1,x2,y2 = box
     width,height = (x2-x1, y2-y1)
@@ -80,13 +80,15 @@ def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top"
     elif alignv == "middle" :
         posy += (height-y)//2
 
-    draw_text(img, draw, (posx, posy), text, font=fuente, shadow=True)
+    draw_text(img, draw, (posx, posy), text, font=fuente, fill=fill, shadow=shadow)
 
 def generate_banner(datos, prmode=False, blacksquares=True,
                     custombg=None, darkenbg=True,
                     customcolor=None, customcolor2=None,
-                    font=None, fontcolor=(255,255,255), shadow=True,
-                    icon_sizes=None) :
+                    font=None,
+                    fontcolor1=(255,255,255),fontscolor1=(0,0,0),
+                    fontcolor2=(255,255,255),fontscolor2=(0,0,0),
+                    shadow=True, icon_sizes=None) :
     game = datos["game"]
     players = datos["players"]
 
@@ -204,7 +206,11 @@ def generate_banner(datos, prmode=False, blacksquares=True,
         a = Image.open(os.path.join(template,"numerospr.png"))
     else :
         a = Image.open(os.path.join(template,"numeros.png"))
-    c.paste(a, (0,0), mask=a)
+    if fontcolor1 != (255, 255, 255) :
+        aa = Image.new('RGBA', SIZE, fontcolor1)
+        c.paste(aa, (0,0), mask=a)
+    else :
+        c.paste(a, (0,0), mask=a)
     #c = Image.alpha_composite(a,c)
 
     # Textos de arriba y abajo
@@ -213,9 +219,9 @@ def generate_banner(datos, prmode=False, blacksquares=True,
     #draw_text(c, draw, POSTXT[1], datos["bottomtext"], font=fuente, fill=fontcolor, shadow=False)
 
     fit_text(c, draw, (53, 45, 803, 80), datos["toptext"], fonttc,
-             align="left", alignv="middle")
+             align="left", alignv="middle", fill=fontcolor2, shadow=fontscolor2)
     fit_text(c, draw, (53, 730, 997, 765), datos["bottomtext"], fonttc,
-             align="left", alignv="middle")
+             align="left", alignv="middle", fill=fontcolor2, shadow=fontscolor2)
 
     fuente = ImageFont.truetype(fonttc, 25)
     urlmarg = (40-len(datos["url"]))*6
@@ -223,9 +229,9 @@ def generate_banner(datos, prmode=False, blacksquares=True,
     #draw_text(c, draw, POSTXT[3], "Design by:  @Elenriqu3\nGenerator by: @Riokaru", font=fuente, fill=fontcolor, shadow=True)
 
     fit_text(c, draw, (1075, 726, 1361, 778), "Design by:  @Elenriqu3\nGenerator by: @Riokaru", fonttc,
-             align="right", alignv="middle")
+             align="right", alignv="middle", fill=fontcolor2, shadow=fontscolor2)
     fit_text(c, draw, (876, 45, 1367, 80), datos["url"], fonttc,
-             align="right", alignv="middle")
+             align="right", alignv="middle", fill=fontcolor2, shadow=fontscolor2)
 
     # Ciclo de nombres
     pajarito = Image.open(os.path.join(template,"pajarito.png"))
@@ -264,14 +270,15 @@ def generate_banner(datos, prmode=False, blacksquares=True,
             bmarg = 0.1*SIZETWI[i][1]
 
             cajita_twitter = (POSTWI[i][0]+xmarg, POSTWI[i][1]+tmarg,
-                              POSTWI[i][0]+SIZETWI[i][0]-xmarg, POSTWI[i][1]+SIZETWI[i][1]-bmarg)
+                              POSTWI[i][0]+SIZETWI[i][0], POSTWI[i][1]+SIZETWI[i][1]-bmarg)
 
             width = cajita_twitter[2]-cajita_twitter[0]
             height = cajita_twitter[3]-cajita_twitter[1]
             ffont = fitting_font(draw, width, height, "A!"*8, fonttc, guess=54)
 
             fit_text(c, draw, cajita_twitter, players[i]["twitter"], fonttc, guess=54,
-                     align="center", alignv="middle", forcedfont=ffont, shadow=False)
+                     align="center", alignv="middle", forcedfont=ffont,
+                     fill=fontcolor1, shadow=fontscolor1)
             #"""
 
             #font = ImageFont.truetype(fonttc, sizef)
@@ -290,7 +297,8 @@ def generate_banner(datos, prmode=False, blacksquares=True,
                          POS[i][0]+size[0]-12, POS[i][1]+size[1]*0.98)
         
         fit_text(c, draw, cajita_nombre, texto, fonttc, guess=int(size[0]*0.26),
-                 align="center", alignv="bottom")
+                 align="center", alignv="bottom",
+                 fill=fontcolor1, shadow=fontscolor1)
         #draw_text(c, draw, (POS[i][0] + (size[0]-0.5*sizefont*len(texto))//2,
         #           POS[i][1]+int(size[0]*0.995)-sizefont),
         #           texto, font=font, fill=fontcolor)
@@ -324,12 +332,20 @@ def generate_banner(datos, prmode=False, blacksquares=True,
 if __name__ == "__main__":
     # datos y configuración
 
-    custombg = "bgusb.jpg"
-    customcolor = (255, 201, 14)
+    #custombg = "bgusb.jpg"
+    cc1 = None
+    cc2 = None
     fontcolor = (255,255,255)
     shadow = True
     fuente = None
     ics = None
+    fontc = (255, 255, 255)
+    fontsc = (0,0,0)
+    fontc2 = (255, 255, 255)
+    fontsc2 = (0,0,0)
+    bsq = True
+    darken = True
+    cbg = None
 
     #"""
     texto = ["morrocoYo", "GARU", "Pancakes", "VeXx",
@@ -363,17 +379,24 @@ if __name__ == "__main__":
              #"url" : "あ"*40,
              "game" : "ssbu"
              }
-
-    cc1 = None
-    cc2 = None
+    #"""
+    cc1 = (0,0,0)
+    cc2 = (255,255,255)
+    #fontc = (230, 230, 255)
+    #fontsc = (0,0,100)
+    fontc2 = (0,0,0)
+    fontsc2 = (255, 255, 255)
     ics = None
+    bsq = False
+    darken = False
+    cbg = "Untitled.png"
+   # """
     #fuente = "sansblack.ttf"
     #fuente = "sansthirteenblack.ttf"
     #fuente = "DFGothic-SU-WIN-RKSJ-H-01.ttf"
     #fuente = "DFGothic-SU-WINP-RKSJ-H-02.ttf"
     #fuente = "DFGothic-SU-WING-RKSJ-H-03.ttf"
     #fuente = "BlackHoleBB.ttf"
-    #fuente = "ComicSansMSRegular.ttf"
     #"""
     
 
@@ -582,8 +605,13 @@ if __name__ == "__main__":
     import time
     t1 = time.time()
     #img = generate_banner(datos, customcolor="#00bbfa", customcolor2="#001736")# customcolor="#287346", customcolor2="#ede07c")
-    img = generate_banner(datos, icon_sizes=ics, shadow=True, prmode=False, blacksquares=True,
-                          customcolor=cc1, customcolor2=cc2, font=fuente)
+    img = generate_banner(datos, icon_sizes=ics, shadow=True, prmode=False,
+                          custombg=cbg, blacksquares=bsq, darkenbg = darken,
+                          customcolor=cc1, customcolor2=cc2,
+                          font=fuente,
+                          fontcolor1=fontc, fontscolor1 = fontsc,
+                          fontcolor2=fontc2, fontscolor2 = fontsc2
+                          )
     t2 = time.time()
     print(t2-t1)
     img.show()

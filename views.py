@@ -115,6 +115,10 @@ def hestia(request, game, FormClass, sample,
                         "url" : request.POST["url"],
                         "game" : game
                     }
+
+            fuente = request.POST["fontt"]
+            if fuente == "auto" : fuente = None
+            
             img = generate_banner(datos,
                                   customcolor= c1,
                                   customcolor2=c2,
@@ -123,7 +127,12 @@ def hestia(request, game, FormClass, sample,
                                   shadow=cshadow,
                                   prmode=pr,
                                   blacksquares=blacksq,
-                                  icon_sizes=icon_sizes
+                                  icon_sizes=icon_sizes,
+                                  font=fuente,
+                                  fontcolor1=request.POST["fcolor1"],
+                                  fontscolor1=request.POST["fscolor1"],
+                                  fontcolor2=request.POST["fcolor2"],
+                                  fontscolor2=request.POST["fscolor2"],
                                     )
             buffered = BytesIO()
             img.save(buffered, format="PNG")
