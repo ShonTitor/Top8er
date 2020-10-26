@@ -207,6 +207,7 @@
 				$(".form2").hide();
 				$(".tab1").hide();
 				$(".tab2").hide();
+				$(".tab3").hide();
 			});
 
 			$(".sggform").click(function() {
@@ -214,6 +215,7 @@
 				$(".form2").show();
 				$(".tab1").hide();
 				$(".tab2").hide();
+				$(".tab3").hide();
 			});
 
 			$(".othergames").click(function() {
@@ -221,6 +223,7 @@
 				$(".form2").hide();
 				$(".tab1").show();
 				$(".tab2").hide();
+				$(".tab3").hide();
 			});
 
 			$(".aboutus").click(function() {
@@ -228,6 +231,15 @@
 				$(".form2").hide();
 				$(".tab1").hide();
 				$(".tab2").show();
+				$(".tab3").hide();
+			});
+
+			$(".spthanks").click(function() {
+				$(".form1").hide();
+				$(".form2").hide();
+				$(".tab1").hide();
+				$(".tab2").hide();
+				$(".tab3").show();
 			});
 
 		});
@@ -269,9 +281,10 @@
     <h4 style="text-align: center">Top 8 Graphic Generator</h4>
 
     <button class="toggleforms manualform" style="margin-left: 10%">Enter data manually</button>
-    <button class="toggleforms sggform">Enter smash.gg link</button>
+    <button class="toggleforms sggform">Enter smash.gg or challonge link</button>
     <button class="toggleforms othergames">Other Games</button>
     <button class="toggleforms aboutus">About Us</button>
+    <button class="toggleforms spthanks">Special Thanks</button>
     <form class="form2" enctype="multipart/form-data" method="post" action="">
     {% csrf_token %}
     <div class="row" style="width: 80%; margin-left: 10%">
@@ -280,7 +293,8 @@
             {{ form2.event.label_tag }}
             {{ form2.event.errors }}
             {{ form2.event }}
-            <p><strong>MUST have this format:</strong> https://smash.gg/tournament/.../event/...</p>
+            <p>smash.gg links <strong>MUST have this format:</strong> https://smash.gg/tournament/.../event/...<br>
+               challonge links <strong>MUST have this format:</strong> https://challonge.com/.../...</p>
         </div>
 
         <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-left: 5%; padding-right: 5%
@@ -659,6 +673,11 @@
 		<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
 		<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
 		</form>
+
+	</div>
+
+	<div class="tab2">
+		
 
 	</div>
 

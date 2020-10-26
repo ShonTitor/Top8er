@@ -1,9 +1,10 @@
 import requests, json, os
 from datetime import datetime
 
-# Cosas de smash gg
 path = os.path.realpath(__file__)
-path= os.path.abspath(os.path.join(path, os.pardir))
+path = os.path.abspath(os.path.join(path, os.pardir))
+
+# Cosas de smash gg
 f = open(os.path.join(path, "smashgg.apikey"), "r")
 authToken = f.read()
 f.close()
@@ -12,6 +13,12 @@ url = 'https://api.smash.gg/gql/' + apiVersion
 headers = {'Content-Type': 'application/json',
            'Authorization': 'Bearer '+authToken
            }
+
+# Cosas de challonge
+f = open(os.path.join(path, "challonge.apikey"), "r")
+challonge_key = f.read()
+f.close()
+
 def check_event(slug) :
     query = '''
     query SetsQuery($slug: String) {
@@ -29,6 +36,18 @@ def check_event(slug) :
             return True
     else :
         return False
+
+def check_challonge(slug) :
+    headers = { 'User-Agent': 'Top8er' }
+
+    url = "https://api.challonge.com/v1/tournaments/"+slug+".json?api_key="+challonge_key+"&include_participants=1"
+    response = requests.get(url, headers=headers)
+    datos = json.loads(response.content)
+    if "tournament" in datos :
+        datos = datos["tournament"]
+    else :
+        return False
+    return npart >= 8
 
 def event_query(slug) :
     query = '''
@@ -145,7 +164,7 @@ def event_data(slug) :
     btext = []
     if event["startAt"] :
         fecha = datetime.fromtimestamp(event["startAt"])
-        fecha = fecha.strftime("%m/%d/%y")
+        fecha = fecha.strftime("%y/%m/%d")
         btext.append(fecha)
     if event["tournament"]["city"] :
         ciudad = event["tournament"]["city"]
@@ -174,16 +193,55 @@ def event_data(slug) :
         }
     return datos
 
+def challonge_data(slug) :
+    headers = { 'User-Agent': 'Top8er' }
+
+    url = "https://api.challonge.com/v1/tournaments/"+slug+".json?api_key="+challonge_key+"&include_participants=1"
+    response = requests.get(url, headers=headers)
+    datos = json.loads(response.content)
+    if "tournament" in datos :
+        datos = datos["tournament"]
+    else :
+        return False
+    players = [p["participant"] for p in datos["participants"]]
+    npart = len(players)
+    players = [(p["final_rank"], p["seed"], p["name"])
+               for p in players]
+    players.sort()
+    players = [p[2] for p in players[:8]]
+    players = [{"tag" : p,
+               "char" : ("Random", 0),
+               "twitter" : "",
+               "secondaries" : []
+               } for p in players]
+    ttext = datos["name"] + " - Top 8"
+    btext = " - ".join([datos["completed_at"][:10].replace('-','/'), str(npart)+" participants"])
+    url = datos['full_challonge_url']
+    
+    datos = {
+        "players" : players,
+        "toptext" : ttext,
+        "bottomtext" : btext,
+        "url" : url,
+        "game" : "idk"
+        }
+    return datos
+
 
 if __name__ == "__main__":
     from perro import generate_banner
     #slug = "tournament/genesis-7-1/event/ultimate-singles"
-    slug = "tournament/combo-breaker-2019/event/skullgirls-2nd-encore"
+    #slug = "tournament/combo-breaker-2019/event/skullgirls-2nd-encore"
     #slug = "tournament/ceo-2019-fighting-game-championships/event/super-smash-bros-ultimate-singles"
     #slug = "tournament/bowser-castle-1/event/smash-ultimate-singles"
     #slug = "https://smash.gg/tournament/genesis-7-1/event/ultimate-singles/brackets/719802/1162721"
 
-    print(check_event(slug))
-    d = event_data(slug)
-    print(d)
-    if d : generate_banner(d).show()
+    #print(check_event(slug))
+    #d = event_data(slug)
+    #print(d)
+    #if d : generate_banner(d).show()
+
+    #slug = "SGSudBeginners"
+    slug = "SGSudBeg"
+    print(check_challonge(slug))
+    #challonge_data(slug)

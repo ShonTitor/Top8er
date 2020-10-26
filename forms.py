@@ -1,7 +1,7 @@
 import re
 from django import forms
 from colorful.forms import RGBColorField
-from .generar.getsets import check_event
+from .generar.getsets import check_event, check_challonge
 
 class AncestorForm(forms.Form) :
     lcolor1 = RGBColorField(label="Main Color", initial="#ff281a")
@@ -13,17 +13,26 @@ class AncestorForm(forms.Form) :
     charshadow = forms.BooleanField(label="Character Shadow", widget=forms.CheckboxInput, initial=True, required=False)
 
 class SmashggForm(forms.Form) :
-    event = forms.RegexField(label="smash.gg link", regex = "https://smash.gg/tournament/[^/]+/event/[^/]+.*", max_length=160)
+    event = forms.RegexField(label="External link",
+                             regex = "https://smash.gg/tournament/[^/]+/event/[^/]+.*|https://challonge.com/[^/]+.*",
+                             max_length=200)
     def clean(self):
         cleaned_data = super().clean()
         try :
             e = cleaned_data.get("event")
             match = re.search("https://smash.gg/tournament/[^/]+/event/[^/]+", e)
-            if not check_event(e[17:match.end()]) :
-                msg = "Event not found, has too few players or an iguana bit a cable."
-                self.add_error('event', msg)
+            if match :
+                if not check_event(e[17:match.end()]) :
+                    msg = "Event not found, has too few players or an iguana bit a cable."
+                    self.add_error('event', msg)
+            else :
+                match = re.search("https://challonge.com/[^/]+", e)
+                if not check_challonge(e[22:match.end()]) :
+                    msg = "Event not found, has too few players or an iguana bit a cable."
+                    self.add_error('event', msg)
         except :
-            return cleaned_data
+            pass
+        return cleaned_data
 
 def makeform(chars=None, numerito=None, numerito_extra=None, echars=None, hasextra=True) :
     if chars is None :

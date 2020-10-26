@@ -3,7 +3,7 @@ from io import BytesIO
 from django.shortcuts import render, HttpResponse, loader
 from .forms import makeform, SmashggForm
 from .generar.perro import generate_banner
-from .generar.getsets import event_data
+from .generar.getsets import event_data, challonge_data
 
 def hestia(request, game, FormClass, sample,
            hasextra=True, color_guide=None, icon_sizes=None):
@@ -19,7 +19,11 @@ def hestia(request, game, FormClass, sample,
         if v2 :
             event = request.POST["event"]
             match = re.search("https://smash.gg/tournament/[^/]+/event/[^/]+", request.POST["event"])
-            datos = event_data(event[17:match.end()])
+            if match :
+                datos = event_data(event[17:match.end()])
+            else :
+                match = re.search("https://challonge.com/[^/]+", request.POST["event"])
+                datos = challonge_data(event[22:match.end()])
             init_data = {}
 
             init_data["ttext"] = datos["toptext"]
