@@ -207,9 +207,10 @@ def challonge_data(slug) :
     
     players = [p["participant"] for p in datos["participants"]]
     npart = len(players)
-    players = [(p["final_rank"], p["seed"], p["name"])
+    players = [(p["final_rank"], p["name"])
                for p in players]
-    players.sort()
+    try : players.sort()
+    except : pass
     players = [p[2] for p in players[:8]]
     players = [{"tag" : p,
                "char" : ("Random", 0),
