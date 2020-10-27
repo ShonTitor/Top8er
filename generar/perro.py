@@ -565,7 +565,7 @@ if __name__ == "__main__":
     ics = (48, 24)
     """
 
-    #"""
+    """
     import random
     C = ['A.B.A', 'Anji Mito', 'Axl Low', 'Baiken', 'Bridget', 'Chipp Zanuff', 'Dizzy', 'Eddie', 'Faust', 'I-No', 'Jam Kuradoberi', 'Johnny', 'Justice', 'Kliff Undersn', 'Ky Kiske', 'May', 'Millia Rage', 'Order-Sol', 'Potemkin', 'Robo-Ky', 'Slayer', 'Sol Badguy', 'Testament', 'Venom', 'Zappa']
     colors = ['Full Art',
@@ -575,7 +575,7 @@ if __name__ == "__main__":
               'Reload P', 'Reload K', 'Reload S', 'Reload H', 'Reload D',
               'Portrait']
     C = {c:colors for c in C}
-    #print(C)
+    print(C)
     def randchar() :
         c = random.choice(list(C.keys()))
         #c = random.choice(["Faust", "Kliff Undersn", "Justice"])
@@ -601,7 +601,24 @@ if __name__ == "__main__":
              "game" : "ggxx"
              }
     cc2 = (50, 0, 0)
-    #"""
+    """
+
+    texto = ["Player "+str(i) for i in range(1,9)]
+    personajes = [("a", 0) for i in range(8)]
+    twitter = ["player"+str(i) for i in range(1,9)]
+    pockets = [[] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "Top Text goes here",
+             "bottomtext" : "Bottom Text goes here",
+             "url" : "https://top8er.com",
+             "game" : "bbcf"
+             }
+    cc2 = (50, 0, 0)
 
     import time
     t1 = time.time()

@@ -103,42 +103,45 @@ def event_data(slug) :
     data = event_query(slug)
     #print(data)
     data = data["data"]
-    if data["event"] is None : return None
-    char_data = json.loads(requests.get(url="https://api.smash.gg/characters").content)
-    for node in data["event"]["sets"]['nodes'] :
-        if node["games"] is None : continue
-        for game in node["games"] :
-            if game["selections"] :
-                for selection in game["selections"] :
-                    player = selection["entrant"]["name"]
-                    char = selection["selectionValue"]
-                    if player in freq :
-                        if char in freq[player] :
-                            freq[player][char] += 1
+    try :
+        if data["event"] is None : return None
+        char_data = json.loads(requests.get(url="https://api.smash.gg/characters").content)
+        for node in data["event"]["sets"]['nodes'] :
+            if node["games"] is None : continue
+            for game in node["games"] :
+                if game["selections"] :
+                    for selection in game["selections"] :
+                        player = selection["entrant"]["name"]
+                        char = selection["selectionValue"]
+                        if player in freq :
+                            if char in freq[player] :
+                                freq[player][char] += 1
+                            else :
+                                freq[player][char] = 1
                         else :
-                            freq[player][char] = 1
-                    else :
-                        freq[player] = {char : 1}
+                            freq[player] = {char : 1}
 
-    most = {}
-    search = set()
-    for player, chars in freq.items() :
-        chargg = -1
-        freqgg = -1
-        for char, f in chars.items() :
-            if f > freqgg :
-                freqgg = f
-                chargg = char
-        most[player] = chargg
-        search.add(chargg)
+        most = {}
+        search = set()
+        for player, chars in freq.items() :
+            chargg = -1
+            freqgg = -1
+            for char, f in chars.items() :
+                if f > freqgg :
+                    freqgg = f
+                    chargg = char
+            most[player] = chargg
+            search.add(chargg)
 
-    char_names = {}
-    for c in char_data["entities"]["character"] :
-        if c["id"] in search :
-            char_names[c["id"]] = c["name"]
-    char_names[-1] = "Random"
+        char_names = {}
+        for c in char_data["entities"]["character"] :
+            if c["id"] in search :
+                char_names[c["id"]] = c["name"]
+        char_names[-1] = "Random"
 
-    vaina = {p:char_names[i] for p,i in most.items()}
+        vaina = {p:char_names[i] for p,i in most.items()}
+    except :
+        vaina = {}
     players = []
     for p in data["event"]["standings"]["nodes"] :
                 name = p["entrant"]["name"]
