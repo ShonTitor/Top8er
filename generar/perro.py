@@ -347,7 +347,7 @@ if __name__ == "__main__":
     darken = True
     cbg = None
 
-    #"""
+    """
     texto = ["morrocoYo", "GARU", "Pancakes", "VeXx",
              "BTO", "Vunioq", "Nandok", "Kellios"]
     #texto = ["morrocoYó", "GARÜ", "Páncakes", "VëXx", "BTØ", "VüniØq", "Ñandok", "KëlliØs"]
@@ -379,7 +379,7 @@ if __name__ == "__main__":
              #"url" : "あ"*40,
              "game" : "ssbu"
              }
-    #"""
+    
     cc1 = (0,0,0)
     cc2 = (255,255,255)
     #fontc = (230, 230, 255)
@@ -390,14 +390,13 @@ if __name__ == "__main__":
     bsq = False
     darken = False
     cbg = "Untitled.png"
-   # """
     #fuente = "sansblack.ttf"
     #fuente = "sansthirteenblack.ttf"
     #fuente = "DFGothic-SU-WIN-RKSJ-H-01.ttf"
     #fuente = "DFGothic-SU-WINP-RKSJ-H-02.ttf"
     #fuente = "DFGothic-SU-WING-RKSJ-H-03.ttf"
     #fuente = "BlackHoleBB.ttf"
-    #"""
+    """
     
 
     """
@@ -566,7 +565,7 @@ if __name__ == "__main__":
     ics = (48, 24)
     """
 
-    """
+    #"""
     import random
     C = ['A.B.A', 'Anji Mito', 'Axl Low', 'Baiken', 'Bridget', 'Chipp Zanuff', 'Dizzy', 'Eddie', 'Faust', 'I-No', 'Jam Kuradoberi', 'Johnny', 'Justice', 'Kliff Undersn', 'Ky Kiske', 'May', 'Millia Rage', 'Order-Sol', 'Potemkin', 'Robo-Ky', 'Slayer', 'Sol Badguy', 'Testament', 'Venom', 'Zappa']
     colors = ['Full Art',
@@ -574,12 +573,16 @@ if __name__ == "__main__":
               'EX P', 'EX K', 'EX S', 'EX H', 'EX D',
               'Slash P', 'Slash K', 'Slash S', 'Slash H', 'Slash D',
               'Reload P', 'Reload K', 'Reload S', 'Reload H', 'Reload D',
-              'Portrait']#,'Face Art']
+              'Portrait']
     C = {c:colors for c in C}
+    #print(C)
     def randchar() :
         c = random.choice(list(C.keys()))
-        #c = random.choice(["Faust", "Kliff Undersn"])
-        n = random.randint(1,len(C[c])-1)
+        #c = random.choice(["Faust", "Kliff Undersn", "Justice"])
+        #c = random.choice(["Bridget", "Chipp Zanuff", "Baiken"])
+        #c = "A.B.A"
+        n = random.randint(1,20)
+        #n = 0
         n = 21
         return (c,n)
     texto = ["Player "+str(i) for i in range(1,9)]
@@ -597,10 +600,8 @@ if __name__ == "__main__":
              "url" : "https://top8er.com",
              "game" : "ggxx"
              }
-    cc1 = None
-    cc2 = None
-    ics = None
-    """
+    cc2 = (50, 0, 0)
+    #"""
 
     import time
     t1 = time.time()

@@ -211,3 +211,14 @@ def melee(request) :
     sample = "https://i.imgur.com/ngRykN4.png"
     c_guide = "https://www.ssbwiki.com/Alternate_costume_(SSBM)"
     return hestia(request, "melee", FormClass, sample, icon_sizes=(48,24))
+
+def ggxx(request) :
+    c = ['A.B.A', 'Anji Mito', 'Axl Low', 'Baiken', 'Bridget', 'Chipp Zanuff',
+         'Dizzy', 'Eddie', 'Faust', 'I-No', 'Jam Kuradoberi', 'Johnny',
+         'Justice', 'Kliff Undersn', 'Ky Kiske', 'May', 'Millia Rage',
+         'Order-Sol', 'Potemkin', 'Robo-Ky', 'Slayer', 'Sol Badguy',
+         'Testament', 'Venom', 'Zappa']
+    FormClass = makeform(chars=c, numerito=22, hasextra=False)
+    sample = "https://i.imgur.com/ZbbnFgs.png"
+    c_guide = "https://www.dustloop.com/wiki/index.php?title=Guilty_Gear_XX_Accent_Core_Plus_R"
+    return hestia(request, "ggxx", FormClass, sample, color_guide=c_guide, hasextra=False)
