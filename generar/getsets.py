@@ -211,7 +211,7 @@ def challonge_data(slug) :
                for p in players]
     try : players.sort()
     except : pass
-    players = [p[2] for p in players[:8]]
+    players = [p[1] for p in players[:8]]
     players = [{"tag" : p,
                "char" : ("Random", 0),
                "twitter" : "",
