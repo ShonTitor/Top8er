@@ -1,5 +1,5 @@
 from django.urls import path
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, RedirectView
 from . import views
 
 urlpatterns = [
@@ -8,9 +8,8 @@ urlpatterns = [
     path('skullgirls', views.sg, name='skullgirls'),
     path('RushdownRevolt', views.rr, name='RushdownRevolt'),
     path('melee', views.melee, name='melee'),
-    path('GuiltyGearACPR', views.ggxx, name='GuiltyGearACPR'),
 
-    
+    path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path('google6f9c6e66eb07f5ce.html', TemplateView.as_view(template_name="google6f9c6e66eb07f5ce.html"))
 ]
