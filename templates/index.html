@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	{% load static %}
     <title>Top8er - {{game}}</title>
     <meta charset="utf-8">
 
@@ -8,9 +9,8 @@
 	<meta property="og:type"          content="website" />
 	<meta property="og:title"         content="Top8er.com" />
 	<meta property="og:description"   content="Generate top 8 result graphics for many different fighting games" />
-	<meta property="og:image"         content="{{sample}}" />
+	<meta property="og:image"         content="{% static 'samples' %}/{{game}}.png" />
 
-	{% load static %}
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
 
 	<!-- Global site tag (gtag.js) - Google Analytics -->
@@ -760,35 +760,35 @@
 		</style>
 
 		<h3>Platform Fighters</h3>
-		<a href="https://www.top8er.com/"><img class="logo" src="https://i.imgur.com/Wrah6Pl.png" alt="Super Smash Bros Ultimate"></a>
-		<a href="https://www.top8er.com/melee"><img class="logo" src="https://i.imgur.com/HoHdXyg.png" alt="Super Smash Bros Melee"></a>
-		<a href="https://www.top8er.com/rivals"><img class="logo" src="https://i.imgur.com/Ct5bPHG.png" alt="Rivals of Aether"></a>
-		<a href="https://www.top8er.com/RushdownRevolt"><img class="logo" src="https://i.imgur.com/V3IYMCo.png" alt="Rushdown Revolt"></a>
+		<a href="https://www.top8er.com/"><img class="logo" src="{% static 'logos' %}/ssbu.png" alt="Super Smash Bros Ultimate"></a>
+		<a href="https://www.top8er.com/melee"><img class="logo" src="{% static 'logos' %}/melee.png" alt="Super Smash Bros Melee"></a>
+		<a href="https://www.top8er.com/rivals"><img class="logo" src="{% static 'logos' %}/roa.png" alt="Rivals of Aether"></a>
+		<a href="https://www.top8er.com/RushdownRevolt"><img class="logo" src="{% static 'logos' %}/rr.png" alt="Rushdown Revolt"></a>
 
 		<h3>2D Fighters</h3>
-		<a href="https://www.top8er.com/skullgirls"><img class="logo"  src="https://i.imgur.com/KOdBCXI.png" alt="Skullgirls"></a>
-		<a href="https://www.top8er.com/GuiltyGearACPR"><img class="logo" src="https://i.imgur.com/4S9GVAI.png" alt="Guilty Gear XX Accent Core +R"></a>
+		<a href="https://www.top8er.com/skullgirls"><img class="logo"  src="{% static 'logos' %}/sg.png" alt="Skullgirls"></a>
+		<a href="https://www.top8er.com/GuiltyGearACPR"><img class="logo" src="{% static 'logos' %}/ggxx.png" alt="Guilty Gear XX Accent Core +R"></a>
 	</div>
 
 	<div class="tab2">
 		<h3><strong>About Us</strong></h3>
 		<p>This generator was made originally for the Smash Venezuela community. As you might know, the economic situation in Venezuela is not the best. The inflation is sky-high, universities are in crisis (private and public alike) and the minimum wage is less than $1 a month (the lowest in the world). For this and more, we ask you to consider supporting us monetarily if you like our work or find it useful.</p>
 		<h4><strong>Riokaru</strong></h4>
-		<img src="https://i.imgur.com/t6EFVVl.jpeg" style="float : right; height: 200px; width: auto;">
+		<img src="{% static 'riokaru.jpg' %}" style="float : right; height: 200px; width: auto;">
 		<p>Riokaru is a last year student of Computer Engineering at Universidad Simón Bolívar (USB) in Caracas, Venezuela. He likes functional programming and JRPGs. His main in Super Smash Bros Ultimate is Mewtwo.</p>
 		<p>BTC 12Ejox39VdAAFJhhcb9npvH8Ckqng3m57q<br>
 		   ETH 0x444E4648d4A3DBaD5e90971DcaB694E4308e611d<br>
 		   DASH XubKo25svrTqGjt1E8Zgamp8jXKMVbiPjA<br>
 		   LTC Ld8LwfN27HxfJJhqYURNL7L4yhkAK116KZ<br>
 		   BCH 1BXdvcEt3RgQzapGVifx55YJQCmrC1zfd9</p>
-		<a href="https://twitter.com/Riokaru?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @Riokaru</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+		<a href="https://twitter.com/Riokaru" class="twitter-follow-button" data-show-count="false">Follow @Riokaru</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 		<br>
 		<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#29abe0', 'E1E4K0N2');kofiwidget2.draw();</script> 
 		<br><br>
 		<h4><strong>EDM</strong></h4>
-		<img src="https://i.imgur.com/nrEJjAn.jpeg" style="float : right; height: 200px; width: auto;">
+		<img src="{% static 'edm.jpg' %}" style="float : right; height: 200px; width: auto;">
 		<p>EDM is a graphic designer from Puerto Cabello, Venezuela currently living in Madrid, Spain. During the Wii U era he got to be a top player both in his region and the whole country. His characters in Ultimate are Falco and Joker.</p>
-        <a href="https://twitter.com/Elenriqu3?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @Elenriqu3</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <a href="https://twitter.com/Elenriqu3" class="twitter-follow-button" data-show-count="false">Follow @Elenriqu3</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         <br>
 		<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 		<input type="hidden" name="cmd" value="_donations" />
@@ -934,7 +934,7 @@
 
     <h1 style="text-align: center">Sample</h1>
 	<div class="row" style="width: 80%; margin-left: 10%">
-	    <img src="{{ sample }}">
+	    <img src="{% static 'samples' %}/{{game}}.png">
 	</div>
 
 </body>
