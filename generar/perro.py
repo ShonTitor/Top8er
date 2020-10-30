@@ -235,6 +235,11 @@ def generate_banner(datos, prmode=False, blacksquares=True,
 
     # Ciclo de nombres
     pajarito = Image.open(os.path.join(template,"pajarito.png"))
+    if fontcolor1 != (255, 255, 255) and fontcolor1 != "#ffffff" :
+        a = Image.new('RGBA', pajarito.size, (255, 255, 255, 0))
+        aa = Image.new('RGBA', pajarito.size, fontcolor1)
+        a.paste(aa, (0,0), mask=pajarito)
+        pajarito = a
     for i in range(8) :
         if i == 0 : size = BIG
         elif i < 4 : size = MED
@@ -565,17 +570,17 @@ if __name__ == "__main__":
     ics = (48, 24)
     """
 
-    """
+    #"""
     import random
-    C = ['A.B.A', 'Anji Mito', 'Axl Low', 'Baiken', 'Bridget', 'Chipp Zanuff', 'Dizzy', 'Eddie', 'Faust', 'I-No', 'Jam Kuradoberi', 'Johnny', 'Justice', 'Kliff Undersn', 'Ky Kiske', 'May', 'Millia Rage', 'Order-Sol', 'Potemkin', 'Robo-Ky', 'Slayer', 'Sol Badguy', 'Testament', 'Venom', 'Zappa']
+    Chars = ['A.B.A', 'Anji Mito', 'Axl Low', 'Baiken', 'Bridget', 'Chipp Zanuff', 'Dizzy', 'Eddie', 'Faust', 'I-No', 'Jam Kuradoberi', 'Johnny', 'Justice', 'Kliff Undersn', 'Ky Kiske', 'May', 'Millia Rage', 'Order-Sol', 'Potemkin', 'Robo-Ky', 'Slayer', 'Sol Badguy', 'Testament', 'Venom', 'Zappa']
     colors = ['Full Art',
               'Default P', 'Default K', 'Default S', 'Default H', 'Default D',
               'EX P', 'EX K', 'EX S', 'EX H', 'EX D',
               'Slash P', 'Slash K', 'Slash S', 'Slash H', 'Slash D',
               'Reload P', 'Reload K', 'Reload S', 'Reload H', 'Reload D',
               'Portrait']
-    C = {c:colors for c in C}
-    print(C)
+    C = {c:colors for c in Chars}
+    #print(C)
     def randchar() :
         c = random.choice(list(C.keys()))
         #c = random.choice(["Faust", "Kliff Undersn", "Justice"])
@@ -585,8 +590,10 @@ if __name__ == "__main__":
         #n = 0
         n = 21
         return (c,n)
-    texto = ["Player "+str(i) for i in range(1,9)]
-    personajes = [randchar() for i in range(8)]
+    #texto = ["Player "+str(i) for i in range(1,9)]
+    #personajes = [randchar() for i in range(8)]
+    personajes = [(Chars[(i+len(Chars))%len(Chars)], 0) for i in range(8)]
+    texto = [personajes[i][0] for i in range(8)]
     twitter = ["player"+str(i) for i in range(1,9)]
     pockets = [[] for i in range(8)]
     players = [{"tag" : texto[i],
@@ -601,8 +608,10 @@ if __name__ == "__main__":
              "game" : "ggxx"
              }
     cc2 = (50, 0, 0)
-    """
+    fontc = (255, 255, 50)
+    #"""
 
+    """
     texto = ["Player "+str(i) for i in range(1,9)]
     personajes = [("a", 0) for i in range(8)]
     twitter = ["player"+str(i) for i in range(1,9)]
@@ -619,6 +628,7 @@ if __name__ == "__main__":
              "game" : "bbcf"
              }
     cc2 = (50, 0, 0)
+    """
 
     import time
     t1 = time.time()
