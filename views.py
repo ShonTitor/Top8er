@@ -153,7 +153,13 @@ def hestia(request, game, FormClass, sample,
             return render(request, 'index.html' , context)
 
         else :
-            context = { "hasextra" : has_extra, "game" : game }
+            context = {
+               "hasextra" : has_extra,
+               "sample" : sample,
+               "color_guide" : color_guide,
+               "game" : game,
+               "result" : None
+               }
             if "event" in request.POST :
                 form = FormClass()
                 context["off"] = 1
