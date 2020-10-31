@@ -44,7 +44,8 @@ def hestia(request, game, FormClass, sample,
                         "off" : 2,
                         "sample" : sample,
                         "color_guide" : color_guide,
-                        "game" : game
+                        "game" : game,
+                        "result" : None
                       }
             return render(request, 'index.html' , context)
         if v1 :
@@ -113,7 +114,7 @@ def hestia(request, game, FormClass, sample,
                         "toptext" : request.POST["ttext"],
                         "bottomtext" : request.POST["btext"],
                         "url" : request.POST["url"],
-                        "game" : game
+                        "game" : game,
                     }
 
             fuente = request.POST["fontt"]
@@ -138,8 +139,18 @@ def hestia(request, game, FormClass, sample,
             img.save(buffered, format="PNG")
             img = base64.b64encode(buffered.getvalue())
             img = str(img)[2:-1]
-            context = { "img" : img }
-            return render(request, 'gg.html' , context)
+            #context = { "img" : img }
+            #return render(request, 'gg.html' , context)
+            context = { "hasextra" : has_extra,
+                        "form" : FormClass(initial=request.POST),
+                        "form2" : SmashggForm(),
+                        "off" : 2,
+                        "sample" : sample,
+                        "color_guide" : color_guide,
+                        "game" : game,
+                        "result" : img
+                      }
+            return render(request, 'index.html' , context)
 
         else :
             context = { "hasextra" : has_extra, "game" : game }
@@ -166,7 +177,8 @@ def hestia(request, game, FormClass, sample,
                "hasextra" : has_extra,
                "sample" : sample,
                "color_guide" : color_guide,
-               "game" : game
+               "game" : game,
+               "result" : None
                }
     return render(request, 'index.html' , context)
 

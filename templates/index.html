@@ -364,7 +364,7 @@
 
 	</form>
 
-    <form class="form1" enctype="multipart/form-data" method="post" action="">
+    <form class="form1" enctype="multipart/form-data" method="post" action="#result">
     {% csrf_token %}
     <div class="row" style="width: 80%; margin-left: 10%">
 
@@ -933,9 +933,16 @@
 
     </div>
 
+{% if not result is None %}
+    <h1 id="result" style="text-align: center">Result</h1>
+	<div class="row" style="width: 80%; margin-left: 10%">
+	    <img style="width: 100%; auto" src=" data:image/png;charset=utf-8;base64,  {{ result }}"/>
+	</div>
+{% else %}
     <h1 style="text-align: center">Sample</h1>
 	<div class="row" style="width: 80%; margin-left: 10%">
 	    <img src="{% static 'samples' %}/{{game}}.png">
 	</div>
+{% endif %}
 
 </body>
