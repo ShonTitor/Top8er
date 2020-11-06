@@ -186,7 +186,6 @@ def hestia(request, game, FormClass,
 
 def index(request) :
     FormClass = makeform()
-    sample = "https://i.imgur.com/V1KwDFu.png"
     c_guide = "https://www.ssbwiki.com/Alternate_costume_(SSBU)"
     return hestia(request, "ssbu", FormClass, color_guide=c_guide)
 
@@ -196,8 +195,7 @@ def roa(request) :
          "Ori and Sein", "Ranno", "Shovel Knight",
          "Sylvanos", "Wrastor", "Zetterburn"]
     FormClass = makeform(chars=c, numerito=21, numerito_extra=1)
-    sample = "https://i.imgur.com/rPmXNDr.png"
-    return hestia(request, "roa", FormClass, sample)
+    return hestia(request, "roa", FormClass)
 
 def sg(request) :
     c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza',
@@ -221,7 +219,7 @@ def melee(request) :
          'Young Link', 'Zelda']
     FormClass = makeform(chars=c, numerito=6)
     c_guide = "https://www.ssbwiki.com/Alternate_costume_(SSBM)"
-    return hestia(request, "melee", FormClass, sample, icon_sizes=(48,24))
+    return hestia(request, "melee", FormClass, icon_sizes=(48,24))
 
 def ggxx(request) :
     c = ['A.B.A', 'Anji Mito', 'Axl Low', 'Baiken', 'Bridget', 'Chipp Zanuff',
@@ -231,7 +229,7 @@ def ggxx(request) :
          'Testament', 'Venom', 'Zappa']
     FormClass = makeform(chars=c, numerito=22, hasextra=False)
     c_guide = "https://www.dustloop.com/wiki/index.php?title=Guilty_Gear_XX_Accent_Core_Plus_R"
-    return hestia(request, "ggxx", FormClass, sample, color_guide=c_guide, hasextra=False)
+    return hestia(request, "ggxx", FormClass, color_guide=c_guide, hasextra=False)
 
 def uni(request) :
     c = ['Akatsuki', 'Byakuya', 'Carmine', 'Chaos', 'Eltnum', 'Enkidu',
