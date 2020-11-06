@@ -4,8 +4,6 @@ from colorful.forms import RGBColorField
 from .generar.getsets import check_event, check_challonge
 
 class AncestorForm(forms.Form) :
-    lcolor1 = RGBColorField(label="Main Color", initial="#ff281a")
-    lcolor2 = RGBColorField(label="Highlight Color", initial="#ffb60c")
     background = forms.ImageField(label="Background Image", required=False)
     darken_bg = forms.BooleanField(label="Darken Background", widget=forms.CheckboxInput, initial=True, required=False)
     blacksquares = forms.BooleanField(label="Black Background for characters", widget=forms.CheckboxInput, initial=True, required=False)
@@ -42,7 +40,9 @@ class SmashggForm(forms.Form) :
             pass
         return cleaned_data
 
-def makeform(chars=None, numerito=None, numerito_extra=None, echars=None, hasextra=True) :
+def makeform(chars=None, numerito=None, numerito_extra=None,
+             echars=None, hasextra=True,
+             color1="#ff281a", color2="#ffb60c") :
     if chars is None :
         chars = ['Random', 'Banjo & Kazooie', 'Bayonetta', 'Bowser', 'Bowser Jr', 'Byleth',
                  'Captain Falcon', 'Chrom', 'Cloud', 'Corrin', 'Daisy', 'Dark Pit', 'Dark Samus',
@@ -71,7 +71,13 @@ def makeform(chars=None, numerito=None, numerito_extra=None, echars=None, hasext
     chars = tuple([(i, i) for i in chars])
     e_chars = tuple([(i, i) for i in e_chars])
 
-    class NoExtraForm(AncestorForm) :    
+    cc1 = color1
+    cc2 = color2
+
+    class NoExtraForm(AncestorForm) :
+        lcolor1 = RGBColorField(label="Main Color", initial=cc1)
+        lcolor2 = RGBColorField(label="Highlight Color", initial=cc2)
+        
         name1 = forms.CharField(label='Player Name', max_length=23)
         twitter1 = forms.CharField(label='Twitter Handle', max_length=16, required=False)
         char1 = forms.ChoiceField(label='Main Character', choices=chars)

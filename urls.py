@@ -9,6 +9,7 @@ urlpatterns = [
     path('RushdownRevolt', views.rr, name='RushdownRevolt'),
     path('melee', views.melee, name='melee'),
     path('GuiltyGearACPR', views.ggxx, name='GuiltyGearACPR'),
+    path('uni', views.uni, name='uni'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),

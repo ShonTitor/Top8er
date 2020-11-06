@@ -155,6 +155,7 @@ def event_data(slug) :
                 char = vaina[name].replace(".", "")
                 if char == "Pokemon Trainer" : char = "Pokémon Trainer"
                 if char == "Ori" : char = "Ori and Sein"
+                if char == "Erika Wagner" : char = "Wagner"
                 players.append({"tag" : name,
                                "char" : (char, 0),
                                 "twitter" : twi,
@@ -244,14 +245,14 @@ if __name__ == "__main__":
     #slug = "tournament/combo-breaker-2019/event/skullgirls-2nd-encore"
     #slug = "tournament/ceo-2019-fighting-game-championships/event/super-smash-bros-ultimate-singles"
     #slug = "tournament/bowser-castle-1/event/smash-ultimate-singles"
-    #slug = "https://smash.gg/tournament/genesis-7-1/event/ultimate-singles/brackets/719802/1162721"
+    slug = "tournament/frosty-faustings-xii-2020/event/under-night-in-birth-exe-late-st"
 
-    #print(check_event(slug))
-    #d = event_data(slug)
-    #print(d)
+    print(check_event(slug))
+    d = event_data(slug)
+    print(d)
     #if d : generate_banner(d).show()
 
     #slug = "SGSudBeginners"
-    slug = "SGSudBeg"
-    print(check_challonge(slug))
+    #slug = "SGSudBeg"
+    #print(check_challonge(slug))
     #challonge_data(slug)

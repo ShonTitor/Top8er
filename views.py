@@ -5,7 +5,7 @@ from .forms import makeform, SmashggForm
 from .generar.perro import generate_banner
 from .generar.getsets import event_data, challonge_data
 
-def hestia(request, game, FormClass, sample,
+def hestia(request, game, FormClass,
            hasextra=True, color_guide=None, icon_sizes=None):
     if hasextra : has_extra = "true"
     else : has_extra = "false"
@@ -42,7 +42,6 @@ def hestia(request, game, FormClass, sample,
                         "form" : FormClass(initial=init_data),
                         "form2" : SmashggForm(),
                         "off" : 2,
-                        "sample" : sample,
                         "color_guide" : color_guide,
                         "game" : game,
                         "result" : None
@@ -145,7 +144,6 @@ def hestia(request, game, FormClass, sample,
                         "form" : FormClass(initial=request.POST),
                         "form2" : SmashggForm(),
                         "off" : 2,
-                        "sample" : sample,
                         "color_guide" : color_guide,
                         "game" : game,
                         "result" : img
@@ -155,7 +153,6 @@ def hestia(request, game, FormClass, sample,
         else :
             context = {
                "hasextra" : has_extra,
-               "sample" : sample,
                "color_guide" : color_guide,
                "game" : game,
                "result" : None
@@ -181,7 +178,6 @@ def hestia(request, game, FormClass, sample,
                "form2" : form2,
                "off" : 2,
                "hasextra" : has_extra,
-               "sample" : sample,
                "color_guide" : color_guide,
                "game" : game,
                "result" : None
@@ -192,7 +188,7 @@ def index(request) :
     FormClass = makeform()
     sample = "https://i.imgur.com/V1KwDFu.png"
     c_guide = "https://www.ssbwiki.com/Alternate_costume_(SSBU)"
-    return hestia(request, "ssbu", FormClass, sample, color_guide=c_guide)
+    return hestia(request, "ssbu", FormClass, color_guide=c_guide)
 
 def roa(request) :
     c = ["Random", "Absa", "Clairen", "Elliana", "Etalus",
@@ -208,16 +204,14 @@ def sg(request) :
          'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul',
          'Peacock', 'Robo Fortune', 'Squigly', 'Valentine']
     FormClass = makeform(chars=c, numerito=30, numerito_extra=1)
-    sample = "https://i.imgur.com/MYu9qg3.png"
     c_guide = "https://wiki.gbl.gg/w/Skullgirls"
-    return hestia(request, "sg", FormClass, sample, color_guide=c_guide)
+    return hestia(request, "sg", FormClass, color_guide=c_guide)
 
 def rr(request) :
     c = ["Afi and Galu", "Ashani", "Ezzie", "Kidd",
          "Raymer", "Urdah", "Weishan", "Zhurong"]
     FormClass = makeform(chars=c, numerito=1, numerito_extra=1)
-    sample = "https://i.imgur.com/OO0nl5w.png"
-    return hestia(request, "rr", FormClass, sample, icon_sizes=(80,50))
+    return hestia(request, "rr", FormClass, icon_sizes=(80,50))
 
 def melee(request) :
     c = ['Bowser', 'Captain Falcon', 'Donkey Kong', 'Dr Mario', 'Falco',
@@ -226,7 +220,6 @@ def melee(request) :
          'Peach', 'Pichu', 'Pikachu', 'Roy', 'Samus', 'Sheik', 'Yoshi',
          'Young Link', 'Zelda']
     FormClass = makeform(chars=c, numerito=6)
-    sample = "https://i.imgur.com/ngRykN4.png"
     c_guide = "https://www.ssbwiki.com/Alternate_costume_(SSBM)"
     return hestia(request, "melee", FormClass, sample, icon_sizes=(48,24))
 
@@ -237,6 +230,15 @@ def ggxx(request) :
          'Order-Sol', 'Potemkin', 'Robo-Ky', 'Slayer', 'Sol Badguy',
          'Testament', 'Venom', 'Zappa']
     FormClass = makeform(chars=c, numerito=22, hasextra=False)
-    sample = "https://i.imgur.com/ZbbnFgs.png"
     c_guide = "https://www.dustloop.com/wiki/index.php?title=Guilty_Gear_XX_Accent_Core_Plus_R"
     return hestia(request, "ggxx", FormClass, sample, color_guide=c_guide, hasextra=False)
+
+def uni(request) :
+    c = ['Akatsuki', 'Byakuya', 'Carmine', 'Chaos', 'Eltnum', 'Enkidu',
+         'Gordeau', 'Hilda', 'Hyde', 'Linne', 'Londrekia', 'Merkava',
+         'Mika', 'Nanase', 'Orie', 'Phonon', 'Seth', 'Vatista', 'Wagner',
+         'Waldstein', 'Yuzuriha']
+    FormClass = makeform(chars=c, numerito=42, numerito_extra=1,
+                         color1="#32145a", color2="#c814ff")
+    c_guide = "https://wiki.gbl.gg/w/Under_Night_In-Birth/UNICLR"
+    return hestia(request, "uni", FormClass, color_guide=c_guide)
