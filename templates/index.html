@@ -329,6 +329,7 @@
 		function colorcito(desu) {
 			var m = 0;
 			//alert(desu.next().next().next().next().html());
+			//console.log(desu.val());
 			desu.next().next().next().next().children("option").each(function() {
 				try {
 					var char = desu.val();
@@ -342,7 +343,10 @@
 					}
 					else if (dictsote[char].length <= m) {
 						$(this).hide();
-						$(this).parent().val('0');
+						if ($(this).is(':selected')) {
+							$(this).parent().val('0');
+							console.log('aja');
+						}
 					}
 					else {
 						$(this).show();
