@@ -194,21 +194,24 @@ def roa(request) :
          "Forsburn", "Kragg", "Maypul", "Orcane",
          "Ori and Sein", "Ranno", "Shovel Knight",
          "Sylvanos", "Wrastor", "Zetterburn"]
-    FormClass = makeform(chars=c, numerito=21, numerito_extra=1)
+    FormClass = makeform(chars=c, numerito=21, numerito_extra=1,
+                        color1="#B4A5E6", color2="#261C50")
     return hestia(request, "roa", FormClass)
 
 def sg(request) :
     c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza',
          'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul',
          'Peacock', 'Robo Fortune', 'Squigly', 'Valentine']
-    FormClass = makeform(chars=c, numerito=30, numerito_extra=1)
+    FormClass = makeform(chars=c, numerito=30, numerito_extra=1,
+                         color1="#FF544A", color2="#E6DEBB")
     c_guide = "https://wiki.gbl.gg/w/Skullgirls"
     return hestia(request, "sg", FormClass, color_guide=c_guide)
 
 def rr(request) :
     c = ["Afi and Galu", "Ashani", "Ezzie", "Kidd",
          "Raymer", "Urdah", "Weishan", "Zhurong"]
-    FormClass = makeform(chars=c, numerito=1, numerito_extra=1)
+    FormClass = makeform(chars=c, numerito=1, numerito_extra=1,
+                         color1="#384BCB", color2="#40EB8F")
     return hestia(request, "rr", FormClass, icon_sizes=(80,50))
 
 def melee(request) :
@@ -227,7 +230,8 @@ def ggxx(request) :
          'Justice', 'Kliff Undersn', 'Ky Kiske', 'May', 'Millia Rage',
          'Order-Sol', 'Potemkin', 'Robo-Ky', 'Slayer', 'Sol Badguy',
          'Testament', 'Venom', 'Zappa']
-    FormClass = makeform(chars=c, numerito=22, hasextra=False)
+    FormClass = makeform(chars=c, numerito=22, hasextra=False,
+                         color1="#EF0020", color2="#16E7DE")
     c_guide = "https://www.dustloop.com/wiki/index.php?title=Guilty_Gear_XX_Accent_Core_Plus_R"
     return hestia(request, "ggxx", FormClass, color_guide=c_guide, hasextra=False)
 
