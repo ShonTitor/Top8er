@@ -244,3 +244,14 @@ def uni(request) :
                          color1="#32145a", color2="#c814ff")
     c_guide = "https://wiki.gbl.gg/w/Under_Night_In-Birth/UNICLR"
     return hestia(request, "uni", FormClass, color_guide=c_guide)
+
+def efz(request) :
+    c = ['Akane', 'Akiko', 'Ayu', 'Doppel', 'Ikumi', 'Kanna', 'Kano',
+         'Kaori', 'Mai', 'Makoto', 'Mayu', 'Minagi', 'Mio', 'Misaki',
+         'Mishio', 'Misuzu', 'Mizuka', 'Nayuki (asleep)', 'Nayuki (awake)',
+         'Rumi', 'Sayuri', 'Shiori', 'UNKNOWN']
+    FormClass = makeform(chars=c, numerito=42, numerito_extra=1,
+                         color1="#32145a", color2="#c814ff")
+    c_guide = "https://wiki.gbl.gg/w/Eternal_Fighter_Zero"
+    return hestia(request, "efz", FormClass, color_guide=c_guide)
+
