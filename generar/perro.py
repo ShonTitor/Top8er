@@ -207,7 +207,7 @@ def generate_banner(datos, prmode=False, blacksquares=True,
 
         char = players[i]["char"]
         ruta = os.path.join(portraits, char[0])
-        if game == "efz" and not len(char[1]) == 1 :
+        if game == "efz" and not type(char[1]) is int and not len(char[1]) == 1 :
             rruta = os.path.join(ruta, "1.png")
             pal1 = os.path.join(ruta, "0.pal")
             d = efz_swap(rruta, pal1, char[1]).convert("RGBA").resize(size, resample=Image.ANTIALIAS)
@@ -726,11 +726,11 @@ if __name__ == "__main__":
             n = random.randint(1,6)
             #n = len(C[c])-1
             #n = 0
-        n = os.path.join("efzpal", str(n)+".pal")
+        #n = os.path.join("efzpal", str(n)+".pal")
         return (c,n)
     
     texto = ["Player "+str(i) for i in range(1,9)]
-    personajes = [randchar(i) for i in range(8)]
+    personajes = [randchar() for i in range(8)]
     twitter = ["player"+str(i) for i in range(1,9)]
     pockets = [[] for i in range(8)]
     players = [{"tag" : texto[i],
