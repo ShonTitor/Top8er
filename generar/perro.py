@@ -144,7 +144,7 @@ def generate_banner(datos, prmode=False, blacksquares=True,
             f = Image.new('RGBA', SIZE, (0, 0, 0, 0))
             c = Image.blend(f, c, 0.30)
     else :
-        a  = Image.open(os.path.join(path, "assets", game, "bg.png"))
+        a  = Image.open(os.path.join(path, "assets", game, "bg.png")).convert("RGBA")
         c.paste(a, (0,0), mask=a)
 
     c = c.convert('RGB')
@@ -612,7 +612,7 @@ if __name__ == "__main__":
     fontc = (255, 255, 50)
     """
 
-    #"""
+    """
     import random
     C =     {'Hyde': ['Full Art', 'Black Eclipse', 'Twinkle White', 'Darkness Tempest', 'Light Forest', 'Nightmare', 'Red Pearl', 'Desert Wolf', 'Sea Water', 'Moonlight', 'Justice Rose', 'Blau Blitz', 'Sunlight Red', 'Vortex Galaxy', 'Cremisi Grotta', 'Holiness Star', 'Rosa Descendiente', 'Juillet Averse', 'Soul Lover', 'Caldo Trrente', 'Viridis Regulus', 'Shinku', 'Blanche Diable', 'Ocean Arctique', 'Citrus Fresh', 'Guilty Thorn', 'Schon Gift', 'Nutty Pastel', 'Clear Gale', 'Santana', 'Dark Matter', 'Equatorial Wave', 'Inferno Blaze', 'Annular Eclipse', 'Seeds of Heaven', 'Clamorous Colors', 'Royal Calibur', 'Stella Nest', 'Little Briar Rose', 'Betrayal of Savior', 'Switching Contrast', 'Super Deformed'], 
     'Linne': ['Full Art', 'Canary Yellow', 'Solitude Spica', 'Rhodorite Garnet', 'Sylvania Keeper', 'Purple Powder', 'Pure Black', 'Ore Shine', 'Blue Ocean', 'Autumnal Leaves', 'Destruction Red', 'Brosche Saphir', 'Drought Ground', 'Acero Granizo', 'Isora Albero', 'Wind of Oasis', 'Perfume Lemon', 'Ciruela', 'Pupil Gloomy', 'Arche wave', 'Ritual Sacrifice', 'Spring Breeze', 'Lapin de Neige', 'Nacht Kirshblute', 'Bush Camouflage', 'Misty Crystal', 'Exotic Coral', 'Spunky Mint', 'Burial Agency', 'Water Imp', 'Nagger Brawny', 'Equatorial Wave', 'Inferno Blaze', 'Annular Eclipse', 'Seeds of Heaven', 'Clamorous Colors', 'Super Deformed'], 
@@ -662,6 +662,40 @@ if __name__ == "__main__":
              }
     cc1 = (50, 20, 90)
     cc2 = (200, 90, 255)
+    bsq = False
+    """
+
+    #"""
+    import random
+    C = ['Akane', 'Akiko', 'Ayu', 'Doppel', 'Ikumi', 'Kanna', 'Kano',
+         'Kaori', 'Mai', 'Makoto', 'Mayu', 'Minagi', 'Mio', 'Misaki',
+         'Mishio', 'Misuzu', 'Mizuka', 'Nayuki (asleep)', 'Nayuki (awake)',
+         'Rumi', 'Sayuri', 'Shiori', 'UNKNOWN']
+    def randchar(n=None) :
+        c = random.choice(C)
+        if n is None :
+            n = random.randint(1,6)
+            #n = len(C[c])-1
+            n = 0
+        return (c,n)
+    
+    texto = ["Player "+str(i) for i in range(1,9)]
+    personajes = [randchar() for i in range(8)]
+    twitter = ["player"+str(i) for i in range(1,9)]
+    pockets = [[] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "Top Text goes here",
+             "bottomtext" : "Bottom Text goes here",
+             "url" : "https://top8er.com",
+             "game" : "efz"
+             }
+    cc1 = (37, 53, 138)
+    cc2 = (157, 202, 233)
     bsq = False
     #"""
 

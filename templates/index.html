@@ -972,12 +972,12 @@
 {% if not result is None %}
     <h1 id="result" style="text-align: center">Result</h1>
 	<div class="row" style="width: 80%; margin-left: 10%">
-	    <img style="width: 100%; auto" src=" data:image/png;charset=utf-8;base64,  {{ result }}"/>
+	    <img style="width: 100%; height: auto;" src=" data:image/png;charset=utf-8;base64,  {{ result }}"/>
 	</div>
 {% else %}
     <h1 style="text-align: center">Sample</h1>
 	<div class="row" style="width: 80%; margin-left: 10%">
-	    <img src="{% static 'samples' %}/{{game}}.png">
+	    <img style="width: 100%; height: auto;" src="{% static 'samples' %}/{{game}}.png">
 	</div>
 {% endif %}
 
