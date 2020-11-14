@@ -250,8 +250,8 @@ def efz(request) :
          'Kaori', 'Mai', 'Makoto', 'Mayu', 'Minagi', 'Mio', 'Misaki',
          'Mishio', 'Misuzu', 'Mizuka', 'Nayuki (asleep)', 'Nayuki (awake)',
          'Rumi', 'Sayuri', 'Shiori', 'UNKNOWN']
-    FormClass = makeform(chars=c, numerito=7, hasextra=False,
+    FormClass = makeform(chars=c, numerito=8, hasextra=False,
                          color1="#24358a", color2="#9dcae9")
     c_guide = "https://wiki.gbl.gg/w/Eternal_Fighter_Zero"
-    return hestia(request, "efz", FormClass, color_guide=c_guide)
+    return hestia(request, "efz", FormClass, color_guide=c_guide, hasextra=False)
 

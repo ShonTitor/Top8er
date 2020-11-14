@@ -82,6 +82,49 @@ def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top"
 
     draw_text(img, draw, (posx, posy), text, font=fuente, fill=fill, shadow=shadow)
 
+def efz_palette(path) :
+    colors = []
+    f = open(path, "rb")
+    s = f.read()
+    f.close()
+    i = 1
+    c = []
+    while i < len(s) :
+        c.append(s[i])
+        if i%3 == 0 :
+            c = tuple(c[::-1])
+            #print(c)
+            colors.append(c)
+            c = []
+        i += 1
+    return colors
+
+def efz_swap(file, pal1, pal2) :
+    img = Image.open(file)
+    orig = efz_palette(pal1)
+    meme = efz_palette(pal2)
+    orig.pop(0)
+    meme.pop(0)
+
+    quick_orig = {orig[i]:i for i in range(len(orig))}
+
+    match = [[] for o in orig]
+
+    w,h = img.size
+
+    for x in range(w) :
+        for y in range(h) :
+            c = img.getpixel((x,y))
+            if c[:3] in quick_orig :
+                match[quick_orig[c[:3]]].append((x,y))
+
+    for i in range(len(match)) :
+        for pixel in match[i] :
+            alpha = img.getpixel(pixel)[3:]
+            img.putpixel(pixel, meme[i]+alpha)
+
+    return img
+
 def generate_banner(datos, prmode=False, blacksquares=True,
                     custombg=None, darkenbg=True,
                     customcolor=None, customcolor2=None,
@@ -164,8 +207,14 @@ def generate_banner(datos, prmode=False, blacksquares=True,
 
         char = players[i]["char"]
         ruta = os.path.join(portraits, char[0])
-        ruta = os.path.join(ruta, str(char[1])+".png")
-        d = Image.open(ruta).convert("RGBA").resize(size, resample=Image.ANTIALIAS)
+        if game == "efz" and not len(char[1]) == 1 :
+            rruta = os.path.join(ruta, "1.png")
+            pal1 = os.path.join(ruta, "0.pal")
+            d = efz_swap(rruta, pal1, char[1]).convert("RGBA").resize(size, resample=Image.ANTIALIAS)
+        else :
+            ruta = os.path.join(ruta, str(char[1])+".png")
+            d = Image.open(ruta).convert("RGBA").resize(size, resample=Image.ANTIALIAS)
+        
         
         # Intento de sombra
         if shadow :
@@ -676,11 +725,12 @@ if __name__ == "__main__":
         if n is None :
             n = random.randint(1,6)
             #n = len(C[c])-1
-            n = 0
+            #n = 0
+        n = os.path.join("efzpal", str(n)+".pal")
         return (c,n)
     
     texto = ["Player "+str(i) for i in range(1,9)]
-    personajes = [randchar() for i in range(8)]
+    personajes = [randchar(i) for i in range(8)]
     twitter = ["player"+str(i) for i in range(1,9)]
     pockets = [[] for i in range(8)]
     players = [{"tag" : texto[i],
