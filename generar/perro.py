@@ -108,8 +108,8 @@ def efz_swap(file, pal1, pal2) :
     img = Image.open(file)
     orig = efz_palette(pal1)
     meme = efz_palette(pal2)
-    orig.pop(0)
-    meme.pop(0)
+    #orig.pop(0)
+    #meme.pop(0)
 
     quick_orig = {orig[i]:i for i in range(len(orig))}
 
