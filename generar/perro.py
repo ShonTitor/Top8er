@@ -84,7 +84,10 @@ def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top"
 
 def efz_palette(path) :
     colors = []
-    f = open(path, "rb")
+    if type(path) is str :
+        f = open(path, "rb")
+    else :
+        f = path
     s = f.read()
     f.close()
     i = 1
@@ -97,6 +100,8 @@ def efz_palette(path) :
             colors.append(c)
             c = []
         i += 1
+    while len(colors) < 40 :
+        colors.append((0,0,0))
     return colors
 
 def efz_swap(file, pal1, pal2) :

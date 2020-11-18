@@ -41,7 +41,7 @@ class SmashggForm(forms.Form) :
         return cleaned_data
 
 def makeform(chars=None, numerito=None, numerito_extra=None,
-             echars=None, hasextra=True,
+             echars=None, hasextra=True, efz=False,
              color1="#ff281a", color2="#ffb60c") :
     if chars is None :
         chars = ['Random', 'Banjo & Kazooie', 'Bayonetta', 'Bowser', 'Bowser Jr', 'Byleth',
@@ -122,6 +122,16 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
         btext = forms.CharField(label='Bottom Text', max_length=70, required=False)
         url = forms.CharField(label='Top Right', max_length=55, required=False, initial="https://top8er.com/")
 
+        if efz :
+            palette1 = forms.FileField(label="Color Palette", required=False)
+            palette2 = forms.FileField(label="Color Palette", required=False)
+            palette3 = forms.FileField(label="Color Palette", required=False)
+            palette4 = forms.FileField(label="Color Palette", required=False)
+            palette5 = forms.FileField(label="Color Palette", required=False)
+            palette6 = forms.FileField(label="Color Palette", required=False)
+            palette7 = forms.FileField(label="Color Palette", required=False)
+            palette8 = forms.FileField(label="Color Palette", required=False)
+            
     class GenForm(NoExtraForm):
         extra11 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
         extra_color11 = forms.ChoiceField(label='Secondary Character Color', choices=num_e, required=False)

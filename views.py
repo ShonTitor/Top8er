@@ -62,6 +62,11 @@ def hestia(request, game, FormClass,
                 bg = request.FILES["background"]
 
             # toggles
+            darkbg = "darken_bg" in request.POST
+            cshadow = "charshadow" in request.POST
+            pr = "prmode" in request.POST
+            blacksq = "blacksquares" in request.POST
+            """
             try :                
                 request.POST["darken_bg"]
                 darkbg = True
@@ -80,7 +85,7 @@ def hestia(request, game, FormClass,
             try :       
                 request.POST["blacksquares"]
                 blacksq = True
-            except : blacksq = False
+            except : blacksq = False"""
 
             names = []
             twitter = []
@@ -92,9 +97,15 @@ def hestia(request, game, FormClass,
                     twitter.append(None)
                 else :
                     twitter.append(request.POST["twitter"+str(i)])
-                chars.append( (request.POST["char"+str(i)],
-                               request.POST["color"+str(i)])
-                            )
+                    
+                if game == "efz" and "palette"+str(i) in request.FILES :
+                    chars.append( (request.POST["char"+str(i)],
+                                   request.FILES["palette"+str(i)])
+                                )
+                else :
+                    chars.append( (request.POST["char"+str(i)],
+                                   request.POST["color"+str(i)])
+                                )
                 if hasextra :
                     for k in range(1,3) :
                         if request.POST["extra"+str(i)+str(k)] == "None" :
@@ -251,7 +262,9 @@ def efz(request) :
          'Mishio', 'Misuzu', 'Mizuka', 'Nayuki (asleep)', 'Nayuki (awake)',
          'Rumi', 'Sayuri', 'Shiori', 'UNKNOWN']
     FormClass = makeform(chars=c, numerito=8, hasextra=False,
-                         color1="#24358a", color2="#9dcae9")
+                         color1="#24358a", color2="#9dcae9",
+                          efz=True)
     c_guide = "https://wiki.gbl.gg/w/Eternal_Fighter_Zero"
-    return hestia(request, "efz", FormClass, color_guide=c_guide, hasextra=False)
+    return hestia(request, "efz", FormClass, color_guide=c_guide,
+                  hasextra=False)
 
