@@ -104,12 +104,14 @@ def efz_palette(path) :
         colors.append((0,0,0))
     return colors
 
-def efz_swap(file, pal1, pal2) :
+def efz_swap(file, pal1, pal2, akane=False) :
     img = Image.open(file)
     orig = efz_palette(pal1)
     meme = efz_palette(pal2)
-    #orig.pop(0)
-    #meme.pop(0)
+
+    if akane :
+        orig = orig[:29]
+        meme = meme[:29]
 
     quick_orig = {orig[i]:i for i in range(len(orig))}
 
@@ -124,6 +126,7 @@ def efz_swap(file, pal1, pal2) :
                 match[quick_orig[c[:3]]].append((x,y))
 
     for i in range(len(match)) :
+        if meme[i][0] == 178 : print("AAA")
         for pixel in match[i] :
             alpha = img.getpixel(pixel)[3:]
             img.putpixel(pixel, meme[i]+alpha)
@@ -215,7 +218,11 @@ def generate_banner(datos, prmode=False, blacksquares=True,
         if game == "efz" and not type(char[1]) is int and not len(char[1]) == 1 :
             rruta = os.path.join(ruta, "1.png")
             pal1 = os.path.join(ruta, "0.pal")
-            d = efz_swap(rruta, pal1, char[1]).convert("RGBA").resize(size, resample=Image.ANTIALIAS)
+            d = efz_swap(rruta,
+                         pal1,
+                         char[1], akane=(char[0]=="Akane")
+                         ).convert("RGBA").resize(size,
+                                                  resample=Image.ANTIALIAS)
         else :
             ruta = os.path.join(ruta, str(char[1])+".png")
             d = Image.open(ruta).convert("RGBA").resize(size, resample=Image.ANTIALIAS)
