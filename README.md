@@ -3,6 +3,7 @@
 This is a Django app that generates top 8 result graphics for many different fighting games tournaments using Pillow. These graphics include a picture of the player's main character as well as their nicknames and tournament placing. The graphic template parts used were made by [EDM](https://twitter.com/Elenriqu3). Character portraits are not included in this repository. You can see the app working [here](https://www.top8er.com/).
 
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E1E4K0N2)
+[support the designer on paypal](https://www.paypal.com/paypalme/Elenriqu3)
 
 ![alt text](https://i.imgur.com/XUnYuR0.png "Top 8")
 
