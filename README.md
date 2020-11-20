@@ -1,6 +1,6 @@
-# Top 8 Banner Generator
+# Top 8 Graphic Generator
 
-This is a Django app that generates Top 8 result banners for Super Smash Bros Ultimate Tournaments using Pillow. The banner template parts used were made by [EDM](https://twitter.com/Elenriqu3). Character portraits are not included in this repository. You can see the app working [here](https://riokaru.pythonanywhere.com/).
+This is a Django app that generates top 8 result graphics for many different fighting games tournaments using Pillow. These graphics include a picture of the player's main character as well as their nicknames and tournament placing. The graphic template parts used were made by [EDM](https://twitter.com/Elenriqu3). Character portraits are not included in this repository. You can see the app working [here](https://www.top8er.com/).
 
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E1E4K0N2)
 
@@ -10,15 +10,45 @@ This is a Django app that generates Top 8 result banners for Super Smash Bros Ul
 
 - Boxes under each player's name for their twitter handle.
 - Bottom Left, Top Left and Top Right texts to insert details regarding tournaments or other related information.
-- Custom layout colors and custom background.
-- Option to generate a banner for a smash.gg tournemant given a link. It looks for top 8's players name, character and twitter handle and the event's name, date, city, number of participants and url.
+- Custom layout and font colors, custom backgrounds.
+- Support for japanese and european characters (by changing the font).
+- Option to import data from a smash.gg or challonge link.
 
 ## Usage
 
 - Install pillow https://pypi.org/project/Pillow/
 - Install colorful https://pypi.org/project/django-colorful/
+- Install fonttools https://github.com/fonttools/fonttools
 - Put this app on your Django project and add it to the installed app on your `settings.py` file.
-- Create a text file named `smashgg.apikey` on the `generar` directory containing a valid [smash.gg ](https://smash.gg/) api key.
-- Create a directory named `Fighter Portraits` on the `generar` directory.
-- For each character, create a directory under `generar/Fighter Portraits` and place in it 8 portraits in `.png` format. The portraits must be named `0.png`...`7.png`. The app was made with 512x512 portraits in mind but it should work fine as long as they're square (will be stretched otherwise). Additionally, create a `Random` directory and place a single `0.png` portrait in it.
-- If you just want to generate pictures without the need of using django check the `generar/perro.py` script.
+- Create text files named `smashgg.apikey` and `challonge.apikey` on the `generar` directory containing valid [smash.gg ](https://smash.gg/) and [challonge](https://challonge.com) api keys.
+- Create an `assets` directory in the `generar`. Folder structure is as follows:
+```
+assets/
+        game/
+             bg.png
+             portraits/
+                      Character/
+                                0.png
+                                1.png
+                                ...
+                                n.png
+                      ...
+                      OtherCharacter/
+                                0.png
+                                1.png
+                                ...
+                                n.png
+             icons/
+                      Character/
+                                0.png
+                                1.png
+                                ...
+                                n.png
+                      ...
+                      OtherCharacter/
+                                0.png
+                                1.png
+                                ...
+                                n.png
+```
+- If you would rather use the command line, check the `generar/perro.py` script.
