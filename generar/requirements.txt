@@ -1,0 +1,4 @@
+Django==3.0.6
+django-colorful==1.3
+fonttools==4.16.1
+Pillow==7.0.0
