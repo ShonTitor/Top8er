@@ -84,4 +84,4 @@ These can be the color of the alt, a button combination or anything descriptive 
 
 ## Contact
 If you have all these ready or have any questions please contact me on [twitter](https://twitter.com/Riokaru) or discord (Riokaru#7131). 
-Make sure to send a `.zip`, `.rar` or any other format of your choice containing all the files to prevent any unwated compression and preserve the folder structure.
+Make sure to send a `.zip`, `.rar` or any other format of your choice containing all the files to prevent any unwanted compression and preserve the folder structure.
