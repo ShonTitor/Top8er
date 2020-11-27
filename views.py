@@ -268,3 +268,17 @@ def efz(request) :
     return hestia(request, "efz", FormClass, color_guide=c_guide,
                   hasextra=False)
 
+def mbaacc(request) :
+    c = ['Akiha', 'Aoko', 'Arcueid', 'Ciel', 'Hime', 'Hisui',
+         'Koha-Mech', 'Kohaku', 'Kouma', 'Len', 'Maids', 'Mech-Hisui',
+         'Miyako', 'NAC', 'Nanaya', 'Neco-Arc', 'Neco-Mech', 'Nero',
+         'Powerd Ciel', 'Red Arcueid', 'Riesbyfe', 'Roa', 'Ryougi',
+         'Satsuki', 'Seifuku', 'Sion', 'Tohno', 'V.Akiha', 'V.Sion',
+         'Warachia', 'White Len']
+    ec = ["Crescent", "Full", "Half"]
+    FormClass = makeform(chars=c, echars=ec,
+                         numerito=37, numerito_extra=3,
+                         color1="#171a45", color2="#440206")
+    c_guide = "https://wiki.gbl.gg/w/Melty_Blood/MBAACC"
+    return hestia(request, "mbaacc", FormClass,
+                  color_guide=c_guide, hasextra=True)

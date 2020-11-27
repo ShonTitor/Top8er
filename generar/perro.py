@@ -381,7 +381,7 @@ def generate_banner(datos, prmode=False, blacksquares=True,
             try :
                 ruta_i = os.path.join(icons, char[0])
                 ruta_i = os.path.join(ruta_i, str(char[1])+".png")
-                ic = Image.open(ruta_i)
+                ic = Image.open(ruta_i).convert("RGBA")
                 if size != BIG :
                     if icon_sizes : i_size = icon_sizes[1]
                     else : i_size = 32
@@ -397,8 +397,8 @@ def generate_banner(datos, prmode=False, blacksquares=True,
                     rmarg = 14
                 c.paste(ic, (POS[i][0]+size[0]-i_size-rmarg, POS[i][1]+s_off*(i_size+4)+rmarg), mask=ic)
                 s_off += 1
-            except :
-                print("not found: "+str(ruta_i))
+            except Exception as e :
+                print(e, str(ruta_i))
     return c
 
 if __name__ == "__main__":
@@ -731,7 +731,7 @@ if __name__ == "__main__":
     bsq = False
     """
 
-    #"""
+    """
     import random
     C = ['Akane', 'Akiko', 'Ayu', 'Doppel', 'Ikumi', 'Kanna', 'Kano',
          'Kaori', 'Mai', 'Makoto', 'Mayu', 'Minagi', 'Mio', 'Misaki',
@@ -763,6 +763,48 @@ if __name__ == "__main__":
              }
     cc1 = (37, 53, 138)
     cc2 = (157, 202, 233)
+    bsq = False
+    """
+
+    #"""
+    import random
+    C = ['Akiha', 'Aoko', 'Arcueid', 'Ciel', 'Hime', 'Hisui',
+         'Koha-Mech', 'Kohaku', 'Kouma', 'Len', 'Maids', 'Mech-Hisui',
+         'Miyako', 'NAC', 'Nanaya', 'Neco-Arc', 'Neco-Mech', 'Nero',
+         'Powerd Ciel', 'Red Arcueid', 'Riesbyfe', 'Roa', 'Ryougi',
+         'Satsuki', 'Seifuku', 'Sion', 'Tohno', 'V.Akiha', 'V.Sion',
+         'Warachia', 'White Len']
+    def randchar(n=None) :
+        c = random.choice(C)
+        if n is None :
+            n = random.randint(1,36)
+            n = 0
+        return (c,n)
+    def randmoon(n=None) :
+        C = ["Crescent", "Full", "Half"]
+        c = random.choice(C)
+        if n is None :
+            #n = random.randint(1,36)
+            n = 0
+        return (c,n)
+    
+    texto = ["Player "+str(i) for i in range(1,9)]
+    personajes = [randchar() for i in range(8)]
+    twitter = ["player"+str(i) for i in range(1,9)]
+    pockets = [[randmoon()] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "Top Text goes here",
+             "bottomtext" : "Bottom Text goes here",
+             "url" : "https://top8er.com",
+             "game" : "mbaacc"
+             }
+    cc1 = (23, 26, 69)
+    cc2 = (68, 2, 6)
     bsq = False
     #"""
 

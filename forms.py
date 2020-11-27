@@ -41,7 +41,7 @@ class SmashggForm(forms.Form) :
         return cleaned_data
 
 def makeform(chars=None, numerito=None, numerito_extra=None,
-             echars=None, hasextra=True, efz=False,
+             echars=None, hasextra=True, efz=False, mb=False,
              color1="#ff281a", color2="#ffb60c") :
     if chars is None :
         chars = ['Random', 'Banjo & Kazooie', 'Bayonetta', 'Bowser', 'Bowser Jr', 'Byleth',
@@ -68,11 +68,20 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
             e_chars = ['None']+chars[1:]
         else :
             e_chars = ['None']+chars
+    else :
+        e_chars = [None]+echars
     chars = tuple([(i, i) for i in chars])
     e_chars = tuple([(i, i) for i in e_chars])
 
     cc1 = color1
     cc2 = color2
+
+    if mb :
+        extra_label1 = 'Main Moon'
+        extra_label2 = 'Secondary Moon'
+    else :
+        extra_label1 = "Secondary Character"
+        extra_label2 = "Tertiary Character"
 
     class NoExtraForm(AncestorForm) :
         lcolor1 = RGBColorField(label="Main Color", initial=cc1)
@@ -133,44 +142,44 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
             palette8 = forms.FileField(label="Color Palette", required=False)
             
     class GenForm(NoExtraForm):
-        extra11 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+        extra11 = forms.ChoiceField(label=extra_label1, choices=e_chars, required=False)
         extra_color11 = forms.ChoiceField(label='Secondary Character Color', choices=num_e, required=False)
-        extra12 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+        extra12 = forms.ChoiceField(label=extra_label2, choices=e_chars, required=False)
         extra_color12 = forms.ChoiceField(label='Tertiary Character Color', choices=num_e, required=False)
 
-        extra21 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+        extra21 = forms.ChoiceField(label=extra_label1, choices=e_chars, required=False)
         extra_color21 = forms.ChoiceField(label='Secondary Character Color', choices=num_e, required=False)
-        extra22 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+        extra22 = forms.ChoiceField(label=extra_label2, choices=e_chars, required=False)
         extra_color22 = forms.ChoiceField(label='Tertiary Character Color', choices=num_e, required=False)
 
-        extra31 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+        extra31 = forms.ChoiceField(label=extra_label1, choices=e_chars, required=False)
         extra_color31 = forms.ChoiceField(label='Secondary Character Color', choices=num_e, required=False)
-        extra32 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+        extra32 = forms.ChoiceField(label=extra_label2, choices=e_chars, required=False)
         extra_color32 = forms.ChoiceField(label='Tertiary Character Color', choices=num_e, required=False)
 
-        extra41 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+        extra41 = forms.ChoiceField(label=extra_label1, choices=e_chars, required=False)
         extra_color41 = forms.ChoiceField(label='Secondary Character Color', choices=num_e, required=False)
-        extra42 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+        extra42 = forms.ChoiceField(label=extra_label2, choices=e_chars, required=False)
         extra_color42 = forms.ChoiceField(label='Tertiary Character Color', choices=num_e, required=False)
 
-        extra51 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+        extra51 = forms.ChoiceField(label=extra_label1, choices=e_chars, required=False)
         extra_color51 = forms.ChoiceField(label='Secondary Character Color', choices=num_e, required=False)
-        extra52 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+        extra52 = forms.ChoiceField(label=extra_label2, choices=e_chars, required=False)
         extra_color52 = forms.ChoiceField(label='Tertiary Character Color', choices=num_e, required=False)
 
-        extra61 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+        extra61 = forms.ChoiceField(label=extra_label1, choices=e_chars, required=False)
         extra_color61 = forms.ChoiceField(label='Secondary Character Color', choices=num_e, required=False)
-        extra62 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+        extra62 = forms.ChoiceField(label=extra_label2, choices=e_chars, required=False)
         extra_color62 = forms.ChoiceField(label='Tertiary Character Color', choices=num_e, required=False)
 
-        extra71 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+        extra71 = forms.ChoiceField(label=extra_label1, choices=e_chars, required=False)
         extra_color71 = forms.ChoiceField(label='Secondary Character Color', choices=num_e, required=False)
-        extra72 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+        extra72 = forms.ChoiceField(label=extra_label2, choices=e_chars, required=False)
         extra_color72 = forms.ChoiceField(label='Tertiary Character Color', choices=num_e, required=False)
 
-        extra81 = forms.ChoiceField(label='Secondary Character', choices=e_chars, required=False)
+        extra81 = forms.ChoiceField(label=extra_label1, choices=e_chars, required=False)
         extra_color81 = forms.ChoiceField(label='Secondary Character Color', choices=num_e, required=False)
-        extra82 = forms.ChoiceField(label='Tertiary Character', choices=e_chars, required=False)
+        extra82 = forms.ChoiceField(label=extra_label2, choices=e_chars, required=False)
         extra_color82 = forms.ChoiceField(label='Tertiary Character Color', choices=num_e, required=False)
 
     if hasextra : return GenForm
