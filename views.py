@@ -276,8 +276,8 @@ def mbaacc(request) :
          'Satsuki', 'Seifuku', 'Sion', 'Tohno', 'V.Akiha', 'V.Sion',
          'Warachia', 'White Len']
     ec = ["Crescent", "Full", "Half"]
-    FormClass = makeform(chars=c, echars=ec,
-                         numerito=37, numerito_extra=3,
+    FormClass = makeform(chars=c, echars=ec, mb=True,
+                         numerito=37, numerito_extra=1,
                          color1="#171a45", color2="#440206")
     c_guide = "https://wiki.gbl.gg/w/Melty_Blood/MBAACC"
     return hestia(request, "mbaacc", FormClass,
