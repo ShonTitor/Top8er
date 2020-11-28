@@ -282,3 +282,10 @@ def mbaacc(request) :
     c_guide = "https://wiki.gbl.gg/w/Melty_Blood/MBAACC"
     return hestia(request, "mbaacc", FormClass,
                   color_guide=c_guide, hasextra=True)
+
+def soku(request) :
+    c = ['alice', 'aya', 'cirno', 'iku', 'komachi', 'marisa', 'meiling',
+         'patchouli', 'reimu', 'reisen', 'remilia', 'sakuya', 'sanae',
+         'suika', 'suwako', 'tenshi', 'utsuho', 'youmu', 'yukari', 'yuyuko']
+    FormClass = makeform(chars=c, numerito=1, color1='#28516a', color2='#51a3d5')
+    return hestia(request, "soku", FormClass)

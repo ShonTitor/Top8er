@@ -766,7 +766,7 @@ if __name__ == "__main__":
     bsq = False
     """
 
-    #"""
+    """
     import random
     C = ['Akiha', 'Aoko', 'Arcueid', 'Ciel', 'Hime', 'Hisui',
          'Koha-Mech', 'Kohaku', 'Kouma', 'Len', 'Maids', 'Mech-Hisui',
@@ -777,7 +777,7 @@ if __name__ == "__main__":
     def randchar(n=None) :
         c = random.choice(C)
         if n is None :
-            n = random.randint(1,36)
+            #n = random.randint(1,36)
             n = 0
         return (c,n)
     def randmoon(n=None) :
@@ -788,7 +788,7 @@ if __name__ == "__main__":
             n = 0
         return (c,n)
     
-    texto = ["Player "+str(i) for i in range(1,9)]
+    texto = ["プレーヤー"+str(i) for i in range(1,9)]
     personajes = [randchar() for i in range(8)]
     twitter = ["player"+str(i) for i in range(1,9)]
     pockets = [[randmoon()] for i in range(8)]
@@ -805,6 +805,36 @@ if __name__ == "__main__":
              }
     cc1 = (23, 26, 69)
     cc2 = (68, 2, 6)
+    bsq = False
+    """
+
+    #"""
+    import random
+    C = ['alice', 'aya', 'cirno', 'iku', 'komachi', 'marisa', 'meiling',
+         'patchouli', 'reimu', 'reisen', 'remilia', 'sakuya', 'sanae',
+         'suika', 'suwako', 'tenshi', 'utsuho', 'youmu', 'yukari', 'yuyuko']
+    def randchar(n=None) :
+        c = random.choice(C)
+        if n is None : n = 0
+        return (c,n)
+    
+    texto = ["Player "+str(i) for i in range(1,9)]
+    personajes = [randchar() for i in range(8)]
+    twitter = ["player"+str(i) for i in range(1,9)]
+    pockets = [[randchar(), randchar()] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "Top Text goes here",
+             "bottomtext" : "Bottom Text goes here",
+             "url" : "https://top8er.com",
+             "game" : "soku"
+             }
+    cc1 = (40, 81, 106)
+    cc2 = (81, 163, 213)
     bsq = False
     #"""
 
