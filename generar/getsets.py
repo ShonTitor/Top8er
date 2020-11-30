@@ -201,6 +201,7 @@ def challonge_data(slug) :
     headers = { 'User-Agent': 'Top8er' }
 
     url = "https://api.challonge.com/v1/tournaments/"+slug+".json?api_key="+challonge_key+"&include_participants=1"
+    print(url)
     response = requests.get(url, headers=headers)
     datos = json.loads(response.content)
     if "tournament" in datos :
@@ -213,8 +214,8 @@ def challonge_data(slug) :
     npart = len(players)
     players = [(p["final_rank"], p["name"])
                for p in players]
-    try : players.sort()
-    except : pass
+    if all(not p[0] is None for p in players) :
+        players.sort()
     players = [p[1] for p in players[:8]]
     players = [{"tag" : p,
                "char" : ("Random", 0),
