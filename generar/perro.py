@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 from fontTools.ttLib import TTFont
 from fontTools.unicode import Unicode
-import os
+import os, math
 
 def draw_text(img, draw, pos, texto, font=None,
               fill=(255, 255, 255), shadow=(0,0,0)) :
@@ -144,7 +144,8 @@ def generate_banner(datos, prmode=False, blacksquares=True,
                     font=None,
                     fontcolor1=(255,255,255),fontscolor1=(0,0,0),
                     fontcolor2=(255,255,255),fontscolor2=(0,0,0),
-                    shadow=True, icon_sizes=None) :
+                    shadow=True, icon_sizes=None,
+                    teammode=False) :
     game = datos["game"]
     players = datos["players"]
 
@@ -218,6 +219,59 @@ def generate_banner(datos, prmode=False, blacksquares=True,
             shape = [POS[i], (POS[i][0]+size[0], POS[i][1]+size[1])]
             draw.rectangle(shape, fill=(0,0,0))
 
+        if teammode :
+            chars = [players[i]["char"]] + players[i]["secondaries"]
+            d = Image.new("RGBA", size, color=(255,255,255,0))
+            j = 0
+            for char in chars :
+                ruta = os.path.join(portraits, char[0], str(char[1])+".png")
+                
+                newsize = int(0.7*size[0])
+                offset = 0.11
+                
+                d2 = Image.open(ruta).convert("RGBA").resize((newsize, newsize),
+                                                            resample=Image.ANTIALIAS)
+
+                m = math.sqrt(3/2)
+                m = 1.4
+                if j == 0 :
+                    position = (3*(size[0]-newsize)//5,
+                                3*(size[0]-newsize)//4)
+                    base1 = size[0]-(m-0.3)*size[0]
+                    base2 = size[0]-(size[0]/m)
+                    is_out = lambda t : t[0]-t[1] < base1 or t[0]-t[1] > base2
+                elif j == 1 :
+                    position = (-int(size[0]*offset),
+                                size[0]-newsize)
+                    base = math.sqrt(3/2)*size[0]
+                    base = size[0]-(m-0.3)*size[0]
+                    is_out = lambda t : t[0]-t[1] > base
+                elif j == 2 :
+                    position = (size[0]-newsize+int(size[0]*offset), 0)
+                    base = size[0]-(size[0]/m)
+                    is_out = lambda t : t[0]-t[1] < base
+
+                d3 = Image.new("RGBA", size, color=(255,255,255,0))
+                h,w = d3.size
+                d3.paste(d2, position, d2)
+                    
+                for x in range(h) :
+                    for y in range(w) :
+                        if not is_out((x,y)) :
+                            continue
+                            if j == 0 : d3.putpixel((x,y), (255,0,0,255))
+                            elif j == 1 : d3.putpixel((x,y), (0,255,0,255))
+                            else  : d3.putpixel((x,y), (0,0,255,255))
+                        else :
+                            d3.putpixel((x,y), (255,255,255,0))
+                                
+                d.paste(d3, (0,0), d3)
+                
+                j += 1
+            c.paste(d, POS[i], mask=d)
+            continue
+
+
         char = players[i]["char"]
         ruta = os.path.join(portraits, char[0])
         if game == "efz" and not type(char[1]) is int and not len(char[1]) == 1 :
@@ -253,6 +307,31 @@ def generate_banner(datos, prmode=False, blacksquares=True,
             c.paste(lasombra, cuadrao, mask=dd)
         c.paste(d, POS[i], mask=d)
 
+        # extras
+        s_off = 0
+        for char in players[i]['secondaries'] :
+            try :
+                ruta_i = os.path.join(icons, char[0])
+                ruta_i = os.path.join(ruta_i, str(char[1])+".png")
+                ic = Image.open(ruta_i).convert("RGBA")
+                if size != BIG :
+                    if icon_sizes : i_size = icon_sizes[1]
+                    else : i_size = 32
+                    ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
+                    if size == MED :
+                        rmarg = 8
+                    else :
+                        rmarg = 6
+                else :
+                    if icon_sizes : i_size = icon_sizes[0]
+                    else : i_size = 64
+                    ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
+                    rmarg = 14
+                c.paste(ic, (POS[i][0]+size[0]-i_size-rmarg, POS[i][1]+s_off*(i_size+4)+rmarg), mask=ic)
+                s_off += 1
+            except Exception as e :
+                print(e, str(ruta_i))
+
     # Partes del template
     a  = Image.open(os.path.join(template,"marco.png"))
     if customcolor :
@@ -272,12 +351,15 @@ def generate_banner(datos, prmode=False, blacksquares=True,
         a = Image.open(os.path.join(template,"numerospr.png"))
     else :
         a = Image.open(os.path.join(template,"numeros.png"))
+        
     if fontcolor1 != (255, 255, 255) and fontcolor1 != "#ffffff" :
         mask = a
         a = Image.new('RGBA', SIZE, fontcolor1)
     else :
         mask = a
+
     c.paste(a, (0,0), mask=mask)
+    
     #c = Image.alpha_composite(a,c)
 
     # Textos de arriba y abajo
@@ -375,30 +457,6 @@ def generate_banner(datos, prmode=False, blacksquares=True,
         #           POS[i][1]+int(size[0]*0.995)-sizefont),
         #           texto, font=font, fill=fontcolor)
 
-        # extras
-        s_off = 0
-        for char in players[i]['secondaries'] :
-            try :
-                ruta_i = os.path.join(icons, char[0])
-                ruta_i = os.path.join(ruta_i, str(char[1])+".png")
-                ic = Image.open(ruta_i).convert("RGBA")
-                if size != BIG :
-                    if icon_sizes : i_size = icon_sizes[1]
-                    else : i_size = 32
-                    ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
-                    if size == MED :
-                        rmarg = 8
-                    else :
-                        rmarg = 6
-                else :
-                    if icon_sizes : i_size = icon_sizes[0]
-                    else : i_size = 64
-                    ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
-                    rmarg = 14
-                c.paste(ic, (POS[i][0]+size[0]-i_size-rmarg, POS[i][1]+s_off*(i_size+4)+rmarg), mask=ic)
-                s_off += 1
-            except Exception as e :
-                print(e, str(ruta_i))
     return c
 
 if __name__ == "__main__":
@@ -418,6 +476,7 @@ if __name__ == "__main__":
     bsq = True
     darken = True
     cbg = None
+    teammode = False
 
     """
     texto = ["morrocoYo", "GARU", "Pancakes", "VeXx",
@@ -587,7 +646,7 @@ if __name__ == "__main__":
              }
     """
 
-    """
+    #"""
     texto = ["Player "+str(i) for i in range(1,9)]
     import random
     c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza', 'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul', 'Peacock', 'Robo Fortune', 'Squigly', 'Valentine']
@@ -607,7 +666,8 @@ if __name__ == "__main__":
              }
     cc1 = (215, 62, 62)
     cc2 = (203, 198, 186)
-    """
+    teammode = True
+    #"""
 
     """
     import random
@@ -808,7 +868,7 @@ if __name__ == "__main__":
     bsq = False
     """
 
-    #"""
+    """
     import random
     C = ['alice', 'aya', 'cirno', 'iku', 'komachi', 'marisa', 'meiling',
          'patchouli', 'reimu', 'reisen', 'remilia', 'sakuya', 'sanae',
@@ -836,7 +896,47 @@ if __name__ == "__main__":
     cc1 = (40, 81, 106)
     cc2 = (81, 163, 213)
     bsq = False
-    #"""
+    """
+
+    """
+    import random
+    C = ['Akira Yuki', 'Ako Tamaki', 'Asuna', 'Emi Yusa', 'Kirino Kousaka',
+         'Kirito', 'Kuroko Shirai', 'Kuroyukihime', 'Mikoto Misaka',
+         'Miyuki Shiba', 'Qwenthur Barbotage', 'Rentaro Satomi',
+         'Selvaria Bles', 'Shana', 'Shizuo Heiwajima', 'Taiga Aisaka',
+         'Tatsuya Shiba', 'Tomoka Minato', 'Yukina Himeragi', 'Yuuki Konno']
+    def randchar(n=None) :
+        c = random.choice(C)
+        if n is None : n = 0 # random.randint(1,23)
+        return (c,n)
+    def randsupp() :
+        C = ['Accelerator', 'Alicia', 'Boogiepop', 'Celty', 'Dokuro', 'Enju',
+             'Erio', 'Froleytia', 'Haruyuki', 'Holo', 'Innocent Charm',
+             'Iriya', 'Izaya', 'Kino', 'Kojou', 'Kouko', 'Kuroneko',
+             'Leafa', 'LLENN', 'Mashiro', 'Miyuki', 'Pai', 'Rusian',
+             'Ryuuji', 'Sadao', 'Tatsuya', 'Tomo', 'Touma', 'Uiharu',
+             'Wilhelmina', 'Zero']
+        return (random.choice(C), 0)
+    
+    texto = ["Player "+str(i) for i in range(1,9)]
+    personajes = [randchar() for i in range(8)]
+    twitter = ["player"+str(i) for i in range(1,9)]
+    pockets = [[randsupp(), randsupp()][:random.randint(0,2)] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "Top Text goes here",
+             "bottomtext" : "Bottom Text goes here",
+             "url" : "https://top8er.com",
+             "game" : "dfci"
+             }
+    cc1 = (25, 25, 200)
+    cc2 = (200, 25, 25)
+    bsq = False
+    """
 
     import time
     t1 = time.time()
@@ -846,7 +946,8 @@ if __name__ == "__main__":
                           customcolor=cc1, customcolor2=cc2,
                           font=fuente,
                           fontcolor1=fontc, fontscolor1 = fontsc,
-                          fontcolor2=fontc2, fontscolor2 = fontsc2
+                          fontcolor2=fontc2, fontscolor2 = fontsc2,
+                          teammode=teammode
                           )
     t2 = time.time()
     print(t2-t1)
