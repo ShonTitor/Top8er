@@ -219,37 +219,74 @@ def generate_banner(datos, prmode=False, blacksquares=True,
             shape = [POS[i], (POS[i][0]+size[0], POS[i][1]+size[1])]
             draw.rectangle(shape, fill=(0,0,0))
 
-        if teammode :
+        if teammode and len(players[i]["secondaries"]) != 0 :
             chars = [players[i]["char"]] + players[i]["secondaries"]
             d = Image.new("RGBA", size, color=(255,255,255,0))
             j = 0
             for char in chars :
                 ruta = os.path.join(portraits, char[0], str(char[1])+".png")
                 
-                newsize = int(0.7*size[0])
-                offset = 0.11
-                
-                d2 = Image.open(ruta).convert("RGBA").resize((newsize, newsize),
-                                                            resample=Image.ANTIALIAS)
+                if len(chars) == 3 :
+                    newsize = int(0.7*size[0])                    
+                    d2 = Image.open(ruta).convert("RGBA").resize((newsize, newsize))
+                    offset = 0.14
+                    m1 = 2.9
+                    m2 = 0.8
+                    if j == 0 :
+                        position = ((size[0]-newsize)//2,
+                                    (size[0]-newsize)//2)
+                        base1 = size[0]-m2*size[0]
+                        base2 = size[0]-(size[0]/m1)
+                        is_out = lambda t : t[0]-t[1] < base1 or t[0]-t[1] > base2
+                    elif j == 1 :
+                        position = (-int(size[0]*offset),
+                                    size[0]-newsize)
+                        base = size[0]-m2*size[0]
+                        is_out = lambda t : t[0]-t[1] > base
+                    elif j == 2 :
+                        position = (size[0]-newsize+int(size[0]*offset), 0)
+                        base = size[0]-(size[0]/m1)
+                        is_out = lambda t : t[0]-t[1] < base
 
-                m = math.sqrt(3/2)
-                m = 1.4
-                if j == 0 :
-                    position = (3*(size[0]-newsize)//5,
-                                3*(size[0]-newsize)//4)
-                    base1 = size[0]-(m-0.3)*size[0]
-                    base2 = size[0]-(size[0]/m)
-                    is_out = lambda t : t[0]-t[1] < base1 or t[0]-t[1] > base2
-                elif j == 1 :
-                    position = (-int(size[0]*offset),
-                                size[0]-newsize)
-                    base = math.sqrt(3/2)*size[0]
-                    base = size[0]-(m-0.3)*size[0]
-                    is_out = lambda t : t[0]-t[1] > base
-                elif j == 2 :
-                    position = (size[0]-newsize+int(size[0]*offset), 0)
-                    base = size[0]-(size[0]/m)
-                    is_out = lambda t : t[0]-t[1] < base
+                    x,y = position
+                    if char[0] in ["Parasoul"] :
+                        x += size[0]//10
+                    elif char[0] in ["Ms Fortune", "Robo Fortune", "Valentine"] :
+                        x += size[0]//20
+                    elif char[0] in ["Big Band", "Beowulf"] :
+                        x -= size[0]//20
+                    elif char[0] in ["Painwheel"] :
+                        y -= size[0]//20
+                        x -= size[0]//20
+                    position = (x,y)
+
+                elif len(chars) <= 2 :
+                    newsize = int(0.8*size[0])                    
+                    d2 = Image.open(ruta).convert("RGBA").resize((newsize, newsize))
+                    offset = 0.08
+                    m = 0.6
+                    if j == 0 :
+                        position = (-int(size[0]*offset),
+                                    size[0]-newsize)
+                        base = size[0]-m*size[0]
+                        is_out = lambda t : t[0]-t[1] > base
+                    elif j == 1 :
+                        position = (size[0]-newsize+int(size[0]*offset), 0)
+                        base = size[0]-m*size[0]
+                        is_out = lambda t : t[0]-t[1] < base
+
+                    x,y = position
+                    if char[0] in ["Parasoul"] :
+                        x += size[0]//10
+                    elif char[0] in ["Ms Fortune", "Robo Fortune", "Valentine"] :
+                        x += size[0]//20
+                    elif char[0] in ["Big Band", "Beowulf"] :
+                        x -= size[0]//20
+                    elif char[0] in ["Painwheel"] :
+                        y -= size[0]//20
+                        x -= size[0]//20
+                    position = (x,y)
+                    
 
                 d3 = Image.new("RGBA", size, color=(255,255,255,0))
                 h,w = d3.size
@@ -257,34 +294,33 @@ def generate_banner(datos, prmode=False, blacksquares=True,
                     
                 for x in range(h) :
                     for y in range(w) :
-                        if not is_out((x,y)) :
+                        if is_out((x*1.4,y*0.6)) :
+                            d3.putpixel((x,y), (255,255,255,0))
+                        """
+                        else :
                             continue
                             if j == 0 : d3.putpixel((x,y), (255,0,0,255))
                             elif j == 1 : d3.putpixel((x,y), (0,255,0,255))
                             else  : d3.putpixel((x,y), (0,0,255,255))
-                        else :
-                            d3.putpixel((x,y), (255,255,255,0))
-                                
+                        """
                 d.paste(d3, (0,0), d3)
                 
                 j += 1
-            c.paste(d, POS[i], mask=d)
-            continue
-
-
-        char = players[i]["char"]
-        ruta = os.path.join(portraits, char[0])
-        if game == "efz" and not type(char[1]) is int and not len(char[1]) == 1 :
-            rruta = os.path.join(ruta, "1.png")
-            pal1 = os.path.join(ruta, "0.pal")
-            d = efz_swap(rruta,
-                         pal1,
-                         char[1], akane=(char[0]=="Akane")
-                         ).convert("RGBA").resize(size,
-                                                  resample=Image.ANTIALIAS)
+            #c.paste(d, POS[i], mask=d)
         else :
-            ruta = os.path.join(ruta, str(char[1])+".png")
-            d = Image.open(ruta).convert("RGBA").resize(size, resample=Image.ANTIALIAS)
+            char = players[i]["char"]
+            ruta = os.path.join(portraits, char[0])
+            if game == "efz" and not type(char[1]) is int and not len(char[1]) == 1 :
+                rruta = os.path.join(ruta, "1.png")
+                pal1 = os.path.join(ruta, "0.pal")
+                d = efz_swap(rruta,
+                             pal1,
+                             char[1], akane=(char[0]=="Akane")
+                             ).convert("RGBA").resize(size,
+                                                      resample=Image.ANTIALIAS)
+            else :
+                ruta = os.path.join(ruta, str(char[1])+".png")
+                d = Image.open(ruta).convert("RGBA").resize(size, resample=Image.ANTIALIAS)
         
         
         # Intento de sombra
@@ -308,29 +344,30 @@ def generate_banner(datos, prmode=False, blacksquares=True,
         c.paste(d, POS[i], mask=d)
 
         # extras
-        s_off = 0
-        for char in players[i]['secondaries'] :
-            try :
-                ruta_i = os.path.join(icons, char[0])
-                ruta_i = os.path.join(ruta_i, str(char[1])+".png")
-                ic = Image.open(ruta_i).convert("RGBA")
-                if size != BIG :
-                    if icon_sizes : i_size = icon_sizes[1]
-                    else : i_size = 32
-                    ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
-                    if size == MED :
-                        rmarg = 8
+        if not teammode :
+            s_off = 0
+            for char in players[i]['secondaries'] :
+                try :
+                    ruta_i = os.path.join(icons, char[0])
+                    ruta_i = os.path.join(ruta_i, str(char[1])+".png")
+                    ic = Image.open(ruta_i).convert("RGBA")
+                    if size != BIG :
+                        if icon_sizes : i_size = icon_sizes[1]
+                        else : i_size = 32
+                        ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
+                        if size == MED :
+                            rmarg = 8
+                        else :
+                            rmarg = 6
                     else :
-                        rmarg = 6
-                else :
-                    if icon_sizes : i_size = icon_sizes[0]
-                    else : i_size = 64
-                    ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
-                    rmarg = 14
-                c.paste(ic, (POS[i][0]+size[0]-i_size-rmarg, POS[i][1]+s_off*(i_size+4)+rmarg), mask=ic)
-                s_off += 1
-            except Exception as e :
-                print(e, str(ruta_i))
+                        if icon_sizes : i_size = icon_sizes[0]
+                        else : i_size = 64
+                        ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
+                        rmarg = 14
+                    c.paste(ic, (POS[i][0]+size[0]-i_size-rmarg, POS[i][1]+s_off*(i_size+4)+rmarg), mask=ic)
+                    s_off += 1
+                except Exception as e :
+                    print(e, str(ruta_i))
 
     # Partes del template
     a  = Image.open(os.path.join(template,"marco.png"))
@@ -652,7 +689,9 @@ if __name__ == "__main__":
     c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza', 'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul', 'Peacock', 'Robo Fortune', 'Squigly', 'Valentine']
     personajes = [(random.choice(c), random.randint(0,26)) for i in range(8)]
     twitter = ["player"+str(i) for i in range(1,9)]
-    pockets = [[(random.choice(c), 0), (random.choice(c), 0)] for i in range(8)]
+    pockets = [[(random.choice(c), random.randint(0,26)),
+                (random.choice(c), random.randint(0,26))][:random.randint(0,2)]
+               for i in range(8)]
     players = [{"tag" : texto[i],
               "char" : personajes[i],
               "twitter" : twitter[i],
