@@ -14,6 +14,7 @@ urlpatterns = [
     path('MeltyBlood', views.mbaacc, name='mbaacc'),
     path('TouhouHisoutensoku', views.soku, name='soku'),
     path('SlapCity', views.slapcity, name='slapcity'),
+    path('dfci', views.dfci, name='dfci'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),

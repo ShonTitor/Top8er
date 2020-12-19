@@ -297,3 +297,22 @@ def slapcity(request) :
                          color1="#ff7100", color2='#25d0fb')
     c_guide = "https://www.spriters-resource.com/pc_computer/slapcity/"
     return hestia(request, "slapcity", FormClass, color_guide=c_guide, hasextra=False)
+
+def dfci(request) :
+    c = ['Akira Yuki', 'Ako Tamaki', 'Asuna', 'Emi Yusa', 'Kirino Kousaka',
+         'Kirito', 'Kuroko Shirai', 'Kuroyukihime', 'Mikoto Misaka',
+         'Miyuki Shiba', 'Qwenthur Barbotage', 'Rentaro Satomi',
+         'Selvaria Bles', 'Shana', 'Shizuo Heiwajima', 'Taiga Aisaka',
+         'Tatsuya Shiba', 'Tomoka Minato', 'Yukina Himeragi', 'Yuuki Konno']
+    ec = ['Accelerator', 'Alicia', 'Boogiepop', 'Celty', 'Dokuro', 'Enju',
+             'Erio', 'Froleytia', 'Haruyuki', 'Holo', 'Innocent Charm',
+             'Iriya', 'Izaya', 'Kino', 'Kojou', 'Kouko', 'Kuroneko',
+             'Leafa', 'LLENN', 'Mashiro', 'Miyuki', 'Pai', 'Rusian',
+             'Ryuuji', 'Sadao', 'Tatsuya', 'Tomo', 'Touma', 'Uiharu',
+             'Wilhelmina', 'Zero']
+    FormClass = makeform(chars=c, echars=ec, mb=True,
+                         numerito=25, numerito_extra=1,
+                         color1="#1919c8", color2="#c81919")
+    c_guide = "https://wiki.gbl.gg/w/Dengeki_Bunko:_Fighting_Climax/DFCI"
+    return hestia(request, "dfci", FormClass,
+                  color_guide=c_guide, hasextra=True)
