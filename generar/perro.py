@@ -683,7 +683,7 @@ if __name__ == "__main__":
              }
     """
 
-    #"""
+    """
     texto = ["Player "+str(i) for i in range(1,9)]
     import random
     c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza', 'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul', 'Peacock', 'Robo Fortune', 'Squigly', 'Valentine']
@@ -706,7 +706,7 @@ if __name__ == "__main__":
     cc1 = (215, 62, 62)
     cc2 = (203, 198, 186)
     teammode = True
-    #"""
+    """
 
     """
     import random
@@ -976,6 +976,34 @@ if __name__ == "__main__":
     cc2 = (200, 25, 25)
     bsq = False
     """
+
+    #"""
+    import random
+    C = ['Beef', 'Garlic', 'Noodle', 'Onion', 'Pork', 'Rice']
+    def randchar(n=None) :
+        c = random.choice(C)
+        if n is None : n = 0
+        return (c,n)
+    
+    texto = ["Player "+str(i) for i in range(1,9)]
+    personajes = [randchar() for i in range(8)]
+    twitter = ["player"+str(i) for i in range(1,9)]
+    pockets = [[] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "Top Text goes here",
+             "bottomtext" : "Bottom Text goes here",
+             "url" : "https://top8er.com",
+             "game" : "tla"
+             }
+    cc1 = (117, 60, 124)
+    cc2 = (234, 121, 248)
+    bsq = False
+    #"""
 
     import time
     t1 = time.time()

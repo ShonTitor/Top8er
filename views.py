@@ -316,3 +316,9 @@ def dfci(request) :
     c_guide = "https://wiki.gbl.gg/w/Dengeki_Bunko:_Fighting_Climax/DFCI"
     return hestia(request, "dfci", FormClass,
                   color_guide=c_guide, hasextra=True)
+
+def tla(request) :
+    c = ['Beef', 'Garlic', 'Noodle', 'Onion', 'Pork', 'Rice']
+    FormClass = makeform(chars=c, numerito=1, hasextra=False,
+                         color1="#753c7c", color2='#ea79f8')
+    return hestia(request, "tla", FormClass, hasextra=False)
