@@ -322,3 +322,10 @@ def tla(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#753c7c", color2='#ea79f8')
     return hestia(request, "tla", FormClass, hasextra=False)
+
+def svs(request) :
+    c = ['Earth', 'Erile', 'Hiro', 'Hiro2', 'Jadou', 'Jadou2',
+         'Krayce', 'Mayura', 'Orochimaru', 'Roze', 'Ryuken', 'Welles']
+    FormClass = makeform(chars=c, numerito=6, hasextra=False,
+                         color1="#233f91", color2='#e4c149')
+    return hestia(request, "svs", FormClass, hasextra=False)

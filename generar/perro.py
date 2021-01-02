@@ -977,7 +977,7 @@ if __name__ == "__main__":
     bsq = False
     """
 
-    #"""
+    """
     import random
     C = ['Beef', 'Garlic', 'Noodle', 'Onion', 'Pork', 'Rice']
     def randchar(n=None) :
@@ -1002,6 +1002,35 @@ if __name__ == "__main__":
              }
     cc1 = (117, 60, 124)
     cc2 = (234, 121, 248)
+    bsq = False
+    """
+
+    #"""
+    import random
+    C = ['Earth', 'Erile', 'Hiro', 'Hiro2', 'Jadou', 'Jadou2',
+         'Krayce', 'Mayura', 'Orochimaru', 'Roze', 'Ryuken', 'Welles']
+    def randchar(n=None) :
+        c = random.choice(C)
+        if n is None : n = random.randint(0,5)
+        return (c,n)
+    
+    texto = ["Player "+str(i) for i in range(1,9)]
+    personajes = [randchar() for i in range(8)]
+    twitter = ["player"+str(i) for i in range(1,9)]
+    pockets = [[] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "Top Text goes here",
+             "bottomtext" : "Bottom Text goes here",
+             "url" : "https://top8er.com",
+             "game" : "svs"
+             }
+    cc1 = (35, 63, 145)
+    cc2 = (228, 193, 73)
     bsq = False
     #"""
 
