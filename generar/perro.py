@@ -1005,7 +1005,7 @@ if __name__ == "__main__":
     bsq = False
     """
 
-    #"""
+    """
     import random
     C = ['Earth', 'Erile', 'Hiro', 'Hiro2', 'Jadou', 'Jadou2',
          'Krayce', 'Mayura', 'Orochimaru', 'Roze', 'Ryuken', 'Welles']
@@ -1032,6 +1032,36 @@ if __name__ == "__main__":
     cc1 = (35, 63, 145)
     cc2 = (228, 193, 73)
     bsq = False
+    """
+
+    #"""
+    import random
+    C = ['Alex', 'Chun-Li', 'Dudley', 'Elena', 'Akuma', 'Hugo',
+         'Ibuki', 'Ken', 'Makoto', 'Necro', 'Oro', 'Q', 'Remy', 'Ryu',
+         'Sean', 'Twelve', 'Urien', 'Yang', 'Yun']
+    def randchar(n=None) :
+        c = random.choice(C)
+        if n is None : n = random.randint(0,1)
+        return (c,n)
+    
+    texto = ["Player "+str(i) for i in range(1,9)]
+    personajes = [randchar(0) for i in range(8)]
+    twitter = ["player"+str(i) for i in range(1,9)]
+    pockets = [[] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "Top Text goes here",
+             "bottomtext" : "Bottom Text goes here",
+             "url" : "https://top8er.com",
+             "game" : "3s"
+             }
+    cc1 = (200, 60, 20)
+    cc2 = (239, 143, 23)
+    bsq = True
     #"""
 
     import time

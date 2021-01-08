@@ -17,6 +17,7 @@ urlpatterns = [
     path('dfci', views.dfci, name='dfci'),
     path('tla', views.tla, name='tla'),
     path('SpectralVS', views.svs, name='SpectralVS'),
+    path('3rdStrike', views.sf3s, name='3rdStrike'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),

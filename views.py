@@ -329,3 +329,13 @@ def svs(request) :
     FormClass = makeform(chars=c, numerito=6, hasextra=False,
                          color1="#233f91", color2='#e4c149')
     return hestia(request, "svs", FormClass, hasextra=False)
+
+def sf3s(request) :
+    c = ['Alex', 'Chun-Li', 'Dudley', 'Elena', 'Gill', 'Gouki', 'Hugo',
+         'Ibuki', 'Ken', 'Makoto', 'Necro', 'Oro', 'Q', 'Remy', 'Ryu',
+         'Sean', 'Twelve', 'Urien', 'Yang', 'Yun']
+    FormClass = makeform(chars=c, numerito=14, hasextra=False,
+                         color1="#c83c14", color2='#ef8f17')
+    c_guide = "https://www.zytor.com/~johannax/jigsaw/sf/3s.html"
+    return hestia(request, "3s", FormClass, hasextra=False,
+                  color_guide=c_guide)
