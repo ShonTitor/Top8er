@@ -331,7 +331,7 @@ def svs(request) :
     return hestia(request, "svs", FormClass, hasextra=False)
 
 def sf3s(request) :
-    c = ['Akuma', 'Alex', 'Chun-Li', 'Dudley', 'Elena', 'Gill', 'Hugo',
+    c = ['Akuma', 'Alex', 'Chun-Li', 'Dudley', 'Elena', 'Hugo',
          'Ibuki', 'Ken', 'Makoto', 'Necro', 'Oro', 'Q', 'Remy', 'Ryu',
          'Sean', 'Twelve', 'Urien', 'Yang', 'Yun']
     FormClass = makeform(chars=c, numerito=14, hasextra=False,
