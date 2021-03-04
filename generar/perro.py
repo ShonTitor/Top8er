@@ -263,7 +263,7 @@ def generate_banner(datos, prmode=False, blacksquares=True,
                 elif len(chars) <= 2 :
                     newsize = int(0.8*size[0])                    
                     d2 = Image.open(ruta).convert("RGBA").resize((newsize, newsize))
-                    offset = 0.08
+                    offset = 0.06
                     m = 0.6
                     if j == 0 :
                         position = (-int(size[0]*offset),
@@ -330,6 +330,8 @@ def generate_banner(datos, prmode=False, blacksquares=True,
 
             # offset de la sombra respecto al portrait
             shadowpos = int(size[0]*0.03)
+            if teammode :
+                shadowpos //= 2
 
             cuadrao = (  POS[i][0]+shadowpos,
                          POS[i][1]+shadowpos,
@@ -684,26 +686,50 @@ if __name__ == "__main__":
     """
 
     """
-    texto = ["Player "+str(i) for i in range(1,9)]
+    texto = [None for i in range(1,9)]
+
+    texto = ["PreloaderMan", "SnackLive", "DVS ELEC", "Brain",
+             "Riokaru", "Cismu", "Mago", "Poplar Lover"]
+    
     import random
-    c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza', 'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul', 'Peacock', 'Robo Fortune', 'Squigly', 'Valentine']
+    c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza',
+         'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul', 'Peacock',
+         'Robo Fortune', 'Squigly', 'Valentine']
+    
     personajes = [(random.choice(c), random.randint(0,26)) for i in range(8)]
+
+    personajes = [("Parasoul", 5), ("Parasoul", 0),
+                  ("Beowulf", 4), ("Double", 11),
+                  ("Squigly", 17), ("Peacock", 8),
+                  ("Parasoul", 3), ("Peacock", 8)]
+    
     twitter = ["player"+str(i) for i in range(1,9)]
-    pockets = [[(random.choice(c), random.randint(0,26)),
-                (random.choice(c), random.randint(0,26))][:random.randint(0,2)]
-               for i in range(8)]
+
+    twitter = [" ", " ", "ClaudioZavatti", "arcaniusbrain",
+               "riokaru", "LCismu", " ", " "]
+    
+    pockets = [
+               [("Double", 5)], [("Squigly", 0)],
+               [("Cerebella", 7), ("Big Band", 4)], [("Fukua", 15)],
+               [("Big Band", 13)], [("Big Band", 12)],
+               [("Beowulf", 15)], []
+               ]
+    
+    #pockets = [[(random.choice(c), 0),
+    #            (random.choice(c), 0)][:random.randint(0,2)]
+    #           for i in range(8)]
     players = [{"tag" : texto[i],
               "char" : personajes[i],
               "twitter" : twitter[i],
               "secondaries" :  pockets[i] } for i in range(8)]
 
     datos = {"players" : players,
-             "toptext" : "Top Text goes here",
-             "bottomtext" : "Bottom Text goes here",
+             "toptext" : "Airdashers Salto Ángel",
+             "bottomtext" : "Craneojevas #1  -  Top 8",
              "url" : "https://top8er.com",
              "game" : "sg"
              }
-    cc1 = (215, 62, 62)
+    cc1 = (180, 32, 72)
     cc2 = (203, 198, 186)
     teammode = True
     """
@@ -1034,18 +1060,18 @@ if __name__ == "__main__":
     bsq = False
     """
 
-    #"""
+    """
     import random
     C = ['Alex', 'Chun-Li', 'Dudley', 'Elena', 'Akuma', 'Hugo',
          'Ibuki', 'Ken', 'Makoto', 'Necro', 'Oro', 'Q', 'Remy', 'Ryu',
          'Sean', 'Twelve', 'Urien', 'Yang', 'Yun']
     def randchar(n=None) :
         c = random.choice(C)
-        if n is None : n = random.randint(0,1)
+        if n is None : n = random.randint(1,13)
         return (c,n)
     
     texto = ["Player "+str(i) for i in range(1,9)]
-    personajes = [randchar(0) for i in range(8)]
+    personajes = [randchar() for i in range(8)]
     twitter = ["player"+str(i) for i in range(1,9)]
     pockets = [[] for i in range(8)]
     players = [{"tag" : texto[i],
@@ -1062,6 +1088,32 @@ if __name__ == "__main__":
     cc1 = (200, 60, 20)
     cc2 = (239, 143, 23)
     bsq = True
+    """
+
+    #"""
+    texto = ['MF | DOOMhammer', 'Rakugami Kohaku', 'Laguna', 'Sarina Penguina',
+             'Solbasa', 'Stargazer-018', 'Alma Baphomet', 'Ryuk']
+    personajes = [(i,0) for i in
+                  ['DOOMhammer', 'Kohaku', 'Laguna',
+                   'Penguina', 'Solbasa', 'Stargazer', 'AlmaBaphomet',
+                   'Ryuk']]
+    twitter = ['@Doomhammer_Ch', '@rakugamikohaku', '@Laguna_JH', '@SarinaPenguina',
+                '@solbasamusic', '@Stargazer018', '@AlmaBaphomet', '@RyukENVtuber']
+    pockets = [[] for i in range(8)]
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "GLOBAL VTUBER BBCF TOURNAMENT",
+             "bottomtext" : "Hosted by @chickzamavs ",
+             "url" : "challonge.com/vtuberbbcf",
+             "game" : "betube"
+             }
+    cc1 = (68, 2, 6)
+    cc2 = (135, 10, 10)
+    #bsq = False
     #"""
 
     import time

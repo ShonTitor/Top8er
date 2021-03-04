@@ -291,11 +291,11 @@ def soku(request) :
     return hestia(request, "soku", FormClass)
 
 def slapcity(request) :
-    c = ['Asha', 'Business Casual Man', 'Goddess of Explosions', 'Ittle Dew',
+    c = ['Asha', 'Business Casual Man', 'Frallan', 'Goddess of Explosions', 'Ittle Dew',
          'Jenny Fox', 'Masked Ruby', 'Princess Remedy', 'Ultra Fishbunjin 3000']
-    FormClass = makeform(chars=c, numerito=12, hasextra=False,
+    FormClass = makeform(chars=c, numerito=24, hasextra=False,
                          color1="#ff7100", color2='#25d0fb')
-    c_guide = "https://www.spriters-resource.com/pc_computer/slapcity/"
+    c_guide = "https://slapwiki.com/SlapWiki/"
     return hestia(request, "slapcity", FormClass, color_guide=c_guide, hasextra=False)
 
 def dfci(request) :
