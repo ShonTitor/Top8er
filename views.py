@@ -210,7 +210,7 @@ def roa(request) :
     return hestia(request, "roa", FormClass)
 
 def sg(request) :
-    c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza',
+    c = ['Annie', 'Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza',
          'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul',
          'Peacock', 'Robo Fortune', 'Squigly', 'Valentine']
     FormClass = makeform(chars=c, numerito=30, numerito_extra=1,

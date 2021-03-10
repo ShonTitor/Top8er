@@ -686,8 +686,6 @@ if __name__ == "__main__":
     """
 
     """
-    texto = [None for i in range(1,9)]
-
     texto = ["PreloaderMan", "SnackLive", "DVS ELEC", "Brain",
              "Riokaru", "Cismu", "Mago", "Poplar Lover"]
     
@@ -695,6 +693,7 @@ if __name__ == "__main__":
     c = ['Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza',
          'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul', 'Peacock',
          'Robo Fortune', 'Squigly', 'Valentine']
+    
     
     personajes = [(random.choice(c), random.randint(0,26)) for i in range(8)]
 
@@ -733,6 +732,40 @@ if __name__ == "__main__":
     cc2 = (203, 198, 186)
     teammode = True
     """
+
+    #"""
+    texto = ["Player {0}".format(i) for i in range(1,9)]
+    
+    import random
+    c = ['Annie', 'Beowulf', 'Big Band', 'Cerebella', 'Double', 'Eliza',
+         'Filia', 'Fukua', 'Ms Fortune', 'Painwheel', 'Parasoul', 'Peacock',
+         'Robo Fortune', 'Squigly', 'Valentine']
+    c = ['Annie']
+    
+    
+    personajes = [(random.choice(c), random.randint(0,26)) for i in range(8)]
+    
+    twitter = ["player"+str(i) for i in range(1,9)]
+    
+    pockets = [[(random.choice(c), 0),
+                (random.choice(c), 0)][:random.randint(0,2)]
+               for i in range(8)]
+    
+    players = [{"tag" : texto[i],
+              "char" : personajes[i],
+              "twitter" : twitter[i],
+              "secondaries" :  pockets[i] } for i in range(8)]
+
+    datos = {"players" : players,
+             "toptext" : "When's Annie?",
+             "bottomtext" : "Now's Annie",
+             "url" : "https://top8er.com",
+             "game" : "sg"
+             }
+    cc1 = (0, 230, 200)
+    cc2 = (0, 100, 128)
+    teammode = False
+    #"""
 
     """
     import random
@@ -1090,7 +1123,7 @@ if __name__ == "__main__":
     bsq = True
     """
 
-    #"""
+    """
     texto = ['MF | DOOMhammer', 'Rakugami Kohaku', 'Laguna', 'Sarina Penguina',
              'Solbasa', 'Stargazer-018', 'Alma Baphomet', 'Ryuk']
     personajes = [(i,0) for i in
@@ -1114,7 +1147,7 @@ if __name__ == "__main__":
     cc1 = (68, 2, 6)
     cc2 = (135, 10, 10)
     #bsq = False
-    #"""
+    """
 
     import time
     t1 = time.time()
