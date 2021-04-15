@@ -339,3 +339,11 @@ def sf3s(request) :
     c_guide = "https://www.zytor.com/~johannax/jigsaw/sf/3s.html"
     return hestia(request, "3s", FormClass, hasextra=False,
                   color_guide=c_guide)
+
+def sfst(request) :
+    c = ['Blanka', 'Boxer', 'Cammy', 'Chun Li', 'Claw', 'Dee Jay',
+         'Dhalsim', 'Dictator', 'E.Honda', 'Fei Long', 'Guile', 'Ken',
+         'Ryu', 'Sagat', 'T.Hawk', 'Zangief']
+    FormClass = makeform(chars=c, numerito=9, hasextra=False,
+                         color1="#d214a0", color2="#d8d819")
+    return hestia(request, "sfst", FormClass, hasextra=False)
