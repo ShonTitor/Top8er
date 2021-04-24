@@ -3,5 +3,6 @@
 /generar/__pycache__/*
 /generar/assets/*/
 /generar/sample.png
+/generar/gato.py
 *.pyc
 *.apikey
