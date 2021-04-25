@@ -1,56 +1,84 @@
+from PIL import Image
+
 def efz_palette(path) :
-    colors = []
+    """
+    Reads an EFZ .pal file and returns a list of its colors.
+  
+    Parameters:
+    path (str): Path to the .pal file, can also be a file handle
+  
+    Returns:
+    list: List of RGB color tuples read from the .pal file
+    """
     if type(path) is str :
-        f = open(path, "rb")
+        # If a path is given, open the file
+        palette = open(path, "rb")
     else :
-        f = path
-    s = f.read()
-    f.close()
-    i = 1
-    c = []
-    while i < len(s) :
-        c.append(s[i])
+        # If a file handle is give, leave as is
+        palette = path
+    # Read the binary data of the palette file
+    data = palette.read()
+    palette.close()
+    colors = []
+    color = []
+    # Iterate for each byte in the data
+    for i in range(1, len(data)) :
+        color.append(s[i])
+        # Every 3 bytes read are a color
         if i%3 == 0 :
-            c = tuple(c[::-1])
-            #print(c)
+            color = tuple(c[::-1])
             colors.append(c)
-            c = []
-        i += 1
-    while len(colors) < 40 :
-        colors.append((0,0,0))
+            color = []
+    # If less than 40 colors were read, complete it with black
+    if len(colors) < 40 :
+        colors += [(0,0,0)]*(len(colors)-40)
     return colors
 
 
 def efz_swap(file, pal1, pal2, akane=False) :
-    img = Image.open(file)
-    orig = efz_palette(pal1)
-    meme = efz_palette(pal2)
+    """
+    Swaps the palette of an EFZ sprite.
+  
+    Parameters:
+    file (str): Path to the base sprite
+    pal1 (str): Path to the .pal of the base sprite
+    pal2 (str): Path to the palette to be applied
+  
+    Returns:
+    list: List of RGB color tuples read from the .pal file
+    """
+    img = Image.open(file) # Base image
+    orig = efz_palette(pal1) # Base palette
+    new = efz_palette(pal2) # Palette to apply
 
-    #"""
+    # Akane has some color conflicts
     if akane :
         orig = orig[:29]
-        meme = meme[:29]
-    #"""
-
+        new = new[:29]
+    # Alternative solution to Akane's problem
     #orig = orig[::-1]
-    #meme = meme[::-1]
+    #new = new[::-1]
 
-    quick_orig = {orig[i]:i for i in range(len(orig))}
-
+    # Dictionary where keys are the colors of the original palette
+    # and values are their indices
+    orig_dict = {orig[i]:i for i in range(len(orig))}
+    # This list will contain on the position i, 
+    # the coordinates of all pixels on the base image 
+    # that match the ith color of the base palette
     match = [[] for o in orig]
 
     w,h = img.size
-
+    # For each pixel
     for x in range(w) :
         for y in range(h) :
-            c = img.getpixel((x,y))
-            if c[:3] in quick_orig :
-                match[quick_orig[c[:3]]].append((x,y))
-
+            color = img.getpixel((x,y))
+            # We save the color on the matching bucket
+            if color[:3] in orig_dict :
+                match[orig_dict[color[:3]]].append((x,y))
+    # Recoloring the base
     for i in range(len(match)) :
-        if meme[i][0] == 178 : print("AAA")
         for pixel in match[i] :
             alpha = img.getpixel(pixel)[3:]
-            img.putpixel(pixel, meme[i]+alpha)
+            img.putpixel(pixel, new[i]+alpha)
 
     return img

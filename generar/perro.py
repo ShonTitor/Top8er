@@ -190,16 +190,16 @@ def generate_banner(data, prmode=False, blacksquares=True,
     # Corner texts
     font_instance = ImageFont.truetype(the_font, 30)
     # Top and bottom texts
-    fit_text(canvas, draw, (53, 45, 803, 80), data["toptext"], the_font,
+    fit_text(draw, (53, 45, 803, 80), data["toptext"], the_font,
              align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
-    fit_text(canvas, draw, (53, 730, 997, 765), data["bottomtext"], the_font,
+    fit_text(draw, (53, 730, 997, 765), data["bottomtext"], the_font,
              align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
     font_instance = ImageFont.truetype(the_font, 25)
     urlmarg = (40-len(data["url"]))*6
     # Credits and url
-    fit_text(canvas, draw, (1075, 726, 1361, 778), "Design by:  @Elenriqu3\nGenerator by: @Riokaru", the_font,
+    fit_text(draw, (1075, 726, 1361, 778), "Design by:  @Elenriqu3\nGenerator by: @Riokaru", the_font,
              align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
-    fit_text(canvas, draw, (876, 45, 1367, 80), data["url"], the_font,
+    fit_text(draw, (876, 45, 1367, 80), data["url"], the_font,
              align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
 
     pajarito = Image.open(os.path.join(template,"pajarito.png")) # Twitter bird icon
@@ -251,7 +251,7 @@ def generate_banner(data, prmode=False, blacksquares=True,
             height = twitter_box[3]-twitter_box[1]
             ffont = fitting_font(draw, width, height, "A!"*8, the_font, guess=54)
 
-            fit_text(canvas, draw, twitter_box, players[i]["twitter"], the_font, guess=54,
+            fit_text(draw, twitter_box, players[i]["twitter"], the_font, guess=54,
                      align="center", alignv="middle", forcedfont=ffont,
                      fill=font_color1, shadow=font_shadow1)
 
@@ -260,7 +260,7 @@ def generate_banner(data, prmode=False, blacksquares=True,
         cajita_nombre = (POS[i][0]+12, POS[i][1],
                          POS[i][0]+size[0]-12, POS[i][1]+size[1]*0.98)
         
-        fit_text(canvas, draw, cajita_nombre, texto, the_font, guess=int(size[0]*0.26),
+        fit_text(draw, cajita_nombre, texto, the_font, guess=int(size[0]*0.26),
                  align="center", alignv="bottom",
                  fill=font_color1, shadow=font_shadow1)
 

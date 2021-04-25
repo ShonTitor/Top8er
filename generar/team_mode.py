@@ -2,9 +2,7 @@ import os
 
 from PIL import Image
 
-"""
-"""
-def team_portrait(chars, size, portraits_path) :       
+def team_portrait(chars, size, portraits_path):
     portrait = Image.new("RGBA", size, color=(255,255,255,0))
     # Iterating for each character
     for j in range(len(chars)) :
