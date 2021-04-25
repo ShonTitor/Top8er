@@ -6,8 +6,7 @@ from team_mode import team_portrait
 
 from PIL import Image, ImageDraw, ImageFont
 
-"""
-"""
+
 def generate_banner(data, prmode=False, blacksquares=True,
                     custombg=None, darkenbg=True,
                     customcolor=None, customcolor2=None,
@@ -15,6 +14,38 @@ def generate_banner(data, prmode=False, blacksquares=True,
                     font_color1=(255,255,255), font_shadow1=(0,0,0),
                     font_color2=(255,255,255), font_shadow2=(0,0,0),
                     shadow=True, icon_sizes=(32, 64)) :
+    """
+    Generates a top 8 graphic with the given parameters.
+  
+    Parameters:
+    data (dict): Dictionary of tournament results with the following structure
+        players: List of dicts that contain player data with the following structure
+            tag: Player's gamer tag
+            twitter: Player's twitter username
+            char: (str, int) with the player's main character and index of alt skin
+            secondaries: list of up to 2 secondary characters (str, int)
+        toptext: Text to be displayed on the top left of the graphic
+        bottomtext: Text to be displayed on the bottom left of the graphic
+        url: URL of the tournament (top right text)
+        game: Short hand of the game (matching the assets folder)
+    prmode (bool): If True, placing numbers go from 1 to 8 (no 5th ot 7th ties)
+    blacksquares (bool): Puts a solid black square behind each character if True
+    custombg (TextIOWrapper): Custom background image file
+    darkenbg (bool): Makes the background slightly darker (only if custom)
+    customcolor1 (tuple): Main layout color (can also be an RGB string)
+    customcolor2 (tuple): Hightlight layout color (can also be an RGB string)
+    font (str): Path to the font. If not given, one is selected automatically
+    teammode (bool): Experimental. Puts 2 or 3 characters in a single square.
+    font_color1 (tuple): Font color for player names, twitter handles and standings
+    font_shadow1 (tuple): Shadow color for player names, twitter handles and standings
+    font_color2 (tuple): Font color for corner text
+    font_shadow2 (tuple): Shadow color for corner text
+    shadow (bool): If true, draws a colored shadow behind each character
+    icon_sizes (tuple): Overrides default icon sizes (big, small and medium)
+  
+    Returns:
+    Image: PIL Image of the top 8 graphic
+    """
     game = data["game"]
     players = data["players"]
 
@@ -250,17 +281,17 @@ def generate_banner(data, prmode=False, blacksquares=True,
             width = twitter_box[2]-twitter_box[0]
             height = twitter_box[3]-twitter_box[1]
             ffont = fitting_font(draw, width, height, "A!"*8, the_font, guess=54)
-
+            # Twitter handle
             fit_text(draw, twitter_box, players[i]["twitter"], the_font, guess=54,
                      align="center", alignv="middle", forcedfont=ffont,
                      fill=font_color1, shadow=font_shadow1)
 
-        texto = players[i]["tag"].replace(". ", ".").replace(" | ", "|")
+        name = players[i]["tag"].replace(". ", ".").replace(" | ", "|")
 
         cajita_nombre = (POS[i][0]+12, POS[i][1],
                          POS[i][0]+size[0]-12, POS[i][1]+size[1]*0.98)
-        
-        fit_text(draw, cajita_nombre, texto, the_font, guess=int(size[0]*0.26),
+        # Player name
+        fit_text(draw, cajita_nombre, name, the_font, guess=int(size[0]*0.26),
                  align="center", alignv="bottom",
                  fill=font_color1, shadow=font_shadow1)
 
