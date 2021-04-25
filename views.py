@@ -140,10 +140,10 @@ def hestia(request, game, FormClass,
                                   blacksquares=blacksq,
                                   icon_sizes=icon_sizes,
                                   font=fuente,
-                                  fontcolor1=request.POST["fcolor1"],
-                                  fontscolor1=request.POST["fscolor1"],
-                                  fontcolor2=request.POST["fcolor2"],
-                                  fontscolor2=request.POST["fscolor2"],
+                                  font_color1=request.POST["fcolor1"],
+                                  font_shadow1=request.POST["fscolor1"],
+                                  font_color2=request.POST["fcolor2"],
+                                  font_shadow2=request.POST["fscolor2"],
                                     )
             buffered = BytesIO()
             img.save(buffered, format="PNG")
