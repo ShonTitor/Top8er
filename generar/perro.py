@@ -1,8 +1,8 @@
 import os
 
-from font import draw_text, has_glyph, best_font, fitting_font, fit_text
-from efz import efz_palette, efz_swap
-from team_mode import team_portrait
+from .font import draw_text, has_glyph, best_font, fitting_font, fit_text
+from .efz import efz_palette, efz_swap
+from .team_mode import team_portrait
 
 from PIL import Image, ImageDraw, ImageFont
 

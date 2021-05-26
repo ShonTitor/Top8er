@@ -32,9 +32,10 @@ def hestia(request, game, FormClass,
 
             for i in range(8) :
                 try :
-                    init_data["name"+str(i+1)] = datos["players"][i]["tag"]
-                    init_data["twitter"+str(i+1)] = datos["players"][i]["twitter"]
-                    init_data["char"+str(i+1)] = datos["players"][i]["char"][0]
+                    init_data["player"+str(i+1)] = {}
+                    init_data["player"+str(i+1)]["name"] = datos["players"][i]["tag"]
+                    init_data["player"+str(i+1)]["twitter"] = datos["players"][i]["twitter"]
+                    init_data["player"+str(i+1)]["char"] = datos["players"][i]["char"][0]
                 except :
                     pass
             
@@ -66,53 +67,33 @@ def hestia(request, game, FormClass,
             cshadow = "charshadow" in request.POST
             pr = "prmode" in request.POST
             blacksq = "blacksquares" in request.POST
-            """
-            try :                
-                request.POST["darken_bg"]
-                darkbg = True
-            except : darkbg = False
-
-            try :                
-                request.POST["charshadow"]
-                cshadow = True
-            except : cshadow = False
-
-            try :                
-                request.POST["prmode"]
-                pr = True
-            except : pr = False
-
-            try :       
-                request.POST["blacksquares"]
-                blacksq = True
-            except : blacksq = False"""
 
             names = []
             twitter = []
             chars = []
             seconds = [[] for i in range(8)]
             for i in range(1,9) :
-                names.append(request.POST["name"+str(i)])
-                if request.POST["twitter"+str(i)] == "" :
+                names.append(request.POST["player"+str(i)+"_name"])
+                if request.POST["player"+str(i)+"_twitter"] == "" :
                     twitter.append(None)
                 else :
-                    twitter.append(request.POST["twitter"+str(i)])
+                    twitter.append(request.POST["player"+str(i)+"_twitter"])
                     
-                if game == "efz" and "palette"+str(i) in request.FILES :
-                    chars.append( (request.POST["char"+str(i)],
-                                   request.FILES["palette"+str(i)])
+                if game == "efz" and "player"+str(i)+"_palette" in request.FILES :
+                    chars.append( (request.POST["player"+str(i)+"_char"],
+                                   request.FILES["player"+str(i)+"_palette"])
                                 )
                 else :
-                    chars.append( (request.POST["char"+str(i)],
-                                   request.POST["color"+str(i)])
+                    chars.append( (request.POST["player"+str(i)+"_char"],
+                                   request.POST["player"+str(i)+"_color"])
                                 )
                 if hasextra :
                     for k in range(1,3) :
-                        if request.POST["extra"+str(i)+str(k)] == "None" :
+                        if request.POST["player"+str(i)+"_extra"+str(k)] == "None" :
                             continue
                         else :
-                            seconds[i-1].append((request.POST["extra"+str(i)+str(k)],
-                                               request.POST["extra_color"+str(i)+str(k)]))
+                            seconds[i-1].append((request.POST["player"+str(i)+"_extra"+str(k)],
+                                               request.POST["player"+str(i)+"_extra_color"+str(k)]))
                 
             players = [{"tag" : names[j],
                         "char" : chars[j],
@@ -149,8 +130,6 @@ def hestia(request, game, FormClass,
             img.save(buffered, format="PNG")
             img = base64.b64encode(buffered.getvalue())
             img = str(img)[2:-1]
-            #context = { "img" : img }
-            #return render(request, 'gg.html' , context)
             context = { "hasextra" : has_extra,
                         "form" : FormClass(initial=request.POST),
                         "form2" : SmashggForm(),
