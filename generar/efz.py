@@ -23,11 +23,11 @@ def efz_palette(path) :
     color = []
     # Iterate for each byte in the data
     for i in range(1, len(data)) :
-        color.append(s[i])
+        color.append(data[i])
         # Every 3 bytes read are a color
         if i%3 == 0 :
-            color = tuple(c[::-1])
-            colors.append(c)
+            color = tuple(color[::-1])
+            colors.append(color)
             color = []
     # If less than 40 colors were read, complete it with black
     if len(colors) < 40 :

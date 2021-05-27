@@ -99,7 +99,7 @@ def generate_banner(data, prmode=False, blacksquares=True,
             width, height = w, SIZE[1]
         # Resizing the background to fit the canvas
         background = background.resize((width, height), resample=Image.ANTIALIAS)
-        canvas.paste(background, (int((SIZE[0]-ancho)/2), int((SIZE[1]-largo)/2)) )
+        canvas.paste(background, (int((SIZE[0]-width)/2), int((SIZE[1]-height)/2)) )
         if darkenbg :
             background = Image.new('RGBA', SIZE, (0, 0, 0, 0))
             canvas = Image.blend(canvas, canvas, 0.30)

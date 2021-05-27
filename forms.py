@@ -115,7 +115,7 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
         def __init__(self, *args, **kwargs):
 
             fields = tuple(player_fields.values())
-            super().__init__(fields=fields, 
+            super().__init__(fields, 
                              require_all_fields=False, 
                              widget=PlayerWidget(), 
                              *args, **kwargs)
@@ -133,10 +133,18 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
             widgets = {}
             for name, field in player_fields.items() :
                 widget = field.widget
-                widget.name = field.label
                 widget.attrs['label'] = field.label
+                widget.attrs['required'] = widget.is_required
                 widgets[name] = widget
             super().__init__(widgets=widgets, *args, **kwargs)
+        
+        # Weird hack I shouldn't have to do
+        def get_context(self, name, value, attrs):
+            context = super().get_context(name, value, attrs)
+            for i in range(len(context['widget']['subwidgets'])):
+                subwidget = context['widget']['subwidgets'][i]
+                context['widget']['subwidgets'][i]["attrs"]["required"] = subwidget["required"]
+            return context
 
         def decompress(self, value):
             if isinstance(value, Mapping):
