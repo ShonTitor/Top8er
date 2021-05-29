@@ -6,7 +6,7 @@ from .generar.perro import generate_banner
 from .generar.getsets import event_data, challonge_data
 
 def hestia(request, game, FormClass,
-           hasextra=True, color_guide=None, icon_sizes=None):
+           hasextra=True, color_guide=None, icon_sizes=(64, 32)):
     if hasextra : has_extra = "true"
     else : has_extra = "false"
     

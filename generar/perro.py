@@ -13,7 +13,7 @@ def generate_banner(data, prmode=False, blacksquares=True,
                     font=None, teammode=False,
                     font_color1=(255,255,255), font_shadow1=(0,0,0),
                     font_color2=(255,255,255), font_shadow2=(0,0,0),
-                    shadow=True, icon_sizes=(32, 64)) :
+                    shadow=True, icon_sizes=(64, 32)) :
     """
     Generates a top 8 graphic with the given parameters.
   
@@ -180,11 +180,11 @@ def generate_banner(data, prmode=False, blacksquares=True,
                             right_margin = 6
                     else :
                         i_size = icon_sizes[0]
-                        rmarg = 14
+                        right_margin = 14
                     icon = icon.resize((i_size, i_size),resample=Image.ANTIALIAS)
                     canvas.paste(icon, 
                                 (POS[i][0]+size[0]-i_size-right_margin, 
-                                POS[i][1]+s_offset*(i_size+4)+right_margin), 
+                                POS[i][1]+char_offset*(i_size+4)+right_margin), 
                                 mask=icon)
                     char_offset += 1
                 except Exception as e :
