@@ -246,6 +246,21 @@ def ggxx(request) :
     c_guide = "https://www.dustloop.com/wiki/index.php?title=Guilty_Gear_XX_Accent_Core_Plus_R"
     return hestia(request, "ggxx", FormClass, color_guide=c_guide, hasextra=False)
 
+def ggxrd(request) :
+    c = ['Answer', 'Axl', 'Baiken', 'Bedman', 'Chipp', 'Dizzy', 'Elphelt', 'Faust', 'I-No', 
+        'Jack-O', 'Jam', 'Johnny', 'Kum Haehyun', 'Ky', 'Leo', 'May', 'Millia', 'Potemkim', 
+        'Ramlethal', 'Raven', 'Sin', 'Slayer', 'Sol', 'Venom', 'Zato'] 
+    FormClass = makeform(chars=c, numerito=2, hasextra=False,
+                         color1="#3a6446", color2="#09ed7a")
+    return hestia(request, "ggxrd", FormClass, hasextra=False)
+
+def ggst(request) :
+    c = ['Anji', 'Axl', 'Chipp', 'Faust', 'Giovanna', 'I-No', 'Ky', 'Leo', 'May', 'Millia',
+         'Nagoriyuki', 'Potemkim', 'Ramlethal', 'Sol', 'Zato'] 
+    FormClass = makeform(chars=c, numerito=2, hasextra=False,
+                         color1="#5e0a00", color2="#000000")
+    return hestia(request, "ggst", FormClass, hasextra=False)
+
 def uni(request) :
     c = ['Akatsuki', 'Byakuya', 'Carmine', 'Chaos', 'Eltnum', 'Enkidu',
          'Gordeau', 'Hilda', 'Hyde', 'Linne', 'Londrekia', 'Merkava',
