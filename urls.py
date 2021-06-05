@@ -22,6 +22,7 @@ urlpatterns = [
     path('3rdStrike', views.sf3s, name='3rdStrike'),
     path('SuperTurbo', views.sfst, name='SuperTurbo'),
     path('AsuraBuster', views.AsuraBuster, name='AsuraBuster'),
+    path('KirbyFighters2', views.kf2, name='KirbyFighters2'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),

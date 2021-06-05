@@ -369,3 +369,11 @@ def AsuraBuster(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#ba2315", color2="#1f0141")
     return hestia(request, "AsuraBuster", FormClass, hasextra=False)
+
+def kf2(request) :
+    c = ['Archer', 'Artist', 'Bandana Dee', 'Beam', 'Beetle', 'Bell', 'Bomb', 
+         'Cutter', 'Fighter', 'Gooey', 'Hammer', 'King Dedede', 'Magolor', 'Meta Knight', 
+         'Ninja', 'Parasol', 'Staff', 'Sword', 'Water', 'Whip', 'Wrestler', 'Yo-yo']
+    FormClass = makeform(chars=c, numerito=3, hasextra=True,
+                         color1="#1f0141", color2="#ffff11")
+    return hestia(request, "kf2", FormClass, hasextra=True)
