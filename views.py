@@ -220,7 +220,7 @@ def sg(request) :
 
 def rr(request) :
     c = ["Afi and Galu", "Ashani", "Ezzie", "Kidd",
-         "Raymer", "Urdah", "Weishan", "Zhurong"]
+         "Raymer", "Seth", "Urdah", "Weishan", "Zhurong"]
     FormClass = makeform(chars=c, numerito=1, numerito_extra=1,
                          color1="#384BCB", color2="#40EB8F")
     return hestia(request, "rr", FormClass, icon_sizes=(80,50))
