@@ -130,8 +130,27 @@ def hestia(request, game, FormClass,
             img.save(buffered, format="PNG")
             img = base64.b64encode(buffered.getvalue())
             img = str(img)[2:-1]
+
+            init_data = {}
+            field_keys = filter(lambda k: not "player" in k and not "csrf" in k, request.POST.keys())
+            for key in field_keys :
+                init_data[key] = request.POST[key]
+            check_field_keys = ["darken_bg", "blacksquares", "charshadow", "prmode"]
+            for key in check_field_keys :
+                init_data[key] = key in request.POST
+
+            for i in range(1,9) :
+                try :
+                    init_data["player{}".format(i)] = {
+                        "name": request.POST["player{}_name".format(i)],
+                        "twitter": request.POST["player{}_twitter".format(i)],
+                        "char": request.POST["player{}_char".format(i)]
+                    }
+                except :
+                    pass
+
             context = { "hasextra" : has_extra,
-                        "form" : FormClass(initial=request.POST),
+                        "form" : FormClass(initial=init_data),
                         "form2" : SmashggForm(),
                         "off" : 2,
                         "color_guide" : color_guide,
