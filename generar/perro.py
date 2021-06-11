@@ -109,7 +109,7 @@ def generate_banner(data, prmode=False, blacksquares=True,
         canvas.paste(background, (int((SIZE[0]-width)/2), int((SIZE[1]-height)/2)) )
         if darkenbg :
             background = Image.new('RGBA', SIZE, (0, 0, 0, 0))
-            canvas = Image.blend(canvas, canvas, 0.30)
+            canvas = Image.blend(canvas, background, 0.30)
     else :
         background  = Image.open(os.path.join(path, "assets", game, "bg.png")).convert("RGBA")
         canvas.paste(background, (0,0), mask=background)
