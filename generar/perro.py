@@ -68,9 +68,11 @@ def generate_banner(data, prmode=False, blacksquares=True,
     # Paths to assets
     portraits = os.path.join(path, "assets", game, "portraits")
     icons = os.path.join(path, "assets", game, "icons")
+    flags_path = os.path.join(path, "assets", "flags")
 
     # Constants
     SIZE = (1423,800) # Size of the whole cambas
+    SIZE_SQUARE = [482, 257, 257, 257, 191, 191, 191, 191]
     BIG = (482, 482) # Size of the biggest character square (1st place)
     MED = (257, 257) # Size of the medium character squares (2nd to 4th places)
     SMA = (191, 191) # Size of the small character squares (5th place and lower)
@@ -87,6 +89,11 @@ def generate_banner(data, prmode=False, blacksquares=True,
     POSTXT = [(53, 45), (53, 730), (875, 50), (1075, 725)]
     # The final image will be stored in this image
     canvas = Image.new('RGBA', SIZE, (0, 0, 0))
+    # Flag parametes
+    FLAG_SIZE = [100, 50, 50, 50, 40, 40, 40, 40]
+    FLAG_POS = [(POS[i][0]+int(SIZE_SQUARE[i]*0.95)-FLAG_SIZE[i], 
+                 POS[i][1]+int(SIZE_SQUARE[i]*0.74)-FLAG_SIZE[i]) 
+                 for i in range(8)]
 
     # Background
     if custombg :
@@ -164,6 +171,22 @@ def generate_banner(data, prmode=False, blacksquares=True,
             canvas.paste(the_shadow, box, mask=mask)
         # Pasting the portrait in place
         canvas.paste(portrait, POS[i], mask=portrait)
+
+        if players[i]["flag"] :
+            flag = Image.open(os.path.join(flags_path, players[i]["flag"]+".png")).convert("RGBA")
+            flag_width, flag_height = flag.size
+            if flag_width > flag_height :
+                new_flag_width = FLAG_SIZE[i]
+                new_flag_height = int((flag_height/flag_width)*FLAG_SIZE[i])
+                flag_x_offset = 0
+                flag_y_offset = FLAG_SIZE[i]-new_flag_height
+            else :
+                new_flag_height = FLAG_SIZE[i]
+                new_flag_width = int((flag_width/flag_height)*FLAG_SIZE[i])
+                flag_x_offset = FLAG_SIZE[i]-new_flag_width
+                flag_y_offset = 0
+            flag = flag.resize((new_flag_width, new_flag_height))
+            canvas.paste(flag, (FLAG_POS[i][0]+flag_x_offset, FLAG_POS[i][1]+flag_y_offset), mask=flag)
 
         # Secondary and tertiary character icons
         if not teammode :

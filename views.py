@@ -72,8 +72,11 @@ def hestia(request, game, FormClass,
             twitter = []
             chars = []
             seconds = [[] for i in range(8)]
+            flags = []
             for i in range(1,9) :
                 names.append(request.POST["player"+str(i)+"_name"])
+                flag = request.POST["player"+str(i)+"_flag"]
+                flags.append(flag if flag != "None" else None)
                 if request.POST["player"+str(i)+"_twitter"] == "" :
                     twitter.append(None)
                 else :
@@ -98,7 +101,8 @@ def hestia(request, game, FormClass,
             players = [{"tag" : names[j],
                         "char" : chars[j],
                         "twitter" : twitter[j],
-                        "secondaries" : seconds[j]
+                        "secondaries" : seconds[j],
+                        "flag": flags[j]
                             }
                        for j in range(8)]
             datos = { "players" : players,
@@ -144,7 +148,8 @@ def hestia(request, game, FormClass,
                     init_data["player{}".format(i)] = {
                         "name": request.POST["player{}_name".format(i)],
                         "twitter": request.POST["player{}_twitter".format(i)],
-                        "char": request.POST["player{}_char".format(i)]
+                        "char": request.POST["player{}_char".format(i)],
+                        "flag": request.POST["player{}_flag".format(i)],
                     }
                 except :
                     pass
