@@ -1,499 +1,321 @@
+import os
+
+from .utils.font import draw_text, has_glyph, best_font, fitting_font, fit_text
+from .utils.efz import efz_palette, efz_swap
+from .utils.team_mode import team_portrait
+
 from PIL import Image, ImageDraw, ImageFont
-from fontTools.ttLib import TTFont
-from fontTools.unicode import Unicode
-import os, math
 
-def draw_text(img, draw, pos, texto, font=None,
-              fill=(255, 255, 255), shadow=(0,0,0)) :
-    if shadow :
-        #offset = int(font.size*0.06)
-        offset = int((font.size**0.5)*0.55)
-        draw.text((pos[0]+offset, pos[1]+offset), texto, font=font, fill=shadow)
-    draw.text(pos, texto, font=font, fill=fill)
 
-def has_glyph(font, glyph):
-    for table in font['cmap'].tables:
-        if ord(glyph) in table.cmap.keys():
-            return True
-    return False
-
-def best_font(text, f1, f2) :
-    font1 = TTFont(f1)
-    font2 = TTFont(f2)
-    count1 = 0
-    count2 = 0
-    for c in list(text) :
-        if not has_glyph(font1, c) :
-            count1 += 1
-        if not has_glyph(font2, c) :
-            count2 += 1
-    if count2 < count1 : return f2
-    else : return f1
-
-def fitting_font(draw, width, height, text, fontdir, guess) :
-    lo = 1
-    hi = guess
-    guess = (lo+hi)//2
-    fuente = ImageFont.truetype(fontdir, guess)
-    x,y = draw.textsize(text, font=fuente)
-    #intentos = 1
-    lold, hiold = lo, hi
-    while lo+1 < hi :
-        #intentos += 1
-        #guess -= 1
-        if x > width or y > height :
-            hi = guess
-        else :
-            lo = guess
-        if (lold, hiold) == (lo, hi) :
-            guess = lo
-            break
-        guess = (lo+hi)//2
-        fuente = ImageFont.truetype(fontdir, guess)
-        x,y = draw.textsize(text, font=fuente) #text_size(text, fuente)
-    #print("intentos:", intentos)
-    return fuente
-
-        
-def fit_text(img, draw, box, text, fontdir, guess=30, align="left", alignv="top",
-             fill=(255, 255, 255), shadow=(0,0,0), forcedfont=None):
-    #fontdir = best_font(text)
-    x1,y1,x2,y2 = box
-    width,height = (x2-x1, y2-y1)
-
-    if forcedfont is None :
-        fuente = fitting_font(draw, width, height, text, fontdir, guess)
-    else :
-        fuente = forcedfont
-        
-    x,y = draw.textsize(text, font=fuente)
-
-    posx, posy = x1,y1
-    
-    if align == "center" :
-        posx += (width-x)//2
-    elif align == "right" :
-        posx += width-x
-        
-    if alignv == "bottom" :
-        posy += height-y
-    elif alignv == "middle" :
-        posy += (height-y)//2
-
-    draw_text(img, draw, (posx, posy), text, font=fuente, fill=fill, shadow=shadow)
-
-def efz_palette(path) :
-    colors = []
-    if type(path) is str :
-        f = open(path, "rb")
-    else :
-        f = path
-    s = f.read()
-    f.close()
-    i = 1
-    c = []
-    while i < len(s) :
-        c.append(s[i])
-        if i%3 == 0 :
-            c = tuple(c[::-1])
-            #print(c)
-            colors.append(c)
-            c = []
-        i += 1
-    while len(colors) < 40 :
-        colors.append((0,0,0))
-    return colors
-
-def efz_swap(file, pal1, pal2, akane=False) :
-    img = Image.open(file)
-    orig = efz_palette(pal1)
-    meme = efz_palette(pal2)
-
-    #"""
-    if akane :
-        orig = orig[:29]
-        meme = meme[:29]
-    #"""
-
-    #orig = orig[::-1]
-    #meme = meme[::-1]
-
-    quick_orig = {orig[i]:i for i in range(len(orig))}
-
-    match = [[] for o in orig]
-
-    w,h = img.size
-
-    for x in range(w) :
-        for y in range(h) :
-            c = img.getpixel((x,y))
-            if c[:3] in quick_orig :
-                match[quick_orig[c[:3]]].append((x,y))
-
-    for i in range(len(match)) :
-        if meme[i][0] == 178 : print("AAA")
-        for pixel in match[i] :
-            alpha = img.getpixel(pixel)[3:]
-            img.putpixel(pixel, meme[i]+alpha)
-
-    return img
-
-def generate_banner(datos, prmode=False, blacksquares=True,
+def generate_banner(data, prmode=False, blacksquares=True,
                     custombg=None, darkenbg=True,
                     customcolor=None, customcolor2=None,
-                    font=None,
-                    fontcolor1=(255,255,255),fontscolor1=(0,0,0),
-                    fontcolor2=(255,255,255),fontscolor2=(0,0,0),
-                    shadow=True, icon_sizes=None,
-                    teammode=False) :
-    game = datos["game"]
-    players = datos["players"]
+                    font=None, teammode=False,
+                    font_color1=(255,255,255), font_shadow1=(0,0,0),
+                    font_color2=(255,255,255), font_shadow2=(0,0,0),
+                    shadow=True, icon_sizes=(64, 32)) :
+    """
+    Generates a top 8 graphic with the given parameters.
+  
+    Parameters:
+    data (dict): Dictionary of tournament results with the following structure
+        players: List of dicts that contain player data with the following structure
+            tag: Player's gamer tag
+            twitter: Player's twitter username
+            char: (str, int) with the player's main character and index of alt skin
+            secondaries: list of up to 2 secondary characters (str, int)
+        toptext: Text to be displayed on the top left of the graphic
+        bottomtext: Text to be displayed on the bottom left of the graphic
+        url: URL of the tournament (top right text)
+        game: Short hand of the game (matching the assets folder)
+    prmode (bool): If True, placing numbers go from 1 to 8 (no 5th ot 7th ties)
+    blacksquares (bool): Puts a solid black square behind each character if True
+    custombg (TextIOWrapper): Custom background image file
+    darkenbg (bool): Makes the background slightly darker (only if custom)
+    customcolor1 (tuple): Main layout color (can also be an RGB string)
+    customcolor2 (tuple): Hightlight layout color (can also be an RGB string)
+    font (str): Path to the font. If not given, one is selected automatically
+    teammode (bool): Experimental. Puts 2 or 3 characters in a single square.
+    font_color1 (tuple): Font color for player names, twitter handles and standings
+    font_shadow1 (tuple): Shadow color for player names, twitter handles and standings
+    font_color2 (tuple): Font color for corner text
+    font_shadow2 (tuple): Shadow color for corner text
+    shadow (bool): If true, draws a colored shadow behind each character
+    icon_sizes (tuple): Overrides default icon sizes (big, small and medium)
+  
+    Returns:
+    Image: PIL Image of the top 8 graphic
+    """
+    game = data["game"]
+    players = data["players"]
 
-
+    # Getting the path of the current file
     path = os.path.realpath(__file__)
     path = os.path.abspath(os.path.join(path, os.pardir))
+    # Path to the template directory
     template = os.path.join(path, "template")
     if font :
-        fonttc = os.path.join(path, 'fonts', font)
+        # Path to the font file, if given
+        the_font = os.path.join(path, 'fonts', font)
     else :
-        yog_sothoth = datos["toptext"]+datos["bottomtext"]+datos["url"]
-        for player in datos['players'] :
-            yog_sothoth += player['tag']
-        f1 = os.path.join(path, 'fonts','DFGothic-SU-WIN-RKSJ-H-01.ttf')
-        f2 = os.path.join(path, 'fonts','sansthirteenblack.ttf')
-        fonttc = best_font(yog_sothoth, f1, f2)
-
-    # Constantes
+        # Choosing the best font based on the amount of missing special characters
+        text_blob = data["toptext"]+data["bottomtext"]+data["url"]
+        for player in data['players'] :
+            text_blob += player['tag']
+        font_option1 = os.path.join(path, 'fonts','DFGothic-SU-WIN-RKSJ-H-01.ttf')
+        font_option2 = os.path.join(path, 'fonts','sansthirteenblack.ttf')
+        the_font = best_font(text_blob, font_option1, font_option2)
+    # Paths to assets
     portraits = os.path.join(path, "assets", game, "portraits")
     icons = os.path.join(path, "assets", game, "icons")
-    SIZE = (1423,800)
+    flags_path = os.path.join(path, "assets", "flags")
 
-    BIG = (482, 482)
-    MED = (257, 257)
-    SMA = (191, 191)
-
+    # Constants
+    SIZE = (1423,800) # Size of the whole cambas
+    SIZE_SQUARE = [482, 257, 257, 257, 191, 191, 191, 191]
+    BIG = (482, 482) # Size of the biggest character square (1st place)
+    MED = (257, 257) # Size of the medium character squares (2nd to 4th places)
+    SMA = (191, 191) # Size of the small character squares (5th place and lower)
+    # Position of the top left pixel of each square
     POS = [(53, 135), (553, 135), (831, 135), (1110, 135),
            (553, 441), (760, 441), (968, 441), (1176, 441)]
-
+    # Size of twitter boxes
     SIZETWI = [(483, 39), (257, 29), (257, 29), (257, 29),
                (192, 26), (192, 26), (192, 26), (192, 26)]
-
+    # Position of the top left pixel of each twitter box
     POSTWI = [(52, 624), (552, 398), (831, 398), (1109, 398),
               (552, 637), (759, 637), (967, 637), (1175, 637)]
-
+    # Position of texts in the corner
     POSTXT = [(53, 45), (53, 730), (875, 50), (1075, 725)]
+    # The final image will be stored in this image
+    canvas = Image.new('RGBA', SIZE, (0, 0, 0))
+    # Flag parametes
+    FLAG_SIZE = [100, 50, 50, 50, 40, 40, 40, 40]
+    FLAG_POS = [(POS[i][0]+int(SIZE_SQUARE[i]*0.95)-FLAG_SIZE[i], 
+                 POS[i][1]+int(SIZE_SQUARE[i]*0.74)-FLAG_SIZE[i]) 
+                 for i in range(8)]
 
-    # La que tal
-    c = Image.new('RGBA', SIZE, (0, 0, 0))
-
-    # Fondo
+    # Background
     if custombg :
-        f = Image.open(custombg, mode="r")
-        ancho, largo = f.size
-        a,b = int(ancho*SIZE[1]/largo), int(largo*SIZE[0]/ancho)
-        if a < SIZE[0] :
-            ancho, largo = SIZE[0], b
+        background = Image.open(custombg, mode="r")
+        width, height = background.size
+        w, h = int(width*SIZE[1]/height), int(height*SIZE[0]/width)
+        if w < SIZE[0] :
+            width, height = SIZE[0], h
         else :
-            ancho, largo = a, SIZE[1]
-        f = f.resize((ancho, largo), resample=Image.ANTIALIAS)
-        c.paste(f, ( int((SIZE[0]-ancho)/2), int((SIZE[1]-largo)/2) ) )
+            width, height = w, SIZE[1]
+        # Resizing the background to fit the canvas
+        background = background.resize((width, height), resample=Image.ANTIALIAS)
+        canvas.paste(background, (int((SIZE[0]-width)/2), int((SIZE[1]-height)/2)) )
         if darkenbg :
-            f = Image.new('RGBA', SIZE, (0, 0, 0, 0))
-            c = Image.blend(f, c, 0.30)
+            background = Image.new('RGBA', SIZE, (0, 0, 0, 0))
+            canvas = Image.blend(canvas, canvas, 0.30)
     else :
-        a  = Image.open(os.path.join(path, "assets", game, "bg.png")).convert("RGBA")
-        c.paste(a, (0,0), mask=a)
+        background  = Image.open(os.path.join(path, "assets", game, "bg.png")).convert("RGBA")
+        canvas.paste(background, (0,0), mask=background)
 
-    c = c.convert('RGB')
+    canvas = canvas.convert('RGB')
+    # Draw object, to draw text on the image
+    draw = ImageDraw.Draw(canvas)
 
-    # Pa escribir
-    draw = ImageDraw.Draw(c)
-
-    # Ciclo de portraits
+    # Portrait loop
     for i in range(8) :
-        if i == 0 : size = BIG
-        elif i < 4 : size = MED
-        else : size = SMA
-
+        # Getting the corresponding size
+        if i == 0 :
+            size = BIG
+        elif i < 4 :
+            size = MED
+        else :
+            size = SMA
+        # Fills the square with solid black if the option is enabled
         if blacksquares :
             shape = [POS[i], (POS[i][0]+size[0], POS[i][1]+size[1])]
             draw.rectangle(shape, fill=(0,0,0))
-
+        # Experimental, many characters in a single square
         if teammode and len(players[i]["secondaries"]) != 0 :
             chars = [players[i]["char"]] + players[i]["secondaries"]
-            d = Image.new("RGBA", size, color=(255,255,255,0))
-            j = 0
-            for char in chars :
-                ruta = os.path.join(portraits, char[0], str(char[1])+".png")
-                
-                if len(chars) == 3 :
-                    newsize = int(0.7*size[0])                    
-                    d2 = Image.open(ruta).convert("RGBA").resize((newsize, newsize))
-                    offset = 0.14
-                    m1 = 2.9
-                    m2 = 0.8
-                    if j == 0 :
-                        position = ((size[0]-newsize)//2,
-                                    (size[0]-newsize)//2)
-                        base1 = size[0]-m2*size[0]
-                        base2 = size[0]-(size[0]/m1)
-                        is_out = lambda t : t[0]-t[1] < base1 or t[0]-t[1] > base2
-                    elif j == 1 :
-                        position = (-int(size[0]*offset),
-                                    size[0]-newsize)
-                        base = size[0]-m2*size[0]
-                        is_out = lambda t : t[0]-t[1] > base
-                    elif j == 2 :
-                        position = (size[0]-newsize+int(size[0]*offset), 0)
-                        base = size[0]-(size[0]/m1)
-                        is_out = lambda t : t[0]-t[1] < base
-
-                    x,y = position
-                    if char[0] in ["Parasoul"] :
-                        x += size[0]//10
-                    elif char[0] in ["Ms Fortune", "Robo Fortune", "Valentine"] :
-                        x += size[0]//20
-                    elif char[0] in ["Big Band", "Beowulf"] :
-                        x -= size[0]//20
-                    elif char[0] in ["Painwheel"] :
-                        y -= size[0]//20
-                        x -= size[0]//20
-                    position = (x,y)
-
-                elif len(chars) <= 2 :
-                    newsize = int(0.8*size[0])                    
-                    d2 = Image.open(ruta).convert("RGBA").resize((newsize, newsize))
-                    offset = 0.06
-                    m = 0.6
-                    if j == 0 :
-                        position = (-int(size[0]*offset),
-                                    size[0]-newsize)
-                        base = size[0]-m*size[0]
-                        is_out = lambda t : t[0]-t[1] > base
-                    elif j == 1 :
-                        position = (size[0]-newsize+int(size[0]*offset), 0)
-                        base = size[0]-m*size[0]
-                        is_out = lambda t : t[0]-t[1] < base
-
-                    x,y = position
-                    if char[0] in ["Parasoul"] :
-                        x += size[0]//10
-                    elif char[0] in ["Ms Fortune", "Robo Fortune", "Valentine"] :
-                        x += size[0]//20
-                    elif char[0] in ["Big Band", "Beowulf"] :
-                        x -= size[0]//20
-                    elif char[0] in ["Painwheel"] :
-                        y -= size[0]//20
-                        x -= size[0]//20
-                    position = (x,y)
-                    
-
-                d3 = Image.new("RGBA", size, color=(255,255,255,0))
-                h,w = d3.size
-                d3.paste(d2, position, d2)
-                    
-                for x in range(h) :
-                    for y in range(w) :
-                        if is_out((x*1.4,y*0.6)) :
-                            d3.putpixel((x,y), (255,255,255,0))
-                        """
-                        else :
-                            continue
-                            if j == 0 : d3.putpixel((x,y), (255,0,0,255))
-                            elif j == 1 : d3.putpixel((x,y), (0,255,0,255))
-                            else  : d3.putpixel((x,y), (0,0,255,255))
-                        """
-                d.paste(d3, (0,0), d3)
-                
-                j += 1
-            #c.paste(d, POS[i], mask=d)
+            portrait = team_portrait(chars, size, portraits)
         else :
             char = players[i]["char"]
-            ruta = os.path.join(portraits, char[0])
+            route = os.path.join(portraits, char[0])
+            # EFZ palette swap
             if game == "efz" and not type(char[1]) is int and not len(char[1]) == 1 :
-                rruta = os.path.join(ruta, "1.png")
-                pal1 = os.path.join(ruta, "0.pal")
-                d = efz_swap(rruta,
-                             pal1,
-                             char[1], akane=(char[0]=="Akane")
-                             ).convert("RGBA").resize(size,
-                                                      resample=Image.ANTIALIAS)
+                base = os.path.join(route, "1.png")
+                palette = os.path.join(route, "0.pal")
+                portrait = efz_swap(base,
+                                    palette,
+                                    char[1], 
+                                    akane=(char[0]=="Akane"))
+                portrait = portrait.convert("RGBA").resize(size, resample=Image.ANTIALIAS)
             else :
-                ruta = os.path.join(ruta, str(char[1])+".png")
-                d = Image.open(ruta).convert("RGBA").resize(size, resample=Image.ANTIALIAS)
-        
-        
-        # Intento de sombra
+                route = os.path.join(route, str(char[1])+".png")
+                portrait = Image.open(route).convert("RGBA").resize(size, resample=Image.ANTIALIAS)
+        # Character portrait shadow
         if shadow :
-            if customcolor : shadowcolor = customcolor
-            else : shadowcolor = (255, 40, 56, 255)
-
-            # offset de la sombra respecto al portrait
+            if customcolor : 
+                shadowcolor = customcolor
+            else : 
+                shadowcolor = (255, 40, 56, 255)
+            # Offset of the shadow relative to the portrait portrait
             shadowpos = int(size[0]*0.03)
             if teammode :
                 shadowpos //= 2
+            box = (POS[i][0]+shadowpos,
+                   POS[i][1]+shadowpos,
+                   POS[i][0]+size[0],
+                   POS[i][1]+size[1])
+            cropbox = (0, 0, size[0]-shadowpos, size[1]-shadowpos)
+            mask =  portrait.crop(cropbox)
+            the_shadow = Image.new('RGBA', cropbox[2:], shadowcolor)
+            # Using the original portrait as transparency mask
+            canvas.paste(the_shadow, box, mask=mask)
+        # Pasting the portrait in place
+        canvas.paste(portrait, POS[i], mask=portrait)
 
-            cuadrao = (  POS[i][0]+shadowpos,
-                         POS[i][1]+shadowpos,
-                         POS[i][0]+size[0],
-                         POS[i][1]+size[1]
-                      )
-            cortao = (0, 0, size[0]-shadowpos, size[1]-shadowpos)
-            dd =  d.crop(cortao)
-            lasombra = Image.new('RGBA', cortao[2:], shadowcolor)
+        if players[i]["flag"] :
+            flag = Image.open(os.path.join(flags_path, players[i]["flag"]+".png")).convert("RGBA")
+            flag_width, flag_height = flag.size
+            if flag_width > flag_height :
+                new_flag_width = FLAG_SIZE[i]
+                new_flag_height = int((flag_height/flag_width)*FLAG_SIZE[i])
+                flag_x_offset = 0
+                flag_y_offset = FLAG_SIZE[i]-new_flag_height
+            else :
+                new_flag_height = FLAG_SIZE[i]
+                new_flag_width = int((flag_width/flag_height)*FLAG_SIZE[i])
+                flag_x_offset = FLAG_SIZE[i]-new_flag_width
+                flag_y_offset = 0
+            flag = flag.resize((new_flag_width, new_flag_height))
+            canvas.paste(flag, (FLAG_POS[i][0]+flag_x_offset, FLAG_POS[i][1]+flag_y_offset), mask=flag)
 
-            c.paste(lasombra, cuadrao, mask=dd)
-        c.paste(d, POS[i], mask=d)
-
-        # extras
+        # Secondary and tertiary character icons
         if not teammode :
-            s_off = 0
+            char_offset = 0
             for char in players[i]['secondaries'] :
                 try :
-                    ruta_i = os.path.join(icons, char[0])
-                    ruta_i = os.path.join(ruta_i, str(char[1])+".png")
-                    ic = Image.open(ruta_i).convert("RGBA")
+                    route = os.path.join(icons, char[0], str(char[1])+".png")
+                    icon = Image.open(route).convert("RGBA")
                     if size != BIG :
-                        if icon_sizes : i_size = icon_sizes[1]
-                        else : i_size = 32
-                        ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
+                        i_size = icon_sizes[1]
                         if size == MED :
-                            rmarg = 8
+                            right_margin = 8
                         else :
-                            rmarg = 6
+                            right_margin = 6
                     else :
-                        if icon_sizes : i_size = icon_sizes[0]
-                        else : i_size = 64
-                        ic = ic.resize((i_size, i_size),resample=Image.ANTIALIAS)
-                        rmarg = 14
-                    c.paste(ic, (POS[i][0]+size[0]-i_size-rmarg, POS[i][1]+s_off*(i_size+4)+rmarg), mask=ic)
-                    s_off += 1
+                        i_size = icon_sizes[0]
+                        right_margin = 14
+                    icon = icon.resize((i_size, i_size),resample=Image.ANTIALIAS)
+                    canvas.paste(icon, 
+                                (POS[i][0]+size[0]-i_size-right_margin, 
+                                POS[i][1]+char_offset*(i_size+4)+right_margin), 
+                                mask=icon)
+                    char_offset += 1
                 except Exception as e :
-                    print(e, str(ruta_i))
+                    print(e, str(route))
 
-    # Partes del template
-    a  = Image.open(os.path.join(template,"marco.png"))
+    # Layout parts
+    part  = Image.open(os.path.join(template,"marco.png"))
     if customcolor :
-        y = Image.new('RGB', SIZE, customcolor)
-        c.paste(y, (0,0), mask=a)
+        solid = Image.new('RGB', SIZE, customcolor)
+        canvas.paste(solid, (0,0), mask=part)
     else :
-        c.paste(a, (0,0), mask=a)
+        canvas.paste(part, (0,0), mask=part)
 
-    a  = Image.open(os.path.join(template,"polo.png"))
+    part = Image.open(os.path.join(template,"polo.png"))
     if customcolor2 :
-        y = Image.new('RGB', SIZE, customcolor2)
-        c.paste(y, (0,0), mask=a)
+        solid = Image.new('RGB', SIZE, customcolor2)
+        canvas.paste(solid, (0,0), mask=part)
     else :
-        c.paste(a, (0,0), mask=a)
+        canvas.paste(part, (0,0), mask=part)
 
     if prmode :
-        a = Image.open(os.path.join(template,"numerospr.png"))
+        part = Image.open(os.path.join(template,"numerospr.png"))
     else :
-        a = Image.open(os.path.join(template,"numeros.png"))
-        
-    if fontcolor1 != (255, 255, 255) and fontcolor1 != "#ffffff" :
-        mask = a
-        a = Image.new('RGBA', SIZE, fontcolor1)
+        part = Image.open(os.path.join(template,"numeros.png"))
+
+    if font_color1 != (255, 255, 255) and font_color1 != "#ffffff" :
+        mask = part
+        part = Image.new('RGBA', SIZE, font_color1)
     else :
-        mask = a
+        mask = part
 
-    c.paste(a, (0,0), mask=mask)
-    
-    #c = Image.alpha_composite(a,c)
+    canvas.paste(part, (0,0), mask=mask)
 
-    # Textos de arriba y abajo
-    fuente = ImageFont.truetype(fonttc, 30)
-    #draw_text(c, draw, POSTXT[0], datos["toptext"], font=fuente, fill=fontcolor, shadow=True)
-    #draw_text(c, draw, POSTXT[1], datos["bottomtext"], font=fuente, fill=fontcolor, shadow=False)
+    # Corner texts
+    font_instance = ImageFont.truetype(the_font, 30)
+    # Top and bottom texts
+    fit_text(draw, (53, 45, 803, 80), data["toptext"], the_font,
+             align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
+    fit_text(draw, (53, 730, 997, 765), data["bottomtext"], the_font,
+             align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
+    font_instance = ImageFont.truetype(the_font, 25)
+    urlmarg = (40-len(data["url"]))*6
+    # Credits and url
+    fit_text(draw, (1075, 726, 1361, 778), "Design by:  @Elenriqu3\nGenerator by: @Riokaru", the_font,
+             align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
+    fit_text(draw, (876, 45, 1367, 80), data["url"], the_font,
+             align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
 
-    fit_text(c, draw, (53, 45, 803, 80), datos["toptext"], fonttc,
-             align="left", alignv="middle", fill=fontcolor2, shadow=fontscolor2)
-    fit_text(c, draw, (53, 730, 997, 765), datos["bottomtext"], fonttc,
-             align="left", alignv="middle", fill=fontcolor2, shadow=fontscolor2)
-
-    fuente = ImageFont.truetype(fonttc, 25)
-    urlmarg = (40-len(datos["url"]))*6
-    #draw_text(c, draw, (POSTXT[2][0]+urlmarg,POSTXT[2][1]), datos["url"], font=fuente, fill=fontcolor, shadow=False)
-    #draw_text(c, draw, POSTXT[3], "Design by:  @Elenriqu3\nGenerator by: @Riokaru", font=fuente, fill=fontcolor, shadow=True)
-
-    fit_text(c, draw, (1075, 726, 1361, 778), "Design by:  @Elenriqu3\nGenerator by: @Riokaru", fonttc,
-             align="right", alignv="middle", fill=fontcolor2, shadow=fontscolor2)
-    fit_text(c, draw, (876, 45, 1367, 80), datos["url"], fonttc,
-             align="right", alignv="middle", fill=fontcolor2, shadow=fontscolor2)
-
-    # Ciclo de nombres
-    pajarito = Image.open(os.path.join(template,"pajarito.png"))
-    if fontcolor1 != (255, 255, 255) and fontcolor1 != "#ffffff" :
-        a = Image.new('RGBA', pajarito.size, (255, 255, 255, 0))
-        aa = Image.new('RGBA', pajarito.size, fontcolor1)
-        a.paste(aa, (0,0), mask=pajarito)
-        pajarito = a
+    pajarito = Image.open(os.path.join(template,"pajarito.png")) # Twitter bird icon
+    # Recolor bid icon if needed
+    if font_color1 != (255, 255, 255) and font_color1 != "#ffffff" :
+        box = Image.new('RGBA', pajarito.size, (255, 255, 255, 0))
+        solid = Image.new('RGBA', pajarito.size, font_color1)
+        box.paste(solid, (0,0), mask=pajarito)
+        pajarito = box
+    # Names loop
     for i in range(8) :
-        if i == 0 : size = BIG
-        elif i < 4 : size = MED
-        else : size = SMA
+        if i == 0 : 
+            size = BIG
+        elif i < 4 : 
+            size = MED
+        else : 
+            size = SMA
+        # Twitter box and username
         if players[i]["twitter"] :
-            # Cajita para twitter handle
             if customcolor :
-                colorcito = customcolor
+                color = customcolor
             else :
-                colorcito = (255, 40, 56, 255)
+                color = (255, 40, 56, 255)
+            # Drawing twitter box
             draw.rectangle([POSTWI[i],
                             (POSTWI[i][0]+SIZETWI[i][0],
                              (POSTWI[i][1]+SIZETWI[i][1]))],
-                           fill=colorcito
+                           fill=color
                            )
-            # Pajarito de Twitter
+            # Twitter bird icon
             if pajarito.size[1] != SIZETWI[i][1] :
                 psize = ((pajarito.size[0]*SIZETWI[i][1])//pajarito.size[1],
                          SIZETWI[i][1])
                 pajarito = pajarito.resize(psize, resample=Image.ANTIALIAS)
-            c.paste(pajarito,
+            canvas.paste(pajarito,
                     (int(POSTWI[i][0]+SIZETWI[i][0]*0.02), POSTWI[i][1]),
                     mask=pajarito)
 
-            #lon = len(players[i]["twitter"])
-            #sizef = (27*SIZETWI[i][1])//SIZETWI[0][1]
-            #tmarg = (6*SIZETWI[i][1])//SIZETWI[0][1]
-            #lmarg = (SIZETWI[i][0]-0.5*sizef*lon+pajarito.size[0])//2
+            left_margin = pajarito.size[0]*1.2
+            top_margin = 0.1*SIZETWI[i][1]
+            bottom_margin = 0.1*SIZETWI[i][1]
 
-            #"""
-            xmarg = pajarito.size[0]*1.2
-            tmarg = 0.1*SIZETWI[i][1]
-            bmarg = 0.1*SIZETWI[i][1]
+            twitter_box = (POSTWI[i][0]+left_margin, 
+                           POSTWI[i][1]+top_margin,
+                           POSTWI[i][0]+SIZETWI[i][0],
+                           POSTWI[i][1]+SIZETWI[i][1]-bottom_margin)
 
-            cajita_twitter = (POSTWI[i][0]+xmarg, POSTWI[i][1]+tmarg,
-                              POSTWI[i][0]+SIZETWI[i][0], POSTWI[i][1]+SIZETWI[i][1]-bmarg)
-
-            width = cajita_twitter[2]-cajita_twitter[0]
-            height = cajita_twitter[3]-cajita_twitter[1]
-            ffont = fitting_font(draw, width, height, "A!"*8, fonttc, guess=54)
-
-            fit_text(c, draw, cajita_twitter, players[i]["twitter"], fonttc, guess=54,
+            width = twitter_box[2]-twitter_box[0]
+            height = twitter_box[3]-twitter_box[1]
+            ffont = fitting_font(draw, width, height, "A!"*8, the_font, guess=54)
+            # Twitter handle
+            fit_text(draw, twitter_box, players[i]["twitter"], the_font, guess=54,
                      align="center", alignv="middle", forcedfont=ffont,
-                     fill=fontcolor1, shadow=fontscolor1)
-            #"""
+                     fill=font_color1, shadow=font_shadow1)
 
-            #font = ImageFont.truetype(fonttc, sizef)
-            #draw_text(c, draw, (POSTWI[i][0]+lmarg, POSTWI[i][1]+tmarg),
-            #          players[i]["twitter"], font=font, fill=fontcolor, shadow=True)
-
-        texto = players[i]["tag"].replace(". ", ".").replace(" | ", "|")
-        """
-        sizefont = int(size[0]*0.26)
-        if len(texto) > 7 :
-            sizefont = int(sizefont*7/len(texto))
-        font = ImageFont.truetype(fonttc, sizefont)
-        """
+        name = players[i]["tag"].replace(". ", ".").replace(" | ", "|")
 
         cajita_nombre = (POS[i][0]+12, POS[i][1],
                          POS[i][0]+size[0]-12, POS[i][1]+size[1]*0.98)
-        
-        fit_text(c, draw, cajita_nombre, texto, fonttc, guess=int(size[0]*0.26),
+        # Player name
+        fit_text(draw, cajita_nombre, name, the_font, guess=int(size[0]*0.26),
                  align="center", alignv="bottom",
-                 fill=fontcolor1, shadow=fontscolor1)
-        #draw_text(c, draw, (POS[i][0] + (size[0]-0.5*sizefont*len(texto))//2,
-        #           POS[i][1]+int(size[0]*0.995)-sizefont),
-        #           texto, font=font, fill=fontcolor)
+                 fill=font_color1, shadow=font_shadow1)
 
-    return c
+    return canvas

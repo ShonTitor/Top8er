@@ -6,7 +6,7 @@ from .generar.perro import generate_banner
 from .generar.getsets import event_data, challonge_data
 
 def hestia(request, game, FormClass,
-           hasextra=True, color_guide=None, icon_sizes=None):
+           hasextra=True, color_guide=None, icon_sizes=(64, 32)):
     if hasextra : has_extra = "true"
     else : has_extra = "false"
     
@@ -32,9 +32,10 @@ def hestia(request, game, FormClass,
 
             for i in range(8) :
                 try :
-                    init_data["name"+str(i+1)] = datos["players"][i]["tag"]
-                    init_data["twitter"+str(i+1)] = datos["players"][i]["twitter"]
-                    init_data["char"+str(i+1)] = datos["players"][i]["char"][0]
+                    init_data["player"+str(i+1)] = {}
+                    init_data["player"+str(i+1)]["name"] = datos["players"][i]["tag"]
+                    init_data["player"+str(i+1)]["twitter"] = datos["players"][i]["twitter"]
+                    init_data["player"+str(i+1)]["char"] = datos["players"][i]["char"][0]
                 except :
                     pass
             
@@ -66,58 +67,42 @@ def hestia(request, game, FormClass,
             cshadow = "charshadow" in request.POST
             pr = "prmode" in request.POST
             blacksq = "blacksquares" in request.POST
-            """
-            try :                
-                request.POST["darken_bg"]
-                darkbg = True
-            except : darkbg = False
-
-            try :                
-                request.POST["charshadow"]
-                cshadow = True
-            except : cshadow = False
-
-            try :                
-                request.POST["prmode"]
-                pr = True
-            except : pr = False
-
-            try :       
-                request.POST["blacksquares"]
-                blacksq = True
-            except : blacksq = False"""
 
             names = []
             twitter = []
             chars = []
             seconds = [[] for i in range(8)]
+            flags = []
             for i in range(1,9) :
-                names.append(request.POST["name"+str(i)])
-                if request.POST["twitter"+str(i)] == "" :
+                names.append(request.POST["player"+str(i)+"_name"])
+                flag = request.POST["player"+str(i)+"_flag"]
+                flags.append(flag if flag != "None" else None)
+                if request.POST["player"+str(i)+"_twitter"] == "" :
                     twitter.append(None)
                 else :
-                    twitter.append(request.POST["twitter"+str(i)])
+                    twitter.append(request.POST["player"+str(i)+"_twitter"])
                     
-                if game == "efz" and "palette"+str(i) in request.FILES :
-                    chars.append( (request.POST["char"+str(i)],
-                                   request.FILES["palette"+str(i)])
+                if game == "efz" and "player"+str(i)+"_palette" in request.FILES :
+                    chars.append( (request.POST["player"+str(i)+"_char"],
+                                   request.FILES["player"+str(i)+"_palette"])
                                 )
                 else :
-                    chars.append( (request.POST["char"+str(i)],
-                                   request.POST["color"+str(i)])
+                    chars.append( (request.POST["player"+str(i)+"_char"],
+                                   request.POST["player"+str(i)+"_color"])
                                 )
                 if hasextra :
                     for k in range(1,3) :
-                        if request.POST["extra"+str(i)+str(k)] == "None" :
+                        if request.POST["player"+str(i)+"_extra"+str(k)] == "None" :
                             continue
                         else :
-                            seconds[i-1].append((request.POST["extra"+str(i)+str(k)],
-                                               request.POST["extra_color"+str(i)+str(k)]))
+                            seconds[i-1].append((request.POST["player"+str(i)+"_extra"+str(k)],
+                                               request.POST["player"+str(i)+"_extra_color"+str(k)]))
                 
             players = [{"tag" : names[j],
                         "char" : chars[j],
                         "twitter" : twitter[j],
-                        "secondaries" : seconds[j]
+                        "secondaries" : seconds[j],
+                        "flag": flags[j]
                             }
                        for j in range(8)]
             datos = { "players" : players,
@@ -140,19 +125,37 @@ def hestia(request, game, FormClass,
                                   blacksquares=blacksq,
                                   icon_sizes=icon_sizes,
                                   font=fuente,
-                                  fontcolor1=request.POST["fcolor1"],
-                                  fontscolor1=request.POST["fscolor1"],
-                                  fontcolor2=request.POST["fcolor2"],
-                                  fontscolor2=request.POST["fscolor2"],
+                                  font_color1=request.POST["fcolor1"],
+                                  font_shadow1=request.POST["fscolor1"],
+                                  font_color2=request.POST["fcolor2"],
+                                  font_shadow2=request.POST["fscolor2"],
                                     )
             buffered = BytesIO()
             img.save(buffered, format="PNG")
             img = base64.b64encode(buffered.getvalue())
             img = str(img)[2:-1]
-            #context = { "img" : img }
-            #return render(request, 'gg.html' , context)
+
+            init_data = {}
+            field_keys = filter(lambda k: not "player" in k and not "csrf" in k, request.POST.keys())
+            for key in field_keys :
+                init_data[key] = request.POST[key]
+            check_field_keys = ["darken_bg", "blacksquares", "charshadow", "prmode"]
+            for key in check_field_keys :
+                init_data[key] = key in request.POST
+
+            for i in range(1,9) :
+                try :
+                    init_data["player{}".format(i)] = {
+                        "name": request.POST["player{}_name".format(i)],
+                        "twitter": request.POST["player{}_twitter".format(i)],
+                        "char": request.POST["player{}_char".format(i)],
+                        "flag": request.POST["player{}_flag".format(i)],
+                    }
+                except :
+                    pass
+
             context = { "hasextra" : has_extra,
-                        "form" : FormClass(initial=request.POST),
+                        "form" : FormClass(initial=init_data),
                         "form2" : SmashggForm(),
                         "off" : 2,
                         "color_guide" : color_guide,

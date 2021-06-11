@@ -114,6 +114,10 @@
         	display: none;
         }
 
+		.extra_chars {
+			display: none;
+		}
+
 		.showextra {
 			background-color: red;
 			border-radius: 5px;
@@ -294,7 +298,7 @@
     		}
 
     		$(".showextra").click(function() {
-				$(this).next().toggle();
+				$(this).parent().find('.extra_chars').toggle();
 				var a = $(this).html();
 				if (a == "+") {
 					$(this).html("-");
@@ -307,27 +311,25 @@
 			$( "select" ).each(function() {
 				var l = $(this).find('option').length;
 				if (l == 1) {
-					$(this).hide();
-					$(this).prev().hide();
-					$(this).prev().prev().hide();
+					$(this).parent().hide();
 				}
 			});
 
 			for (i=1;i<=8;i++) {
-				$("#id_char"+i).change(function() {
+				$("#id_player"+i+"_2").change(function() {
 					colorcito($(this));
 				});
-				$("#id_char"+i).change();
+				$("#id_player"+i+"_2").change();
 
-				$("#id_extra"+i+"1").change(function() {
+				$("#id_player"+i+"_4").change(function() {
 					colorcito($(this));
 				});
-				$("#id_extra"+i+"1").change();
+				$("#id_player"+i+"_4").change();
 
-				$("#id_extra"+i+"2").change(function() {
+				$("#id_player"+i+"_6").change(function() {
 					colorcito($(this));
 				});
-				$("#id_extra"+i+"2").change();
+				$("#id_player"+i+"_6").change();
 			}
 
 
@@ -411,9 +413,7 @@
 
 		function colorcito(desu) {
 			var m = 0;
-			//alert(desu.next().next().next().next().html());
-			//console.log(desu.val());
-			desu.next().next().next().next().children("option").each(function() {
+			desu.parent().next().find('select').children("option").each(function() {
 				try {
 					var char = desu.val();
 					if (char == "None") {
@@ -486,318 +486,38 @@
     {% csrf_token %}
     <div class="row" style="width: 80%; margin-left: 10%">
 
-<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
-            <p>Player 1</p>
-            {{ form.name1.label_tag }}
-            {{ form.name1.errors }}
-            {{ form.name1 }}<br>
-            {{ form.twitter1.label }}
-            {{ form.twitter1.errors }}
-            {{ form.twitter1 }}<br>
-            {{ form.char1.label_tag }}<br>
-            {{ form.char1.errors }}
-            {{ form.char1 }}<br>
-            {{ form.color1.label_tag }}<br>
-            {{ form.color1.errors }}
-            {{ form.color1 }}
-
-            {% if game == "efz" %}
-	            <br>
-	            {{ form.palette1.label_tag }}<br>
-	            {{ form.palette1.errors }}
-	            {{ form.palette1 }}<br>
-
-            {% endif %}
-
-            <span class="showextra">+</span>
-            <div class="extra_chars">
-            {{ form.extra11.label_tag }}<br>
-            {{ form.extra11.errors }}
-            {{ form.extra11 }}<br>
-            {{ form.extra_color11.label_tag }}<br>
-            {{ form.extra_color11.errors }}
-            {{ form.extra_color11 }}<br>
-            {{ form.extra12.label_tag }}<br>
-            {{ form.extra12.errors }}
-            {{ form.extra12 }}<br>
-            {{ form.extra_color12.label_tag }}<br>
-            {{ form.extra_color12.errors }}
-            {{ form.extra_color12 }}<br>
-            </div>
-        </div>
- <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
-            <p>Player 2</p>
-            {{ form.name2.label_tag }}
-            {{ form.name2.errors }}
-            {{ form.name2 }}<br>
-            {{ form.twitter2.label }}
-            {{ form.twitter2.errors }}
-            {{ form.twitter2 }}<br>
-            {{ form.char2.label_tag }}<br>
-            {{ form.char2.errors }}
-            {{ form.char2 }}<br>
-            {{ form.color2.label_tag }}<br>
-            {{ form.color2.errors }}
-            {{ form.color2 }}
-
-            {% if game == "efz" %}
-	            <br>
-	            {{ form.palette2.label_tag }}<br>
-	            {{ form.palette2.errors }}
-	            {{ form.palette2 }}<br>
-
-            {% endif %}
-
-            <span class="showextra">+</span>
-            <div class="extra_chars">
-            {{ form.extra21.label_tag }}<br>
-            {{ form.extra21.errors }}
-            {{ form.extra21 }}<br>
-            {{ form.extra_color21.label_tag }}<br>
-            {{ form.extra_color21.errors }}
-            {{ form.extra_color21 }}<br>
-            {{ form.extra22.label_tag }}<br>
-            {{ form.extra22.errors }}
-            {{ form.extra22 }}<br>
-            {{ form.extra_color22.label_tag }}<br>
-            {{ form.extra_color22.errors }}
-            {{ form.extra_color22 }}<br>
-            </div>
-        </div>
- <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
-            <p>Player 3</p>
-            {{ form.name3.label_tag }}
-            {{ form.name3.errors }}
-            {{ form.name3 }}<br>
-            {{ form.twitter3.label }}
-            {{ form.twitter3.errors }}
-            {{ form.twitter3 }}<br>
-            {{ form.char3.label_tag }}<br>
-            {{ form.char3.errors }}
-            {{ form.char3 }}<br>
-            {{ form.color3.label_tag }}<br>
-            {{ form.color3.errors }}
-            {{ form.color3 }}
-
-            {% if game == "efz" %}
-	            <br>
-	            {{ form.palette3.label_tag }}<br>
-	            {{ form.palette3.errors }}
-	            {{ form.palette3 }}<br>
-
-            {% endif %}
-
-            <span class="showextra">+</span>
-            <div class="extra_chars">
-            {{ form.extra31.label_tag }}<br>
-            {{ form.extra31.errors }}
-            {{ form.extra31 }}<br>
-            {{ form.extra_color31.label_tag }}<br>
-            {{ form.extra_color31.errors }}
-            {{ form.extra_color31 }}<br>
-            {{ form.extra32.label_tag }}<br>
-            {{ form.extra32.errors }}
-            {{ form.extra32 }}<br>
-            {{ form.extra_color32.label_tag }}<br>
-            {{ form.extra_color32.errors }}
-            {{ form.extra_color32 }}<br>
-            </div>
-        </div>
- <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
-            <p>Player 4</p>
-            {{ form.name4.label_tag }}
-            {{ form.name4.errors }}
-            {{ form.name4 }}<br>
-            {{ form.twitter4.label }}
-            {{ form.twitter4.errors }}
-            {{ form.twitter4 }}<br>
-            {{ form.char4.label_tag }}<br>
-            {{ form.char4.errors }}
-            {{ form.char4 }}<br>
-            {{ form.color4.label_tag }}<br>
-            {{ form.color4.errors }}
-            {{ form.color4 }}
-
-            {% if game == "efz" %}
-	            <br>
-	            {{ form.palette4.label_tag }}<br>
-	            {{ form.palette4.errors }}
-	            {{ form.palette4 }}<br>
-
-            {% endif %}
-
-            <span class="showextra">+</span>
-            <div class="extra_chars">
-            {{ form.extra41.label_tag }}<br>
-            {{ form.extra41.errors }}
-            {{ form.extra41 }}<br>
-            {{ form.extra_color41.label_tag }}<br>
-            {{ form.extra_color41.errors }}
-            {{ form.extra_color41 }}<br>
-            {{ form.extra42.label_tag }}<br>
-            {{ form.extra42.errors }}
-            {{ form.extra42 }}<br>
-            {{ form.extra_color42.label_tag }}<br>
-            {{ form.extra_color42.errors }}
-            {{ form.extra_color42 }}<br>
-            </div>
-        </div>
- <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
-            <p>Player 5</p>
-            {{ form.name5.label_tag }}
-            {{ form.name5.errors }}
-            {{ form.name5 }}<br>
-            {{ form.twitter5.label }}
-            {{ form.twitter5.errors }}
-            {{ form.twitter5 }}<br>
-            {{ form.char5.label_tag }}<br>
-            {{ form.char5.errors }}
-            {{ form.char5 }}<br>
-            {{ form.color5.label_tag }}<br>
-            {{ form.color5.errors }}
-            {{ form.color5 }}
-
-            {% if game == "efz" %}
-	            <br>
-	            {{ form.palette5.label_tag }}<br>
-	            {{ form.palette5.errors }}
-	            {{ form.palette5 }}<br>
-
-            {% endif %}
-
-            <span class="showextra">+</span>
-            <div class="extra_chars">
-            {{ form.extra51.label_tag }}<br>
-            {{ form.extra51.errors }}
-            {{ form.extra51 }}<br>
-            {{ form.extra_color51.label_tag }}<br>
-            {{ form.extra_color51.errors }}
-            {{ form.extra_color51 }}<br>
-            {{ form.extra52.label_tag }}<br>
-            {{ form.extra52.errors }}
-            {{ form.extra52 }}<br>
-            {{ form.extra_color52.label_tag }}<br>
-            {{ form.extra_color52.errors }}
-            {{ form.extra_color52 }}<br>
-            </div>
-        </div>
- <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
-            <p>Player 6</p>
-            {{ form.name6.label_tag }}
-            {{ form.name6.errors }}
-            {{ form.name6 }}<br>
-            {{ form.twitter6.label }}
-            {{ form.twitter6.errors }}
-            {{ form.twitter6 }}<br>
-            {{ form.char6.label_tag }}<br>
-            {{ form.char6.errors }}
-            {{ form.char6 }}<br>
-            {{ form.color6.label_tag }}<br>
-            {{ form.color6.errors }}
-            {{ form.color6 }}
-
-            {% if game == "efz" %}
-	            <br>
-	            {{ form.palette6.label_tag }}<br>
-	            {{ form.palette6.errors }}
-	            {{ form.palette6 }}<br>
-
-            {% endif %}
-
-            <span class="showextra">+</span>
-            <div class="extra_chars">
-            {{ form.extra61.label_tag }}<br>
-            {{ form.extra61.errors }}
-            {{ form.extra61 }}<br>
-            {{ form.extra_color61.label_tag }}<br>
-            {{ form.extra_color61.errors }}
-            {{ form.extra_color61 }}<br>
-            {{ form.extra62.label_tag }}<br>
-            {{ form.extra62.errors }}
-            {{ form.extra62 }}<br>
-            {{ form.extra_color62.label_tag }}<br>
-            {{ form.extra_color62.errors }}
-            {{ form.extra_color62 }}<br>
-            </div>
-        </div>
- <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
-            <p>Player 7</p>
-            {{ form.name7.label_tag }}
-            {{ form.name7.errors }}
-            {{ form.name7 }}<br>
-            {{ form.twitter7.label }}
-            {{ form.twitter7.errors }}
-            {{ form.twitter7 }}<br>
-            {{ form.char7.label_tag }}<br>
-            {{ form.char7.errors }}
-            {{ form.char7 }}<br>
-            {{ form.color7.label_tag }}<br>
-            {{ form.color7.errors }}
-            {{ form.color7 }}
-
-            {% if game == "efz" %}
-	            <br>
-	            {{ form.palette7.label_tag }}<br>
-	            {{ form.palette7.errors }}
-	            {{ form.palette7 }}<br>
-
-            {% endif %}
-
-            <span class="showextra">+</span>
-            <div class="extra_chars">
-            {{ form.extra71.label_tag }}<br>
-            {{ form.extra71.errors }}
-            {{ form.extra71 }}<br>
-            {{ form.extra_color71.label_tag }}<br>
-            {{ form.extra_color71.errors }}
-            {{ form.extra_color71 }}<br>
-            {{ form.extra72.label_tag }}<br>
-            {{ form.extra72.errors }}
-            {{ form.extra72 }}<br>
-            {{ form.extra_color72.label_tag }}<br>
-            {{ form.extra_color72.errors }}
-            {{ form.extra_color72 }}<br>
-            </div>
-        </div>
- <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
-            <p>Player 8</p>
-            {{ form.name8.label_tag }}
-            {{ form.name8.errors }}
-            {{ form.name8 }}<br>
-            {{ form.twitter8.label }}
-            {{ form.twitter8.errors }}
-            {{ form.twitter8 }}<br>
-            {{ form.char8.label_tag }}<br>
-            {{ form.char8.errors }}
-            {{ form.char8 }}<br>
-            {{ form.color8.label_tag }}<br>
-            {{ form.color8.errors }}
-            {{ form.color8 }}
-
-            {% if game == "efz" %}
-	            <br>
-	            {{ form.palette8.label_tag }}<br>
-	            {{ form.palette8.errors }}
-	            {{ form.palette8 }}<br>
-
-            {% endif %}
-
-            <span class="showextra">+</span>
-            <div class="extra_chars">
-            {{ form.extra81.label_tag }}<br>
-            {{ form.extra81.errors }}
-            {{ form.extra81 }}<br>
-            {{ form.extra_color81.label_tag }}<br>
-            {{ form.extra_color81.errors }}
-            {{ form.extra_color81 }}<br>
-            {{ form.extra82.label_tag }}<br>
-            {{ form.extra82.errors }}
-            {{ form.extra82 }}<br>
-            {{ form.extra_color82.label_tag }}<br>
-            {{ form.extra_color82.errors }}
-            {{ form.extra_color82 }}<br>
-            </div>
-        </div>
+	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<p>Player 1</p>
+		{{ form.player1 }}
+	</div>
+	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<p>Player 2</p>
+		{{ form.player2 }}
+	</div>
+	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<p>Player 3</p>
+		{{ form.player3 }}
+	</div>
+	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<p>Player 4</p>
+		{{ form.player4 }}
+	</div>
+	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<p>Player 5</p>
+		{{ form.player5 }}
+	</div>
+	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<p>Player 6</p>
+		{{ form.player6 }}
+	</div>
+	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<p>Player 7</p>
+		{{ form.player7 }}
+	</div>
+	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		<p>Player 8</p>
+		{{ form.player8 }}
+	</div>
 
         <div class="cajilla col-xs-12 col-sm-12 col-md-4 col-lg-4">
                 {{ form.ttext.label_tag }}
