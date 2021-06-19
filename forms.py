@@ -132,7 +132,7 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
                     'Non-binary', 'Pansexual Pride', 'Polyamory Pride', 'Polysexual Pride', 'Transgender Pride']
     flag_choices = [(c,c) for c in flag_choices]
 
-    player_fields = {'name': forms.CharField(label='Player Name', max_length=23), 
+    player_fields = {'name': forms.CharField(label='Player Name', max_length=40), 
                      'twitter': forms.CharField(label='Twitter Handle', max_length=16, required=False),
                      'char': forms.ChoiceField(label='Main Character', choices=chars),
                      'color': forms.ChoiceField(label='Main Character Color', choices=numeritos),
