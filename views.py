@@ -1,6 +1,7 @@
 import os, base64, re
 from io import BytesIO
 from django.shortcuts import render, HttpResponse, loader
+import requests
 from .forms import makeform, SmashggForm
 from .generar.perro import generate_banner
 from .generar.getsets import event_data, challonge_data
@@ -149,8 +150,15 @@ def hestia(request, game, FormClass,
                         "name": request.POST["player{}_name".format(i)],
                         "twitter": request.POST["player{}_twitter".format(i)],
                         "char": request.POST["player{}_char".format(i)],
+                        "color": request.POST["player{}_color".format(i)],
                         "flag": request.POST["player{}_flag".format(i)],
                     }
+                    for field in ["extra1", "extra_color1", "extra2", "extra_color2"] :
+                        f = "player{}_{}".format(i, field)
+                        if f in request.POST :
+                            print(field)
+                            init_data["player{}".format(i)][field] = request.POST[f]
+                            
                 except :
                     pass
 
