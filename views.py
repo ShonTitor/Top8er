@@ -156,7 +156,6 @@ def hestia(request, game, FormClass,
                     for field in ["extra1", "extra_color1", "extra2", "extra_color2"] :
                         f = "player{}_{}".format(i, field)
                         if f in request.POST :
-                            print(field)
                             init_data["player{}".format(i)][field] = request.POST[f]
                             
                 except :
