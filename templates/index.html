@@ -316,20 +316,21 @@
 			});
 
 			for (i=1;i<=8;i++) {
-				$("#id_player"+i+"_2").change(function() {
+				$('select[name="player'+i+'_color"]').change(function() {
 					colorcito($(this));
 				});
-				$("#id_player"+i+"_2").change();
+				$('select[name="player'+i+'_color"]').change();
 
-				$("#id_player"+i+"_4").change(function() {
+				$('select[name="player'+i+'_extra1"]').change(function() {
+					console.log("perro")
 					colorcito($(this));
 				});
-				$("#id_player"+i+"_4").change();
+				$('select[name="player'+i+'_extra1"]').change();
 
-				$("#id_player"+i+"_6").change(function() {
+				$('select[name="player'+i+'_extra2"]').change(function() {
 					colorcito($(this));
 				});
-				$("#id_player"+i+"_6").change();
+				$('select[name="player'+i+'_extra2"]').change();
 			}
 
 
@@ -488,34 +489,42 @@
 
 	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
 		<p>Player 1</p>
+		{{ form.player1.errors }}
 		{{ form.player1 }}
 	</div>
 	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
 		<p>Player 2</p>
+		{{ form.player2.errors }}
 		{{ form.player2 }}
 	</div>
 	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
 		<p>Player 3</p>
+		{{ form.player3.errors }}
 		{{ form.player3 }}
 	</div>
 	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
 		<p>Player 4</p>
+		{{ form.player4.errors }}
 		{{ form.player4 }}
 	</div>
 	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
 		<p>Player 5</p>
+		{{ form.player5.errors }}
 		{{ form.player5 }}
 	</div>
 	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
 		<p>Player 6</p>
+		{{ form.player6.errors }}
 		{{ form.player6 }}
 	</div>
 	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
 		<p>Player 7</p>
+		{{ form.player7.errors }}
 		{{ form.player7 }}
 	</div>
 	<div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
 		<p>Player 8</p>
+		{{ form.player8.errors }}
 		{{ form.player8 }}
 	</div>
 

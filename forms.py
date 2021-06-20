@@ -4,6 +4,7 @@ from collections import Mapping
 from typing import Type
 from colorful.forms import RGBColorField
 from .generar.getsets import check_event, check_challonge
+from django.core.exceptions import ValidationError
 
 class AncestorForm(forms.Form) :
     background = forms.ImageField(label="Background Image", required=False)
@@ -133,7 +134,7 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
     flag_choices = [(c,c) for c in flag_choices]
 
     player_fields = {'name': forms.CharField(label='Player Name', max_length=40), 
-                     'twitter': forms.CharField(label='Twitter Handle', max_length=16, required=False),
+                     'twitter': forms.CharField(label='Twitter Handle', max_length=20, required=False),
                      'char': forms.ChoiceField(label='Main Character', choices=chars),
                      'color': forms.ChoiceField(label='Main Character Color', choices=numeritos),
                      'flag': forms.ChoiceField(label='Flag', choices=flag_choices)
@@ -157,6 +158,45 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
  
         def compress(self, data_list):
             return {key: data_list[i] for i, key in enumerate(player_fields.keys())}
+
+        # Ugly hack, do better
+        def clean(self, value):
+            clean_data = []
+            errors = []
+            if self.disabled and not isinstance(value, list):
+                value = self.widget.decompress(value)
+            if not value or isinstance(value, (list, tuple)):
+                if not value or not [v for v in value if v not in self.empty_values]:
+                    if self.required:
+                        raise ValidationError(self.error_messages['required'], code='required')
+                    else:
+                        return self.compress([])
+            else:
+                raise ValidationError(self.error_messages['invalid'], code='invalid')
+            for i, field in enumerate(self.fields):
+                try:
+                    field_value = value[i]
+                except IndexError:
+                    field_value = None
+                if field_value in self.empty_values:
+                    if self.require_all_fields:
+                        if self.required:
+                            raise ValidationError(self.error_messages['required'], code='required')
+                    elif field.required:
+                        if field.error_messages['incomplete'] not in errors:
+                            errors.append(field.error_messages['incomplete'])
+                        continue
+                try:
+                    clean_data.append(field.clean(field_value))
+                except ValidationError as e:
+                    errors.extend([field.label+": "+mm for mm in m ] for m in e.error_list if m not in errors)
+            if errors:
+                raise ValidationError(errors)
+
+            out = self.compress(clean_data)
+            self.validate(out)
+            self.run_validators(out)
+            return out
 
     class PlayerWidget(forms.MultiWidget):
         if hasextra :
