@@ -15,7 +15,8 @@ class AncestorForm(forms.Form) :
     fonts = [("auto", "Auto"),
              ("DFGothic-SU-WIN-RKSJ-H-01.ttf", "SSBU font (japanese characters)"),
              ("sansthirteenblack.ttf", "SansThirteenBlack (european characters)")]
-    fontt = forms.ChoiceField(label='Font Type', choices=fonts)
+    fontt = forms.ChoiceField(label='Select font Type', choices=fonts)
+    font_file = forms.FileField(label="Or upload your own font", required=False)
     fcolor1  = RGBColorField(label="Font Color", initial="#ffffff")
     fscolor1 = RGBColorField(label="Font Shadow Color", initial="#000000")
     fcolor2  = RGBColorField(label="Font Color", initial="#ffffff")

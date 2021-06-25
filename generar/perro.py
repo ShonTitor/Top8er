@@ -1,11 +1,17 @@
 import os
+import io
 
-from .utils.font import draw_text, has_glyph, best_font, fitting_font, fit_text
-from .utils.efz import efz_palette, efz_swap
+from .utils.font import best_font, fitting_font, fit_text
+from .utils.efz import efz_swap
 from .utils.team_mode import team_portrait
 
 from PIL import Image, ImageDraw, ImageFont
-
+ 
+class RereadableFile(io.BytesIO) :
+    def read(self) :
+        content = super().read()
+        self.seek(0)
+        return content
 
 def generate_banner(data, prmode=False, blacksquares=True,
                     custombg=None, darkenbg=True,
@@ -56,7 +62,12 @@ def generate_banner(data, prmode=False, blacksquares=True,
     template = os.path.join(path, "template")
     if font :
         # Path to the font file, if given
-        the_font = os.path.join(path, 'fonts', font)
+        if type(font) is str :
+            the_font = os.path.join(path, 'fonts', font)
+        else :
+            font_bytes = font.read()
+            f = RereadableFile(font_bytes)
+            the_font = f
     else :
         # Choosing the best font based on the amount of missing special characters
         text_blob = data["toptext"]+data["bottomtext"]+data["url"]

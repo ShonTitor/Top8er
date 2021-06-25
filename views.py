@@ -114,7 +114,10 @@ def hestia(request, game, FormClass,
                     }
 
             fuente = request.POST["fontt"]
-            if fuente == "auto" : fuente = None
+            if fuente == "auto" : 
+                fuente = None
+            if "font_file" in request.FILES :
+                fuente = request.FILES["font_file"]
             
             img = generate_banner(datos,
                                   customcolor= c1,
@@ -177,7 +180,7 @@ def hestia(request, game, FormClass,
                "color_guide" : color_guide,
                "game" : game,
                "result" : None
-               }
+            }
             if "event" in request.POST :
                 form = FormClass()
                 context["off"] = 1
