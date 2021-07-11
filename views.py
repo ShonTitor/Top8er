@@ -390,3 +390,14 @@ def kf2(request) :
     FormClass = makeform(chars=c, numerito=3, hasextra=True,
                          color1="#1f0141", color2="#ffff11")
     return hestia(request, "kf2", FormClass, hasextra=True)
+
+def pplus(request) :
+    c = ['Bowser', 'Captain Falcon', 'Charizard', 'Dedede', 'Diddy Kong', 'Donkey Kong', 
+    'Falco', 'Fox', 'Ganondorf', 'Ice Climbers', 'Ike', 'Ivysaur', 'Jigglypuff', 'Kirby', 
+    'Link', 'Lucario', 'Lucas', 'Luigi', 'Mario', 'Marth', 'Meta Knight', 'Mewtwo', 
+    'Mr. Game and Watch', 'Ness', 'Olimar', 'Peach', 'Pikachu', 'Pit', 'ROB', 'Roy', 'Samus', 
+    'Sheik', 'Snake', 'Sonic', 'Squirtle', 'Toon Link', 'Wario', 'Wolf', 'Yoshi', 'Zelda', 
+    'Zero Suit Samus']
+    FormClass = makeform(chars=c, numerito=18, hasextra=True,
+                         color1="#0c3e48", color2="#42dbac")
+    return hestia(request, "p+", FormClass, hasextra=True)

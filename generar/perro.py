@@ -157,10 +157,21 @@ def generate_banner(data, prmode=False, blacksquares=True,
                                     palette,
                                     char[1], 
                                     akane=(char[0]=="Akane"))
-                portrait = portrait.convert("RGBA").resize(size, resample=Image.ANTIALIAS)
+                portrait = portrait.convert("RGBA")
             else :
                 route = os.path.join(route, str(char[1])+".png")
-                portrait = Image.open(route).convert("RGBA").resize(size, resample=Image.ANTIALIAS)
+                portrait = Image.open(route).convert("RGBA")
+            # Resizing to fit the square
+            portrait_width, portrait_height = portrait.size
+            if portrait_width > portrait_height :
+                new_portrait =  Image.new('RGBA', (portrait_width, portrait_width), (0, 0, 0, 0))
+                new_portrait.paste(portrait, (0, (portrait_width-portrait_height)//2), mask=portrait)
+                portrait = new_portrait
+            elif portrait_width < portrait_height :
+                new_portrait =  Image.new('RGBA', (portrait_height, portrait_height), (0, 0, 0, 0))
+                new_portrait.paste(portrait, ((portrait_height-portrait_width)//2, 0), mask=portrait)
+                portrait = new_portrait
+            portrait = portrait.resize(size, resample=Image.ANTIALIAS)
         # Character portrait shadow
         if shadow :
             if customcolor : 
