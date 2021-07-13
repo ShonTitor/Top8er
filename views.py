@@ -393,7 +393,7 @@ def kf2(request) :
 
 def pplus(request) :
     c = ['Bowser', 'Captain Falcon', 'Charizard', 'Dedede', 'Diddy Kong', 'Donkey Kong', 
-    'Falco', 'Fox', 'Ganondorf', 'Ice Climbers', 'Ike', 'Ivysaur', 'Jigglypuff', 'Kirby', 
+    'Falco', 'Fox', 'Ganondorf', 'Ice Climbers', 'Ike', 'Ivysaur', 'Jigglypuff', 'Kirby', 'Knuckles',
     'Link', 'Lucario', 'Lucas', 'Luigi', 'Mario', 'Marth', 'Meta Knight', 'Mewtwo', 
     'Mr. Game and Watch', 'Ness', 'Olimar', 'Peach', 'Pikachu', 'Pit', 'ROB', 'Roy', 'Samus', 
     'Sheik', 'Snake', 'Sonic', 'Squirtle', 'Toon Link', 'Wario', 'Wolf', 'Yoshi', 'Zelda', 
