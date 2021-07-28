@@ -13,7 +13,7 @@ class RereadableFile(io.BytesIO) :
         self.seek(0)
         return content
 
-def generate_banner(data, prmode=False, blacksquares=True,
+def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True,
                     custombg=None, darkenbg=True,
                     customcolor=None, customcolor2=None,
                     font=None, teammode=False,
@@ -250,18 +250,31 @@ def generate_banner(data, prmode=False, blacksquares=True,
     else :
         canvas.paste(part, (0,0), mask=part)
 
-    if prmode :
-        part = Image.open(os.path.join(template,"numerospr.png"))
-    else :
-        part = Image.open(os.path.join(template,"numeros.png"))
+    # Placing numbers
+    if old_number_style:
+        if prmode :
+            part = Image.open(os.path.join(template,"numerospr.png"))
+        else :
+            part = Image.open(os.path.join(template,"numeros.png"))
 
-    if font_color1 != (255, 255, 255) and font_color1 != "#ffffff" :
-        mask = part
-        part = Image.new('RGBA', SIZE, font_color1)
-    else :
-        mask = part
+        if font_color1 != (255, 255, 255) and font_color1 != "#ffffff" :
+            mask = part
+            part = Image.new('RGBA', SIZE, font_color1)
+        else :
+            mask = part
 
-    canvas.paste(part, (0,0), mask=mask)
+        canvas.paste(part, (0,0), mask=mask)
+    else:
+        if prmode :
+            placing_numbers = list(range(1,9))
+        else :
+            placing_numbers = [1,2,3,4,5,5,7,7]
+        for i in range(8):
+            fit_text(draw, (int(POS[i][0]+SIZE_SQUARE[i]*0.02), int(POS[i][1]+SIZE_SQUARE[i]*0.02),
+                            POS[i][0]+int(SIZE_SQUARE[i]*0.3), POS[i][1]+int(SIZE_SQUARE[i]*0.3)), 
+                    str(placing_numbers[i]), the_font,
+                    align="left", alignv="top", guess=150,
+                    fill=font_color1, shadow=font_shadow1)
 
     # Corner texts
     font_instance = ImageFont.truetype(the_font, 30)
@@ -272,11 +285,15 @@ def generate_banner(data, prmode=False, blacksquares=True,
              align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
     font_instance = ImageFont.truetype(the_font, 25)
     urlmarg = (40-len(data["url"]))*6
-    # Credits and url
+    # Credits
     fit_text(draw, (1075, 726, 1361, 778), "Design by:  @Elenriqu3\nGenerator by: @Riokaru", the_font,
              align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
+    fit_text(draw, (1170, 780, 1361, 795), "made in www.top8er.com", the_font,
+            align="right", alignv="middle", fill=font_color2, shadow=False)
+    # URL
     fit_text(draw, (876, 45, 1367, 80), data["url"], the_font,
              align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
+             
 
     pajarito = Image.open(os.path.join(template,"pajarito.png")) # Twitter bird icon
     # Recolor bid icon if needed
