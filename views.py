@@ -402,3 +402,9 @@ def pplus(request) :
     FormClass = makeform(chars=c, numerito=18, hasextra=True,
                          color1="#0c3e48", color2="#42dbac")
     return hestia(request, "p+", FormClass, hasextra=True)
+
+def tfh(request) :
+    c = ['Arizona', 'Oleander', 'Paprika', 'Pom', 'Shanty', 'Tianhuo', 'Velvet']
+    FormClass = makeform(chars=c, numerito=1, hasextra=True,
+                         color1="#9e003a", color2="#ffffff")
+    return hestia(request, "tfh", FormClass, hasextra=True, icon_sizes=(72,50))
