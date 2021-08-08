@@ -414,3 +414,10 @@ def tfh(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=True,
                          color1="#9e003a", color2="#ffffff")
     return hestia(request, "tfh", FormClass, hasextra=True, icon_sizes=(72,50))
+
+def wargroove(request) :
+    c = ['Caesar', 'DarkMercia', 'Elodie', 'Emeric', 'Greenfinger', 'Koji', 'Mercia', 'Mercival', 
+         'Nuru', 'Ragna', 'Ryota', 'Sedge', 'Sigrid', 'Tenri', 'Twins', 'Valder', 'Vesper', 'Wulfar']
+    FormClass = makeform(chars=c, numerito=9, hasextra=True,
+                         color1="#9e003a", color2="#ffffff")
+    return hestia(request, "wargroove", FormClass, hasextra=True)
