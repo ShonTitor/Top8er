@@ -74,10 +74,15 @@ def hestia(request, game, FormClass,
             chars = []
             seconds = [[] for i in range(8)]
             flags = []
+            portraits = []
             for i in range(1,9) :
                 names.append(request.POST["player"+str(i)+"_name"])
                 flag = request.POST["player"+str(i)+"_flag"]
                 flags.append(flag if flag != "None" else None)
+                if  "player{}_portrait".format(i) in request.FILES :
+                    portraits.append(request.FILES["player{}_portrait".format(i)])
+                else :
+                    portraits.append(None)
                 if request.POST["player"+str(i)+"_twitter"] == "" :
                     twitter.append(None)
                 else :
@@ -103,8 +108,9 @@ def hestia(request, game, FormClass,
                         "char" : chars[j],
                         "twitter" : twitter[j],
                         "secondaries" : seconds[j],
-                        "flag": flags[j]
-                            }
+                        "flag": flags[j],
+                        "portrait": portraits[j]
+                        }
                        for j in range(8)]
             datos = { "players" : players,
                         "toptext" : request.POST["ttext"],

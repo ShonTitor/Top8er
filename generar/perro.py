@@ -131,6 +131,7 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
 
     # Portrait loop
     for i in range(8) :
+
         # Getting the corresponding size
         if i == 0 :
             size = BIG
@@ -138,40 +139,65 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
             size = MED
         else :
             size = SMA
+
         # Fills the square with solid black if the option is enabled
         if blacksquares :
             shape = [POS[i], (POS[i][0]+size[0], POS[i][1]+size[1])]
             draw.rectangle(shape, fill=(0,0,0))
+
         # Experimental, many characters in a single square
         if teammode and len(players[i]["secondaries"]) != 0 :
             chars = [players[i]["char"]] + players[i]["secondaries"]
             portrait = team_portrait(chars, size, portraits)
         else :
-            char = players[i]["char"]
-            route = os.path.join(portraits, char[0])
-            # EFZ palette swap
-            if game == "efz" and not type(char[1]) is int and not len(char[1]) == 1 :
-                base = os.path.join(route, "1.png")
-                palette = os.path.join(route, "0.pal")
-                portrait = efz_swap(base,
-                                    palette,
-                                    char[1], 
-                                    akane=(char[0]=="Akane"))
-                portrait = portrait.convert("RGBA")
+            if players[i]["portrait"]:
+                portrait = Image.open(players[i]["portrait"]).convert('RGBA')
             else :
-                route = os.path.join(route, str(char[1])+".png")
-                portrait = Image.open(route).convert("RGBA")
-            # Resizing to fit the square
-            portrait_width, portrait_height = portrait.size
-            if portrait_width > portrait_height :
-                new_portrait =  Image.new('RGBA', (portrait_width, portrait_width), (0, 0, 0, 0))
-                new_portrait.paste(portrait, (0, (portrait_width-portrait_height)//2), mask=portrait)
+                char = players[i]["char"]
+                route = os.path.join(portraits, char[0])
+
+                # EFZ palette swap
+                if game == "efz" and not type(char[1]) is int and not len(char[1]) == 1 :
+                    base = os.path.join(route, "1.png")
+                    palette = os.path.join(route, "0.pal")
+                    portrait = efz_swap(base,
+                                        palette,
+                                        char[1], 
+                                        akane=(char[0]=="Akane"))
+                    portrait = portrait.convert("RGBA")
+                else :
+                    route = os.path.join(route, str(char[1])+".png")
+                    portrait = Image.open(route).convert("RGBA")
+
+            if players[i]["portrait"]:
+                # Resizing and cropping to fit the square
+                portrait_width, portrait_height = portrait.size
+                if portrait_width > portrait_height :
+                    new_width = int((portrait_width/portrait_height)*size[1])
+                    new_portrait = portrait.resize((new_width, size[1]), resample=Image.ANTIALIAS)
+                    x_offset = (new_width-size[0])//2
+                    new_portrait = new_portrait.crop((x_offset, 0, size[0]-x_offset, size[1]))
+                elif portrait_width < portrait_height :
+                    new_height = int((portrait_height/portrait_width)*size[0])
+                    new_portrait = portrait.resize((size[0], new_height), resample=Image.ANTIALIAS)
+                    y_offset = (new_height-size[1])//2
+                    new_portrait = new_portrait.crop((0, y_offset, size[0], size[1]+y_offset))
+                else :
+                    new_portrait = portrait.resize(size, resample=Image.ANTIALIAS)
                 portrait = new_portrait
-            elif portrait_width < portrait_height :
-                new_portrait =  Image.new('RGBA', (portrait_height, portrait_height), (0, 0, 0, 0))
-                new_portrait.paste(portrait, ((portrait_height-portrait_width)//2, 0), mask=portrait)
-                portrait = new_portrait
-            portrait = portrait.resize(size, resample=Image.ANTIALIAS)
+            else :
+                # Resizing to fit the square
+                portrait_width, portrait_height = portrait.size
+                if portrait_width > portrait_height :
+                    new_portrait =  Image.new('RGBA', (portrait_width, portrait_width), (0, 0, 0, 0))
+                    new_portrait.paste(portrait, (0, (portrait_width-portrait_height)//2), mask=portrait)
+                elif portrait_width < portrait_height :
+                    new_portrait =  Image.new('RGBA', (portrait_height, portrait_height), (0, 0, 0, 0))
+                    new_portrait.paste(portrait, ((portrait_height-portrait_width)//2, 0), mask=portrait)
+                else :
+                    new_portrait = portrait
+                portrait = new_portrait.resize(size, resample=Image.ANTIALIAS)
+
         # Character portrait shadow
         if shadow :
             if customcolor : 

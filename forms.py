@@ -138,6 +138,7 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
                      'twitter': forms.CharField(label='Twitter Handle', max_length=20, required=False),
                      'char': forms.ChoiceField(label='Main Character', choices=chars),
                      'color': forms.ChoiceField(label='Main Character Color', choices=numeritos),
+                     'portrait': forms.ImageField(label="Upload your own portrait", required=False),
                      'flag': forms.ChoiceField(label='Flag', choices=flag_choices)
                     }
     if hasextra :
