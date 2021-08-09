@@ -176,7 +176,7 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
                     new_width = int((portrait_width/portrait_height)*size[1])
                     new_portrait = portrait.resize((new_width, size[1]), resample=Image.ANTIALIAS)
                     x_offset = (new_width-size[0])//2
-                    new_portrait = new_portrait.crop((x_offset, 0, size[0]-x_offset, size[1]))
+                    new_portrait = new_portrait.crop((x_offset, 0, size[0]+x_offset, size[1]))
                 elif portrait_width < portrait_height :
                     new_height = int((portrait_height/portrait_width)*size[0])
                     new_portrait = portrait.resize((size[0], new_height), resample=Image.ANTIALIAS)
