@@ -46,7 +46,7 @@ def team_portrait(chars, size, portraits_path):
 
         elif len(chars) <= 2 :
             newsize = int(0.8*size[0])                    
-            d2 = Image.open(ruta).convert("RGBA").resize((newsize, newsize))
+            d2 = Image.open(path).convert("RGBA").resize((newsize, newsize))
             offset = 0.06
             m = 0.6
             if j == 0 :

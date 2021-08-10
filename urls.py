@@ -26,6 +26,7 @@ urlpatterns = [
     path('Project+', views.pplus, name='Project+'),
     path('TFH', views.tfh, name='TFH'),
     path('Wargroove', views.wargroove, name='Wargroove'),
+    path('BBTAG', views.bbtag, name='BBTAG'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),

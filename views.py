@@ -421,3 +421,16 @@ def wargroove(request) :
     FormClass = makeform(chars=c, numerito=9, hasextra=True,
                          color1="#9e003a", color2="#ffffff")
     return hestia(request, "wargroove", FormClass, hasextra=True)
+
+def bbtag(request) :
+    c = ['Aegis', 'Akatsuki', 'Akihiko Sanada', 'Azrael', 'Blake Belladona', 'Blitztank', 
+         'Carmine', 'Celica A. Mercury', 'Chie Sakonata', 'Elizabeth', 'Es', 'Gordeau', 
+         'Hakumen', 'Hazama', 'Heart Aino', 'Hilda', 'Hyde', 'Iron Tager', 'Izayoi', 'Jin Kisargi', 
+         'Jubei', 'Kanji Tatsumi', 'Labrys', 'Linne', 'Mai Natsume', 'Makoto Nanaya', 'Mervaka', 'Mika', 
+         'Mitsuru Kirijo', 'Naoto Kurogane', 'Naoto Shirogane', 'Neo Politan', 'Nine the Phantom', 
+         'Noel Vermillion', 'Nu-13', 'Orie', 'Platinum the Trinity', 'Rachel Alucard', 'Ragna the Bloodedge', 
+         'Ruby Rose', 'Seth', "Susano'o", 'Teddie', 'Tohru Adachi', 'Vatista', 'Waldstein', 'Weiss Schnee', 
+         'Yang Xiao Long', 'Yosuke Hanamura', 'Yu Narukami', 'Yukiko Amagi', 'Yumi', 'Yuzuriha']
+    FormClass = makeform(chars=c, numerito=1, hasextra=True,
+                         color1="#3250a1", color2="#f5f5be")
+    return hestia(request, "bbtag", FormClass, hasextra=True, icon_sizes=(72,50))
