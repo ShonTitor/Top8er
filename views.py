@@ -425,8 +425,8 @@ def wargroove(request) :
 def bbtag(request) :
     c = ['Aegis', 'Akatsuki', 'Akihiko Sanada', 'Azrael', 'Blake Belladona', 'Blitztank', 
          'Carmine', 'Celica A. Mercury', 'Chie Sakonata', 'Elizabeth', 'Es', 'Gordeau', 
-         'Hakumen', 'Hazama', 'Heart Aino', 'Hilda', 'Hyde', 'Iron Tager', 'Izayoi', 'Jin Kisargi', 
-         'Jubei', 'Kanji Tatsumi', 'Labrys', 'Linne', 'Mai Natsume', 'Makoto Nanaya', 'Mervaka', 'Mika', 
+         'Hakumen', 'Hazama', 'Heart Aino', 'Hilda', 'Hyde', 'Iron Tager', 'Izayoi', 'Jin Kisaragi', 
+         'Jubei', 'Kanji Tatsumi', 'Labrys', 'Linne', 'Mai Natsume', 'Makoto Nanaya', 'Merkava', 'Mika', 
          'Mitsuru Kirijo', 'Naoto Kurogane', 'Naoto Shirogane', 'Neo Politan', 'Nine the Phantom', 
          'Noel Vermillion', 'Nu-13', 'Orie', 'Platinum the Trinity', 'Rachel Alucard', 'Ragna the Bloodedge', 
          'Ruby Rose', 'Seth', "Susano'o", 'Teddie', 'Tohru Adachi', 'Vatista', 'Waldstein', 'Weiss Schnee', 
