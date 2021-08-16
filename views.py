@@ -275,7 +275,7 @@ def ggxrd(request) :
 
 def ggst(request) :
     c = ['Anji', 'Axl', 'Chipp', 'Faust', 'Giovanna', 'Goldlewis', 
-         'I-No', 'Ky', 'Leo', 'May', 'Millia',
+         'I-No', 'Jack-O\'', 'Ky', 'Leo', 'May', 'Millia',
          'Nagoriyuki', 'Potemkim', 'Ramlethal', 'Sol', 'Zato'] 
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#5e0a00", color2="#000000")
