@@ -434,3 +434,9 @@ def bbtag(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=True,
                          color1="#3250a1", color2="#f5f5be")
     return hestia(request, "bbtag", FormClass, hasextra=True, icon_sizes=(72,50))
+
+def waku(request) :
+    c = ['Arina', 'Bonus Kun', 'DandyJ', 'Fernandez', 'Mauru', 'PolitankZ', 'Rai', 'Slash', 'Tesse']
+    FormClass = makeform(chars=c, numerito=1, hasextra=False,
+                         color1="#e87ff5", color2="#eeb42e")
+    return hestia(request, "waku", FormClass, hasextra=False)
