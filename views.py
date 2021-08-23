@@ -440,3 +440,17 @@ def waku(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#e87ff5", color2="#eeb42e")
     return hestia(request, "waku", FormClass, hasextra=False)
+
+def windjammers(request) :
+    c = ['Hiromi Mita', 'Steve Miller', 'Jordi Costa', 'Loris Biaggi', 'Gary Scott', 'Klaus Wessel']
+    FormClass = makeform(chars=c, numerito=1, hasextra=True,
+                         color1="#0096ff", color2="#bdff07")
+    return hestia(request, "windjammers", FormClass, hasextra=True)
+
+
+def garou(request) :
+    c = ['B.Jenet', 'Dong', 'Freeman', 'Gato', 'Grant', 'Griffon', 'Hokutomaru', 
+         'Hotaru', 'Jae', 'Kain', 'Kevin', 'Marco', 'Rock', 'Terry']
+    FormClass = makeform(chars=c, numerito=4, hasextra=False,
+                         color1="#f00000", color2="#000000")
+    return hestia(request, "garou", FormClass, hasextra=False)
