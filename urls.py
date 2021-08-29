@@ -30,6 +30,7 @@ urlpatterns = [
     path('WakuWaku7', views.waku, name='Waku Waku 7'),
     path('Windjammers', views.windjammers, name='Windjammers'),
     path('Garou', views.garou, name='Garou Mark of the Wolves'),
+    path('SFV', views.sfv, name='Street Fighter V'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),

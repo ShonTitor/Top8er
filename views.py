@@ -454,3 +454,13 @@ def garou(request) :
     FormClass = makeform(chars=c, numerito=4, hasextra=False,
                          color1="#f00000", color2="#000000")
     return hestia(request, "garou", FormClass, hasextra=False)
+
+def sfv(request) :
+    c = ['Abigail', 'Akira', 'Akuma', 'Alex', 'Birdie', 'Blanka', 'Boxer', 'Cammy',
+         'Chun-li', 'Claw', 'Cody', 'Dan', 'Dhalsim', 'Dictator', 'E.Honda', 'Ed', 
+         'F.A.N.G', 'Falke', 'G', 'Gill', 'Guile', 'Ibuki', 'Juri', 'Kage', 'Karin', 
+         'Ken', 'Kolin', 'Laura', 'Lucia', 'Menat', 'Nash', 'Necalli', 'Oro', 'Poison', 
+         'R.Mika', 'Rashid', 'Rose', 'Ryu', 'Sagat', 'Sakura', 'Seth', 'Urien', 'Zangief', 'Zeku']
+    FormClass = makeform(chars=c, numerito=1, hasextra=False,
+                         color1="#ff4c00", color2="#ffaa00")
+    return hestia(request, "sfv", FormClass, hasextra=False)
