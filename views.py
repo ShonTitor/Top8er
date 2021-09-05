@@ -464,3 +464,10 @@ def sfv(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#ff4c00", color2="#ffaa00")
     return hestia(request, "sfv", FormClass, hasextra=False)
+
+def aos2(request) :
+    c = ['Alte', 'Hime', 'Iru', 'Kae', 'Kyoko', 'Mira', 'Nanako', 'Nath', 
+         'Saki', 'Sham', 'Sora', 'Star Breaker', 'Suguri', 'Sumika', 'Tsih']
+    FormClass = makeform(chars=c, numerito=4, hasextra=False,
+                         color1="#005d98", color2="#bec8dc")
+    return hestia(request, "aos2", FormClass, hasextra=False)
