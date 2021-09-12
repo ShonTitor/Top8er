@@ -471,3 +471,12 @@ def aos2(request) :
     FormClass = makeform(chars=c, numerito=4, hasextra=False,
                          color1="#005d98", color2="#bec8dc")
     return hestia(request, "aos2", FormClass, hasextra=False)
+
+def gbvs(request) :
+    c = ['Gran', 'Katalina', 'Charlotta', 'Lancelot', 'Percival', 'Ferry', 
+         'Lowain', 'Ladiva', 'Metera', 'Zeta', 'Vaseraga', 'Beelzebub', 
+         'Narmaya', 'Soriz', 'Djeeta', 'Zooey', 'Belial', 'Cagliostro', 
+         'Yuel', 'Anre', 'Eustace', 'Seox', 'Vira']
+    FormClass = makeform(chars=c, numerito=1, hasextra=False,
+                         color1="#0a5a8c", color2="#a6d9ea")
+    return hestia(request, "gbvs", FormClass, hasextra=False)
