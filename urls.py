@@ -33,6 +33,8 @@ urlpatterns = [
     path('SFV', views.sfv, name='Street Fighter V'),
     path('aos2', views.aos2, name='Acceleration of Sugurui 2'),
     path('GBVS', views.gbvs, name='Granblue Fantasy VS'),
+    path('amogus', views.amogus, name='Among Us Arena'),
+    path('ABK', views.abk, name='Akatsuki Blitzkampf'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),

@@ -480,3 +480,16 @@ def gbvs(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#0a5a8c", color2="#a6d9ea")
     return hestia(request, "gbvs", FormClass, hasextra=False)
+
+def amogus(request) :
+    c = ['Crewmate']
+    FormClass = makeform(chars=c, numerito=16, hasextra=False,
+                         color1="#7a1515", color2="#FFFFFF")
+    return hestia(request, "amogus", FormClass, hasextra=False)
+
+def abk(request) :
+    c = ['Adlet', 'Akatsuki', 'Anonym', 'Blitztank', 'Elektrosoldat', 'Fritz', 
+     'Kanae', 'Marilyn', 'Murakumo', 'Mycale', 'Perfecti', 'Sai', 'Wei']
+    FormClass = makeform(chars=c, numerito=1, hasextra=False,
+                         color1="#7a1515", color2="#FFFFFF")
+    return hestia(request, "abk", FormClass, hasextra=False)
