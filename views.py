@@ -488,7 +488,7 @@ def amogus(request) :
     return hestia(request, "amogus", FormClass, hasextra=False)
 
 def abk(request) :
-    c = ['Adlet', 'Akatsuki', 'Anonym', 'Blitztank', 'Elektrosoldat', 'Fritz', 
+    c = ['Adler', 'Akatsuki', 'Anonym', 'Blitztank', 'Elektrosoldat', 'Fritz', 
      'Kanae', 'Marilyn', 'Murakumo', 'Mycale', 'Perfecti', 'Sai', 'Wei']
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#7a1515", color2="#FFFFFF")
