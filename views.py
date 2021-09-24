@@ -489,7 +489,15 @@ def amogus(request) :
 
 def abk(request) :
     c = ['Adler', 'Akatsuki', 'Anonym', 'Blitztank', 'Elektrosoldat', 'Fritz', 
-     'Kanae', 'Marilyn', 'Murakumo', 'Mycale', 'Perfecti', 'Sai', 'Wei']
+         'Kanae', 'Marilyn', 'Murakumo', 'Mycale', 'Perfecti', 'Sai', 'Wei']
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#7a1515", color2="#FFFFFF")
     return hestia(request, "abk", FormClass, hasextra=False)
+
+def mbtl(request) :
+    c = ['Akiha Tohno', 'Arcueid Brunestud', 'Ciel', 'Hisui', 'Kohaku', 'Kouma Kishima', 'Maids', 
+         'Michael Roa Valjamjong', 'Miyako Arima', 'Noel', 'Red Arcueid', 'Shiki Tohno', 'Vlov Arkhangel']
+    FormClass = makeform(chars=c, numerito=1, hasextra=False,
+                         color1="#06142a", color2="#d3000b",
+                         default_black_squares=False)
+    return hestia(request, "mbtl", FormClass, hasextra=False)

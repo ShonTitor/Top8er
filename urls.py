@@ -35,6 +35,7 @@ urlpatterns = [
     path('GBVS', views.gbvs, name='Granblue Fantasy VS'),
     path('amogus', views.amogus, name='Among Us Arena'),
     path('ABK', views.abk, name='Akatsuki Blitzkampf'),
+    path('MBTL', views.mbtl, name='Melty Blood Type Lumina'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
