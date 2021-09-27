@@ -501,3 +501,10 @@ def mbtl(request) :
                          color1="#06142a", color2="#d3000b",
                          default_black_squares=False)
     return hestia(request, "mbtl", FormClass, hasextra=False)
+
+def dankuga(request) :
+    c = ['Azteca', 'Barts', 'Boggy', 'Gekkou', 'Gonzales', 'J McCoy', 
+         'Kazuya', 'Lihua', 'Liza', 'Marco', 'Wulong']
+    FormClass = makeform(chars=c, numerito=3, hasextra=True,
+                         color1="#f60000", color2="#b7a97c")
+    return hestia(request, "dankuga", FormClass, hasextra=True)
