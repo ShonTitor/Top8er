@@ -496,7 +496,7 @@ def abk(request) :
 
 def mbtl(request) :
     c = ['Akiha Tohno', 'Arcueid Brunestud', 'Ciel', 'Hisui', 'Kohaku', 'Kouma Kishima', 'Maids', 
-         'Michael Roa Valjamjong', 'Miyako Arima', 'Noel', 'Red Arcueid', 'Shiki Tohno', 'Vlov Arkhangel']
+         'Michael Roa Valjamjong', 'Miyako Arima', 'Noel', 'Red Arcueid', 'Saber', 'Shiki Tohno', 'Vlov Arkhangel']
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#06142a", color2="#d3000b",
                          default_black_squares=False)
