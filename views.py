@@ -508,3 +508,12 @@ def dankuga(request) :
     FormClass = makeform(chars=c, numerito=3, hasextra=True,
                          color1="#f60000", color2="#b7a97c")
     return hestia(request, "dankuga", FormClass, hasextra=True)
+
+def ssv(request) :
+    c = ['Amakusa', 'Basara', 'Charlotte', 'Enja', 'Gaira', 'Galford', 'Gaoh', 
+         'Genjuro', 'Hanzo', 'Haohmaru', 'Jubei', 'Kazuki', 'Kusaregedo', 'Kyoshiro',
+         'Mina', 'Mizuki', 'Nakoruru', 'Rasetsumaru', 'Rera', 'Rimururu', 'Shizumaru',
+         'Sogetsu', 'Suija', 'Tam Tam', 'Ukyo', 'Yoshitora', 'Yunfei', 'Zankuro', 'Random']
+    FormClass = makeform(chars=c, numerito=4, hasextra=True, numerito_extra=1,
+                         color1="#0e0e2d", color2="#bebef0")
+    return hestia(request, "ssv", FormClass, hasextra=True)
