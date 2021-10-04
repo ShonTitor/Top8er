@@ -517,3 +517,15 @@ def ssv(request) :
     FormClass = makeform(chars=c, numerito=4, hasextra=True, numerito_extra=1,
                          color1="#0e0e2d", color2="#bebef0")
     return hestia(request, "ssv", FormClass, hasextra=True)
+
+def bbcf(request) :
+    c = ['Amane Nishiki', 'Arakune', 'Azrael', 'Bang Shishigami', 'Bullet', 'Carl Clover',
+         'Celica A. Mercury', 'Es', 'Hakumen', 'Hazama', 'Hibiki Kohaku',
+         'Iron Tager', 'Izanami', 'Izayoi', 'Jin Kisaragi', 'Jubei', 'Kagura Mutsuki', 
+         'Kokonoe', 'Lambda-11', 'Litchi Faye Ling', 'Mai Natsume', 'Makoto Nanaya', 
+         'Mu-12', 'Naoto Kurogane', 'Nine the Phantom', 'Noel Vermillion', 'Nu-13', 
+         'Platinum the Trinity', 'Rachel Alucard', 'Ragna the Bloodedge', 'Relius Clover', 
+         "Susano'o", 'Taokaka', 'Tsubaki Yayoi', 'Valkenhayn R. Hellsing', 'Yuuki Terumi']
+    FormClass = makeform(chars=c, numerito=1, hasextra=False,
+                         color1="#0055a5", color2="#aadcfa")
+    return hestia(request, "bbcf", FormClass, hasextra=False)
