@@ -529,3 +529,12 @@ def bbcf(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#0055a5", color2="#aadcfa")
     return hestia(request, "bbcf", FormClass, hasextra=False)
+
+def nasb(request) :
+    c = ['Aang', "April O'Neil", 'CatDog', 'Danny Phantom', 'Helga Pataki', 'Korra', 'Leonardo',
+         'Lincoln Loud', 'Lucy Loud', 'Michelangelo', 'Nigel Thornberry', 'Oblina', 'Patrick Star',
+         'Powdered Toast Man', 'Ren & Stimpy', 'Reptar', 'Sandy Cheeks', 'SpongeBob SquarePants',
+         'Toph Beifong', 'Zim']
+    FormClass = makeform(chars=c, numerito=1, hasextra=False,
+                         color1="#ff7b00", color2="#47b84d")
+    return hestia(request, "nasb", FormClass, hasextra=False)

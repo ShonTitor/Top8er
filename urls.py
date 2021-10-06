@@ -39,6 +39,7 @@ urlpatterns = [
     path('dankuga', views.dankuga, name='Dan-Ku-Ga'),
     path('SamuraiShowdownV', views.ssv, name='Samurai Showdown V'),
     path('BBCF', views.bbcf, name='Blazblue Central Fiction'),
+    path('NASB', views.nasb, name='Nickelodeon All-Star Brawl'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
