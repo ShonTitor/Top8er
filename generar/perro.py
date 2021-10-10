@@ -19,7 +19,8 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
                     font=None, teammode=False,
                     font_color1=(255,255,255), font_shadow1=(0,0,0),
                     font_color2=(255,255,255), font_shadow2=(0,0,0),
-                    shadow=True, icon_sizes=(64, 32)) :
+                    shadow=True, icon_sizes=(64, 32),
+                    default_bg="bg") :
     """
     Generates a top 8 graphic with the given parameters.
   
@@ -122,7 +123,7 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
             background = Image.new('RGBA', SIZE, (0, 0, 0, 0))
             canvas = Image.blend(canvas, background, 0.30)
     else :
-        background  = Image.open(os.path.join(path, "assets", game, "bg.png")).convert("RGBA")
+        background  = Image.open(os.path.join(path, "assets", game, "{}.png".format(default_bg))).convert("RGBA")
         canvas.paste(background, (0,0), mask=background)
 
     canvas = canvas.convert('RGB')

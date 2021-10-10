@@ -7,7 +7,8 @@ from .generar.perro import generate_banner
 from .generar.getsets import event_data, challonge_data
 
 def hestia(request, game, FormClass,
-           hasextra=True, color_guide=None, icon_sizes=(64, 32)):
+           hasextra=True, color_guide=None, icon_sizes=(64, 32),
+           default_bg="bg"):
     if hasextra : has_extra = "true"
     else : has_extra = "false"
     
@@ -139,6 +140,7 @@ def hestia(request, game, FormClass,
                                   font_shadow1=request.POST["fscolor1"],
                                   font_color2=request.POST["fcolor2"],
                                   font_shadow2=request.POST["fscolor2"],
+                                  default_bg=default_bg
                                     )
             buffered = BytesIO()
             img.save(buffered, format="PNG")
@@ -408,6 +410,17 @@ def pplus(request) :
     FormClass = makeform(chars=c, numerito=18, hasextra=True,
                          color1="#0c3e48", color2="#42dbac")
     return hestia(request, "p+", FormClass, hasextra=True)
+
+def pm(request) :
+    c = ['Bowser', 'Captain Falcon', 'Charizard', 'Dedede', 'Diddy Kong', 'Donkey Kong', 
+    'Falco', 'Fox', 'Ganondorf', 'Ice Climbers', 'Ike', 'Ivysaur', 'Jigglypuff', 'Kirby',
+    'Link', 'Lucario', 'Lucas', 'Luigi', 'Mario', 'Marth', 'Meta Knight', 'Mewtwo', 
+    'Mr. Game and Watch', 'Ness', 'Olimar', 'Peach', 'Pikachu', 'Pit', 'ROB', 'Roy', 'Samus', 
+    'Sheik', 'Snake', 'Sonic', 'Squirtle', 'Toon Link', 'Wario', 'Wolf', 'Yoshi', 'Zelda', 
+    'Zero Suit Samus']
+    FormClass = makeform(chars=c, numerito=18, hasextra=True,
+                         color1="#2f3775", color2="#ffffff")
+    return hestia(request, "p+", FormClass, hasextra=True, default_bg="bg2")
 
 def tfh(request) :
     c = ['Arizona', 'Oleander', 'Paprika', 'Pom', 'Shanty', 'Tianhuo', 'Velvet']

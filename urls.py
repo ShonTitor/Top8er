@@ -24,6 +24,7 @@ urlpatterns = [
     path('AsuraBuster', views.AsuraBuster, name='AsuraBuster'),
     path('KirbyFighters2', views.kf2, name='KirbyFighters2'),
     path('Project+', views.pplus, name='Project+'),
+    path('ProjectM', views.pm, name='Project M'),
     path('TFH', views.tfh, name='TFH'),
     path('Wargroove', views.wargroove, name='Wargroove'),
     path('BBTAG', views.bbtag, name='BBTAG'),
