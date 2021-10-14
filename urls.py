@@ -38,7 +38,8 @@ urlpatterns = [
     path('ABK', views.abk, name='Akatsuki Blitzkampf'),
     path('MBTL', views.mbtl, name='Melty Blood Type Lumina'),
     path('dankuga', views.dankuga, name='Dan-Ku-Ga'),
-    path('SamuraiShowdownV', views.ssv, name='Samurai Showdown V'),
+    path('SamuraiShowdownV', views.ssv, name='Samurai Shodown V'),
+    path('SamuraiShodownV', views.ssv, name='Samurai Shodown V'),
     path('BBCF', views.bbcf, name='Blazblue Central Fiction'),
     path('NASB', views.nasb, name='Nickelodeon All-Star Brawl'),
 
