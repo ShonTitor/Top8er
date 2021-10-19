@@ -83,7 +83,7 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
     flags_path = os.path.join(path, "assets", "flags")
 
     # Constants
-    SIZE = (1423,800) # Size of the whole cambas
+    SIZE = (1423,800) # Size of the whole canvas
     SIZE_SQUARE = [482, 257, 257, 257, 191, 191, 191, 191]
     BIG = (482, 482) # Size of the biggest character square (1st place)
     MED = (257, 257) # Size of the medium character squares (2nd to 4th places)
