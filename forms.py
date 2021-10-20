@@ -61,7 +61,6 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
                  'Sora', 'Steve', 'Terry', 'Toon Link', 'Villager', 'Wario', 'Wii Fit Trainer', 'Wolf', 'Yoshi',
                  'Young Link', 'Zelda', 'Zero Suit Samus']
         chars = ['Random'] + echars.copy()
-        echars.remove("Sora")
 
     if numerito is None :
         numerito = 8
