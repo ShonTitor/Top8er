@@ -551,3 +551,11 @@ def nasb(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#ff7b00", color2="#47b84d")
     return hestia(request, "nasb", FormClass, hasextra=False)
+
+def vsav(request) :
+    c = ['Anakaris', 'Aulbath (Rikuo)', 'Bishamon', 'Bulleta (BB Hood)', 'Demitri', 'Felicia',
+         'Gallon (Jon Talbain)', 'Jedah', 'Lei-Lei (Hsien-Ko)', 'Lilith', 'Morrigan', 'Q-Bee',
+         'Sasquatch', 'Victor', 'Zabel (Lord Raptor)']
+    FormClass = makeform(chars=c, numerito=1, hasextra=False,
+                         color1="#840c2c", color2="#000000")
+    return hestia(request, "vsav", FormClass, hasextra=False)
