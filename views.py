@@ -559,3 +559,26 @@ def vsav(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#840c2c", color2="#000000")
     return hestia(request, "vsav", FormClass, hasextra=False)
+
+def mvci(request) :
+    c = ['Arthur', 'Black Panther', 'Black Widow', 'Captain America', 'Captain Marvel', 'Chris',
+         'Chun Li', 'Dante', 'Doctor Strange', 'Dormammu', 'Firebrand', 'Frank West', 'Gamora',
+         'Ghost Rider', 'Haggar', 'Hawkeye', 'Hulk', 'Iron-Man', 'Jedah', 'X', 'Monster Hunter',
+         'Morrigan', 'Nemesis', 'Nova', 'Rocket Raccoon', 'Ryu', 'Sigma', 'Spencer', 'Spider-Man',
+         'Strider Hiryu', 'Thanos', 'Thor', 'Ultron', 'Venom', 'Winter Soldier', 'Zero']
+    ec = ['Power Stone', 'Space Stone', 'Time Stone', 'Reality Stone', 'Soul Stone', 'Mind Stone'] + c
+    FormClass = makeform(chars=c, echars=ec,
+                         numerito=1, numerito_extra=1,
+                         color1="#ff2605", color2="#166bff")
+    return hestia(request, "mvci", FormClass, hasextra=True)
+
+def tekken7(request) :
+    c = ['Akuma', 'Alisa', 'Anna', 'Armor King', 'Asuka', 'Bob', 'Bryan', 'Claudio', 'Devil Jin',
+         'Dragunov', 'Eddy', 'Eliza', 'Fahkumram', 'Feng', 'Ganryu', 'Geese', 'Gigas', 'Heihachi',
+         'Hwoarang', 'Jack-7', 'Jin', 'Josie', 'Julia', 'Katarina', 'Kazumi', 'Kazuya', 'King', 'Kuma',
+         'Kunimitsu', 'Lars', 'Law', 'Lee', 'Lei', 'Leo', 'Leroy', 'Lidia', 'Lili', 'Lucky Chloe', 'Marduk',
+         'Master Raven', 'Miguel', 'Negan', 'Nina', 'Noctis', 'Panda', 'Paul', 'Shaheen', 'Steve', 'Xiaoyu',
+         'Yoshimitsu', 'Zafina']
+    FormClass = makeform(chars=c, numerito=1,
+                         color1="#021422", color2="#4592c6")
+    return hestia(request, "tekken7", FormClass, hasextra=False)
