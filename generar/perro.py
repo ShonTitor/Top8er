@@ -97,8 +97,15 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
     # Position of the top left pixel of each twitter box
     POSTWI = [(52, 624), (552, 398), (831, 398), (1109, 398),
               (552, 637), (759, 637), (967, 637), (1175, 637)]
-    # Position of texts in the corner
-    POSTXT = [(53, 45), (53, 730), (875, 50), (1075, 725)]
+    # Boxes of texts in the corner
+    POSTXT = [(53, 45, 803, 80), # top left
+              (53, 730, 997, 765), # bottom left
+              (1075, 726, 1361, 778), # botttom right (credits)
+              (1170, 780, 1361, 795), # bottom right (credits url small)
+              (876, 45, 1367, 80) # top right (url)
+              ]
+    POSLOGO = (53, 15) # (53, 15, 803, 125)
+    SIZELOGO = (750, 110)
     # The final image will be stored in this image
     canvas = Image.new('RGBA', SIZE, (0, 0, 0))
     # Flag parametes
@@ -307,21 +314,32 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
                     fill=font_color1, shadow=font_shadow1)
 
     # Corner texts
-    font_instance = ImageFont.truetype(the_font, 30)
+
     # Top and bottom texts
-    fit_text(draw, (53, 45, 803, 80), data["toptext"], the_font,
+    if data["logo"]:
+        logo = Image.open(data["logo"]).convert("RGBA")
+        logo_width, logo_height = logo.size
+        new_logo_width = SIZELOGO[0]
+        new_logo_height = int(new_logo_width * logo_height/logo_width)
+        if new_logo_height > SIZELOGO[1]:
+            new_logo_height = SIZELOGO[1]
+            new_logo_width = int(new_logo_height * logo_width/logo_height)
+        print(new_logo_height, new_logo_width)
+        new_logo = logo.resize((new_logo_width, new_logo_height), resample=Image.ANTIALIAS)
+        canvas.paste(new_logo, (POSLOGO[0], POSLOGO[1]+(SIZELOGO[1]-new_logo_height)//2), mask=new_logo)
+    else:
+        fit_text(draw, POSTXT[0], data["toptext"], the_font,
+                align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
+    fit_text(draw, POSTXT[1], data["bottomtext"], the_font,
              align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
-    fit_text(draw, (53, 730, 997, 765), data["bottomtext"], the_font,
-             align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
-    font_instance = ImageFont.truetype(the_font, 25)
-    urlmarg = (40-len(data["url"]))*6
+
     # Credits
-    fit_text(draw, (1075, 726, 1361, 778), "Design by:  @Elenriqu3\nGenerator by: @Riokaru", the_font,
+    fit_text(draw, POSTXT[2], "Design by:  @Elenriqu3\nGenerator by: @Riokaru", the_font,
              align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
-    fit_text(draw, (1170, 780, 1361, 795), "made in www.top8er.com", the_font,
+    fit_text(draw, POSTXT[3], "made in www.top8er.com", the_font,
             align="right", alignv="middle", fill=font_color2, shadow=False)
     # URL
-    fit_text(draw, (876, 45, 1367, 80), data["url"], the_font,
+    fit_text(draw, POSTXT[4], data["url"], the_font,
              align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
              
 

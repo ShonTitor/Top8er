@@ -109,6 +109,11 @@ def hestia(request, game, FormClass,
                         else :
                             seconds[i-1].append((request.POST["player"+str(i)+"_extra"+str(k)],
                                                request.POST["player"+str(i)+"_extra_color"+str(k)]))
+
+            if "logo" in request.FILES:
+                logo = request.FILES["logo"]
+            else:
+                logo = None
                 
             players = [{"tag" : names[j],
                         "char" : chars[j],
@@ -124,6 +129,7 @@ def hestia(request, game, FormClass,
                         "bottomtext" : request.POST["btext"],
                         "url" : request.POST["url"],
                         "game" : game,
+                        "logo": logo
                     }
 
             fuente = request.POST["fontt"]

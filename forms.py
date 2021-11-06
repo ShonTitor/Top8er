@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 
 class AncestorForm(forms.Form) :
     background = forms.ImageField(label="Background Image", required=False)
+    logo = forms.ImageField(label="Logo", required=False)
     darken_bg = forms.BooleanField(label="Darken Background", widget=forms.CheckboxInput, initial=True, required=False)
     prmode = forms.BooleanField(label="PR Mode", widget=forms.CheckboxInput, initial=False, required=False)
     charshadow = forms.BooleanField(label="Character Shadow", widget=forms.CheckboxInput, initial=True, required=False)
