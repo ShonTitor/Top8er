@@ -128,7 +128,8 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
                      'char': forms.ChoiceField(label='Main Character', choices=chars),
                      'color': forms.ChoiceField(label='Main Character Color', choices=numeritos),
                      'portrait': forms.ImageField(label="Upload your own portrait", required=False),
-                     'flag': forms.ChoiceField(label='Flag', choices=flag_choices)
+                     'flag': forms.ChoiceField(label='Flag', choices=flag_choices),
+                     'custom_flag': forms.ImageField(label="Upload your own flag", required=False)
                     }
     if hasextra :
         player_fields['extra1'] = forms.ChoiceField(label=extra_label1, choices=e_chars, required=False)

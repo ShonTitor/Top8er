@@ -221,8 +221,11 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
         # Pasting the portrait in place
         canvas.paste(portrait, POS[i], mask=portrait)
 
-        if players[i]["flag"] :
-            flag = Image.open(os.path.join(flags_path, players[i]["flag"]+".png")).convert("RGBA")
+        if players[i]["flag"] or players[i]["custom_flag"]:
+            if players[i]["custom_flag"]:
+                flag = Image.open(players[i]["custom_flag"]).convert("RGBA")
+            else:
+                flag = Image.open(os.path.join(flags_path, players[i]["flag"]+".png")).convert("RGBA")
             flag_width, flag_height = flag.size
             if flag_width > flag_height :
                 new_flag_width = FLAG_SIZE[i]
