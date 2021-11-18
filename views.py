@@ -288,7 +288,7 @@ def ggxrd(request) :
     return hestia(request, "ggxrd", FormClass, hasextra=False)
 
 def ggst(request) :
-    c = ['Anji', 'Axl', 'Chipp', 'Faust', 'Giovanna', 'Goldlewis', 
+    c = ['Anji', 'Axl', 'Chipp', 'Faust', 'Giovanna', 'Goldlewis', 'Happy Chaos',
          'I-No', 'Jack-O\'', 'Ky', 'Leo', 'May', 'Millia',
          'Nagoriyuki', 'Potemkim', 'Ramlethal', 'Sol', 'Zato'] 
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
@@ -594,3 +594,18 @@ def tekken7(request) :
     FormClass = makeform(chars=c, numerito=1,
                          color1="#021422", color2="#4592c6")
     return hestia(request, "tekken7", FormClass, hasextra=False)
+
+def ssb64(request) :
+    c = ['Bowser', 'C.Falcon', 'Conker', 'D.K', 'D.Samus', 'Dr.Mario', 'Falco', 'Fox', 'Ganondorf',
+         'Jigglypuff', 'Kirby', 'Link', 'Lucas', 'Luigi', 'Mario', 'Marth', 'Mewtwo', 'Ness', 'Pikachu',
+         'Samus', 'Wario', 'Wolf', 'Y.Link', 'Yoshi']
+    FormClass = makeform(chars=c, numerito=6)
+    return hestia(request, "ssb64", FormClass, hasextra=False)
+
+def karnov(request) :
+    c = ['Clown', 'Feilin', 'Jean', 'Karnov', 'Lee', 'Marstorius', 'Matlok',
+         'Mizoguchi', 'Ray', 'Ryoko', 'Samchay', 'Yungmie', 'Zazie']
+    FormClass = makeform(chars=c, echars=c, hasextra=True,
+                         numerito=2, numerito_extra=1,
+                         color1="#ff2605", color2="#166bff")
+    return hestia(request, "karnov", FormClass, hasextra=True)

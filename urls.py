@@ -45,6 +45,8 @@ urlpatterns = [
     path('VSAV', views.vsav, name='Vampire Savior'),
     path('MvCI', views.mvci, name='Marvel VS Capcom Infinite'),
     path('Tekken7', views.tekken7, name='Tekken 7'),
+    path('SSB64', views.ssb64, name='Super Smash Bros 64 Remix'),
+    path('Karnov', views.karnov, name='Karnov\'s Revenge'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
