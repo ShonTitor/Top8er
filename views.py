@@ -484,7 +484,7 @@ def sfv(request) :
     c = ['Abigail', 'Akira', 'Akuma', 'Alex', 'Birdie', 'Blanka', 'Boxer', 'Cammy',
          'Chun-li', 'Claw', 'Cody', 'Dan', 'Dhalsim', 'Dictator', 'E.Honda', 'Ed', 
          'F.A.N.G', 'Falke', 'G', 'Gill', 'Guile', 'Ibuki', 'Juri', 'Kage', 'Karin', 
-         'Ken', 'Kolin', 'Laura', 'Lucia', 'Menat', 'Nash', 'Necalli', 'Oro', 'Poison', 
+         'Ken', 'Kolin', 'Laura', 'Lucia', 'Luke', 'Menat', 'Nash', 'Necalli', 'Oro', 'Poison', 
          'R.Mika', 'Rashid', 'Rose', 'Ryu', 'Sagat', 'Sakura', 'Seth', 'Urien', 'Zangief', 'Zeku']
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#ff4c00", color2="#ffaa00")
@@ -609,3 +609,12 @@ def karnov(request) :
                          numerito=2, numerito_extra=1,
                          color1="#ff2605", color2="#166bff")
     return hestia(request, "karnov", FormClass, hasextra=True)
+
+def sfa3(request) :
+    c = ['Adon', 'Akuma', 'Birdie', 'Blanka', 'Boxer', 'Cammy', 'Charlie_Nash',
+         'Chun-li', 'Claw', 'Cody', 'Dan', 'Dhalsim', 'Dictator', 'E.Honda', 'Gen',
+         'Guy', 'Juli', 'Juni', 'Karin', 'Ken', 'R.Mika', 'Rolento', 'Rose', 'Ryu',
+         'Sagat', 'Sakura', 'Sodom', 'Zangief']
+    FormClass = makeform(chars=c, numerito=1, hasextra=False,
+                         color1="#ff4c00", color2="#ffaa00")
+    return hestia(request, "sfa3", FormClass, hasextra=False)
