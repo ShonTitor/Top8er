@@ -618,3 +618,10 @@ def sfa3(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#ff4c00", color2="#ffaa00")
     return hestia(request, "sfa3", FormClass, hasextra=False)
+
+def tlb2(request) :
+    c = ['Akari', 'Amano', 'Hibiki', 'Juzoh', 'Kaede', 'Kaede (Original)', 'Kagami', 'Kojiroh',
+         'Lee', 'Moriya', 'Mukuro', 'Okina', 'Setsuna', 'Shigen', 'Washizuka', 'Yuki', 'Zantetsu']
+    FormClass = makeform(chars=c, numerito=3, hasextra=False,
+                         color1="#f79800", color2="#340e4f")
+    return hestia(request, "tlb2", FormClass, hasextra=False)
