@@ -625,3 +625,18 @@ def tlb2(request) :
     FormClass = makeform(chars=c, numerito=3, hasextra=False,
                          color1="#f79800", color2="#340e4f")
     return hestia(request, "tlb2", FormClass, hasextra=False)
+
+def ssbc(request) :
+    c = ['Agumon', 'Ashley', 'Black Mage', 'Bomberman', 'Bowser', 'Captain Falcon', 'Chun-Li', 'Crash', 
+         'Donkey Kong', 'Dr Mario', 'Duck Hunt Dog', 'Evil Ryu', 'Falco', 'Fox', 'Ganondorf', 'Geno',
+         'Goku', 'Gooey', 'Goomba', 'Heracross', 'Ice Climbers', 'Jigglypuff', 'Kirby', 'Klonoa', 'Knuckles', 
+         'Krystal', 'Link (Hidden Skills)', 'Link (Items)', 'Little Mac (Crusade)', 'Little Mac (Wii U)', 
+         'Lucario (Aura)', 'Lucario (Auraless)', 'Lucas', 'Luigi', 'Mach Rider', 'Mario', 'Marth (Centered)', 
+         'Marth (Spread)', 'Marth (Tipper)', 'Mega Man', 'Meta Knight', 'Mewtwo', 'Mr Game & Watch (Melee)', 
+         'Mr Game & Watch (Ultimate)', 'Nega Shantae', 'Ness', 'Olimar', 'Pac-Man', 'Peach', 'Petey Piranha', 
+         'Phoenix Wright', 'Pichu', 'Pikachu', 'Porky', 'Rayman', 'Ridley', 'Ristar', 'ROB', 'Ryu', 'Saki', 
+         'Samus', 'Shadow', 'Shantae', 'Snake', 'Snivy', 'Sonic', 'Sukapon', 'Tails', 'Tetromino', 'Tingle', 
+         'Toad', 'Toon Link', 'Waluigi', 'Wario', 'Weegee', 'Yoshi', 'Zero Suit Samus']
+    FormClass = makeform(chars=c, numerito=1, hasextra=True,
+                         color1="#17659d", color2="#66d5fd")
+    return hestia(request, "ssbc", FormClass, hasextra=True)

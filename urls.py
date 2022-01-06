@@ -49,6 +49,7 @@ urlpatterns = [
     path('Karnov', views.karnov, name='Karnov\'s Revenge'),
     path('SFA3', views.sfa3, name='Alpha 3'),
     path('TheLastBlade2', views.tlb2, name='The Last Blade 2'),
+    path('SSBC', views.ssbc, name='Super Smash Bros Crusade'),
 
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
