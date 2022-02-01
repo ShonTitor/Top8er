@@ -288,7 +288,7 @@ def ggxrd(request) :
     return hestia(request, "ggxrd", FormClass, hasextra=False)
 
 def ggst(request) :
-    c = ['Anji', 'Axl', 'Chipp', 'Faust', 'Giovanna', 'Goldlewis', 'Happy Chaos',
+    c = ['Anji', 'Axl', 'Baiken', 'Chipp', 'Faust', 'Giovanna', 'Goldlewis', 'Happy Chaos',
          'I-No', 'Jack-O\'', 'Ky', 'Leo', 'May', 'Millia',
          'Nagoriyuki', 'Potemkim', 'Ramlethal', 'Sol', 'Zato'] 
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
@@ -520,7 +520,7 @@ def abk(request) :
     return hestia(request, "abk", FormClass, hasextra=False)
 
 def mbtl(request) :
-    c = ['Aoko Aozaki', 'Akiha Tohno', 'Arcueid Brunestud', 'Ciel', 'Dead Apostle Noel', 'Hisui', 'Kohaku', 'Kouma Kishima', 
+    c = ['Akiha Tohno', 'Aoko Aozaki', 'Arcueid Brunestud', 'Ciel', 'Dead Apostle Noel', 'Hisui', 'Kohaku', 'Kouma Kishima', 
          'Maids', 'Michael Roa Valjamjong', 'Miyako Arima', 'Noel', 'Red Arcueid', 'Saber', 'Shiki Tohno', 'Vlov Arkhangel']
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#06142a", color2="#d3000b",
