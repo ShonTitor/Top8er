@@ -640,3 +640,13 @@ def ssbc(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=True,
                          color1="#17659d", color2="#66d5fd")
     return hestia(request, "ssbc", FormClass, hasextra=True)
+
+def minus(request) :
+    c = ['Alloy Blue', 'Alloy Green', 'Alloy Red', 'Alloy Yellow', 'Bowser', 'Captain Falcon', 'Crazy Hand',
+         'Diddy', 'Donkey Kong', 'Dr Mario', 'Falco', 'Fox', 'Ganondorf', 'Ice Climbers', 'Ike', 'Jigglypuff',
+         'King Dedede', 'Kirby', 'Link', 'Lucario', 'Lucas', 'Luigi', 'Mario', 'Marth', 'Master hand', 'Mewtwo',
+         'Meta Knight', 'Mewtwo', 'Mr Game & Watch', 'Ness', 'Olimar', 'Palutena', 'Pichu', 'Pika', 'Pit', 'Random',
+         'Ridley', 'ROB', 'Roy', 'Samus', 'Sheik', 'Snake', 'Sonic', 'Squirtle', 'Toon Link', 'Waluigi', 'Wario', 'Wolf', 
+         'Yoshi', 'Zelda', 'ZSS']
+    FormClass = makeform(chars=c, numerito=2)
+    return hestia(request, "ssbbminus", FormClass, hasextra=False)
