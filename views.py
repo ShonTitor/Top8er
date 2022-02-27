@@ -650,3 +650,11 @@ def minus(request) :
          'Yoshi', 'Zelda', 'ZSS']
     FormClass = makeform(chars=c, numerito=2)
     return hestia(request, "ssbbminus", FormClass, hasextra=False)
+
+def joymechfight(request) :
+    c = ['Ashura', 'Blaze', 'Bokbok', 'Dachon', 'Eye', 'Flame', 'Gaean', 'Garborg', 'Gel', 'Geo', 'Ghoston',
+         'Giant', 'Giganto', 'Grak', 'Hanzor', 'Houou', 'Hover', 'Jibber', 'John', 'Legend', 'Leo', 'Nay', 'Neo',
+         'Old', 'Ra', 'Sasuku', 'Senju', 'Shenlong', 'Skapokon', 'Skapon', 'Skater', 'Star', 'Superzak', 'Tiger',
+         'Wai', 'Zak']
+    FormClass = makeform(chars=c, numerito=2)
+    return hestia(request, "joymechfight", FormClass, hasextra=False, color1="#388888", color2="#388888")
