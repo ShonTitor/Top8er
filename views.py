@@ -656,5 +656,5 @@ def joymechfight(request) :
          'Giant', 'Giganto', 'Grak', 'Hanzor', 'Houou', 'Hover', 'Jibber', 'John', 'Legend', 'Leo', 'Nay', 'Neo',
          'Old', 'Ra', 'Sasuku', 'Senju', 'Shenlong', 'Skapokon', 'Skapon', 'Skater', 'Star', 'Superzak', 'Tiger',
          'Wai', 'Zak']
-    FormClass = makeform(chars=c, numerito=2)
-    return hestia(request, "joymechfight", FormClass, hasextra=False, color1="#388888", color2="#388888")
+    FormClass = makeform(chars=c, numerito=2, color1="#388888", color2="#388888")
+    return hestia(request, "joymechfight", FormClass, hasextra=False)
