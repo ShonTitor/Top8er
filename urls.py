@@ -1,5 +1,6 @@
-from django.urls import path
+from django.urls import path, include
 from django.views.generic.base import TemplateView, RedirectView
+from rest_framework import routers, serializers, viewsets
 from . import views
 
 urlpatterns = [
@@ -51,7 +52,10 @@ urlpatterns = [
     path('TheLastBlade2', views.tlb2, name='The Last Blade 2'),
     path('SSBC', views.ssbc, name='Super Smash Bros Crusade'),
     path('BrawlMinus', views.minus, name='Brawl Minus'),
-    path('JoyMechFight', views.joymechfight, name='Brawl Minus'),
+    path('JoyMechFight', views.joymechfight, name='JoyMechFight'),
+
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/salu2', views.salu2.as_view()),
 
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
