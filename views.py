@@ -145,10 +145,14 @@ def index(request) :
 
 def roa(request) :
     c = ["Random", "Absa", "Clairen", "Elliana", "Etalus",
+         "Forsburn", "Hodan", "Kragg", "Maypul", "Mollo", "Olympia", "Orcane",
+         "Ori and Sein", "Pomme", "Ranno", "Shovel Knight",
+         "Sylvanos", "Wrastor", "Zetterburn"]
+    ec = ["Random", "Absa", "Clairen", "Elliana", "Etalus",
          "Forsburn", "Kragg", "Maypul", "Orcane",
          "Ori and Sein", "Ranno", "Shovel Knight",
          "Sylvanos", "Wrastor", "Zetterburn"]
-    FormClass = makeform(chars=c, numerito=21, numerito_extra=1,
+    FormClass = makeform(chars=c, numerito=21, numerito_extra=1, echars=ec,
                         color1="#B4A5E6", color2="#261C50")
     return hestia(request, "roa", FormClass)
 
@@ -169,7 +173,7 @@ def rr(request) :
     return hestia(request, "rr", FormClass, icon_sizes=(80,50))
 
 def melee(request) :
-    c = ['Bowser', 'Captain Falcon', 'Donkey Kong', 'Dr Mario', 'Falco',
+    c = ['Random', 'Bowser', 'Captain Falcon', 'Donkey Kong', 'Dr Mario', 'Falco',
          'Fox', 'Ganondorf', 'Ice Climbers', 'Jigglypuff', 'Kirby', 'Link',
          'Luigi', 'Mario', 'Marth', 'Mewtwo', 'Mr Game & Watch', 'Ness',
          'Peach', 'Pichu', 'Pikachu', 'Roy', 'Samus', 'Sheik', 'Yoshi',
