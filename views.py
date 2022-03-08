@@ -562,7 +562,7 @@ def minus(request) :
          'Meta Knight', 'Mewtwo', 'Mr Game & Watch', 'Ness', 'Olimar', 'Palutena', 'Pichu', 'Pika', 'Pit', 'Random',
          'Ridley', 'ROB', 'Roy', 'Samus', 'Sheik', 'Snake', 'Sonic', 'Squirtle', 'Toon Link', 'Waluigi', 'Wario', 'Wolf', 
          'Yoshi', 'Zelda', 'ZSS']
-    FormClass = makeform(chars=c, numerito=2)
+    FormClass = makeform(chars=c, numerito=1)
     return hestia(request, "ssbbminus", FormClass, hasextra=False)
 
 def joymechfight(request) :
@@ -572,3 +572,12 @@ def joymechfight(request) :
          'Wai', 'Zak']
     FormClass = makeform(chars=c, numerito=2, color1="#388888", color2="#388888")
     return hestia(request, "joymechfight", FormClass, hasextra=True)
+
+def dbfz(request) :
+    c = ['AdultGohan', 'Android16', 'Android17', 'Android18', 'Android21', 'Baby', 'Bardock', 'Beerus', 'BrolyDBS',
+         'BrolyDBZ', 'CapitanGinyu', 'Cell', 'Cooler', 'Freezer', 'GogetaBlue', 'GogetaSSJ4', 'GokuBase', 'GokuBlack',
+         'GokuBlue', 'GokuGT', 'GokuSSJ', 'GokuUI', 'Gotenks', 'Hit', 'Janemba', 'Jiren', 'Kefla', 'KidBu', 'Krillin',
+         'Labdroid21', 'MajinBu', 'Nappa', 'Piccolo', 'Roshi', 'TeenGohan', 'Tien', 'Trunks', 'VegetaBase', 'VegetaBlue',
+         'VegetaSSJ', 'VegettoBlue', 'Videl', 'Yamcha', 'Zamasu']
+    FormClass = makeform(chars=c, numerito=1, color1="#943035", color2="#0f0000")
+    return hestia(request, "dbfz", FormClass, hasextra=True)
