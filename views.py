@@ -100,7 +100,8 @@ def hestia(request, game, FormClass,
                         "off" : 2,
                         "color_guide" : color_guide,
                         "game" : game,
-                        "result" : img
+                        "result" : img,
+                        "base_url" : request.get_host()
                       }
             return render(request, 'index.html' , context)
 
@@ -134,7 +135,8 @@ def hestia(request, game, FormClass,
                "hasextra" : has_extra,
                "color_guide" : color_guide,
                "game" : game,
-               "result" : None
+               "result" : None,
+               "base_url" : request.get_host()
                }
     return render(request, 'index.html' , context)
 
