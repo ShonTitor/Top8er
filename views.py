@@ -582,4 +582,20 @@ def dbfz(request) :
          'Labdroid21', 'MajinBu', 'Nappa', 'Piccolo', 'Roshi', 'TeenGohan', 'Tien', 'Trunks', 'VegetaBase', 'VegetaBlue',
          'VegetaSSJ', 'VegettoBlue', 'Videl', 'Yamcha', 'Zamasu']
     FormClass = makeform(chars=c, numerito=1, color1="#943035", color2="#0f0000")
-    return hestia(request, "dbfz", FormClass, hasextra=True)
+    return hestia(request, "dbfz", FormClass, hasextra=False)
+
+def aigs(request) :
+    c = ['B. Knight', 'Captain America', 'Crystal', 'Dr. Minerva', 'Korath', 'Shatterax', 'Supremor', 'Thunder Strike']
+    FormClass = makeform(chars=c, numerito=1, color1="#e6dc38", color2="#a00b10")
+    return hestia(request, "aigs", FormClass, hasextra=True)
+
+def mvc2(request) :
+    c = ['Blackheart', 'Cable', 'Captain America', 'Colossus', 'Cyclops', 'Doctor Doom', 'Gambit', 'Hulk', 'Iceman',
+         'Iron Man', 'Juggernaut', 'Magneto', 'Marrow', 'Omega Red', 'Psylocke', 'Rogue', 'Sabretooth', 'Sentinel',
+         'Shuma-Gorath', 'Silver Samurai', 'Spider-Man', 'Spiral', 'Storm', 'Thanos', 'Venom', 'War Machine',
+         'Wolverine (Adamantium Claws)', 'Wolverine (Bone Claws)', 'Akuma', 'Amingo', 'Anakaris', 'B.B. Hood',
+         'Cammy', 'Captain Commando', 'Charlie', 'Chun-Li', 'Dan', 'Dhalsim', 'Felicia', 'Guile', 'Hayato',
+         'Jill Valentine', 'Jin', 'Ken', 'M. Bison', 'Mega Man', 'Morrigan', 'Roll', 'Ruby Heart', 'Ryu', 'Sakura',
+         'Servbot', 'Sonson', 'Strider Hiryu', 'Tron Bonne', 'Zangief']
+    FormClass = makeform(chars=c, numerito=6, numerito_extra=1, color1="#ffff00", color2="#ff00c8")
+    return hestia(request, "mvc2", FormClass, hasextra=True)

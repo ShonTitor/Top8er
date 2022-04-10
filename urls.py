@@ -54,6 +54,8 @@ urlpatterns = [
     path('BrawlMinus', views.minus, name='Brawl Minus'),
     path('JoyMechFight', views.joymechfight, name='JoyMechFight'),
     path('DBFZ', views.dbfz, name='Dragon Ball FighterZ'),
+    path('AvengersGalacticStorm', views.aigs),
+    path('MvC2', views.mvc2),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/salu2', views.salu2.as_view()),
