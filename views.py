@@ -599,3 +599,24 @@ def mvc2(request) :
          'Servbot', 'Sonson', 'Strider Hiryu', 'Tron Bonne', 'Zangief']
     FormClass = makeform(chars=c, numerito=6, numerito_extra=1, color1="#ffff00", color2="#ff00c8")
     return hestia(request, "mvc2", FormClass, hasextra=True)
+
+def p4au(request) :
+    hasextra = False
+    c = ['Aigis', 'Akihiko Sanada', 'Chie Satonaka', 'Elizabeth', 'Junpei Iori', 'Kanji Tatsumi', 'Ken Amada', 'Labrys',
+         'Margaret', 'Marie', 'Minazuki', 'Mitsuru Kirijo', 'Naoto Shirogane', 'Rise Kujikawa', 'Sho', 'Teddie',
+         'Tohru Adachi', 'Yosuke Hanamura', 'Yu Narukami', 'Yukari Takeba', 'Yukiko Amagi']
+    FormClass = makeform(chars=c, numerito=2, hasextra=hasextra,
+                         color1="#FF0700", color2="#16b1e1")
+    return hestia(request, "p4au", FormClass, hasextra=hasextra)
+
+def kofxv(request) :
+    hasextra = True
+    c = c = ['Andy Bogard', 'Angel', 'Antonov', 'Ash Crimson', 'Athena Asamiya', 'B. Jenet', 'Benimaru Nikaido',
+             'Blue Mary', 'Chizuru Kagura', 'Chris', 'Clark Still', 'Dolores', 'Elisabeth Blanctorche', 'Gato', 'Heidern',
+             'Iori Yagami', 'Isla', 'Joe Higashi', "K'", 'King', 'King of Dinosaurs', 'Krohnen', 'Kukri', 'Kula Diamond',
+             'Kyo Kusanagi', 'Leona Heidern', 'Luong', 'Mai Shiranui', 'Maxima', 'Meitenkun', 'Omega Rugal', 'Ralf Jones',
+             'Ramón', 'Robert Garcia', 'Rock Howard', 'Ryo Sakazaki', 'Shermie', "Shun'ei", 'Terry Bogard', 'Vanessa', 'Whip',
+             'Yashiro Nanakase', 'Yuri Sakazaki']
+    FormClass = makeform(chars=c, numerito=1, hasextra=hasextra,
+                         color1="#FF0700", color2="#16b1e1")
+    return hestia(request, "kofxv", FormClass, hasextra=hasextra)
