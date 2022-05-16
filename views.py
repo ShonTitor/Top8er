@@ -36,9 +36,10 @@ def hestia(request, game, FormClass,
 
         if v2 :
             event = request.POST["event"]
-            match = re.search("https://smash.gg/tournament/[^/]+/event/[^/]+", request.POST["event"])
+            match = re.search("https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+", request.POST["event"])
             if match :
-                datos = event_data(event[17:match.end()])
+                match = re.search("tournament/[^/]+/event/[^/]+", event)
+                datos = event_data(match[0])
             else :
                 match = re.search("https://challonge.com/[^/]+", request.POST["event"])
                 datos = challonge_data(event[22:match.end()])

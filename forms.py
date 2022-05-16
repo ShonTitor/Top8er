@@ -24,23 +24,24 @@ class AncestorForm(forms.Form) :
 
 class SmashggForm(forms.Form) :
     event = forms.RegexField(label="External link",
-                             regex = "https://smash.gg/tournament/[^/]+/event/[^/]+.*|https://challonge.com/[^/]+.*",
+                             regex = "https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+.*|https://challonge.com/[^/]+.*",
                              max_length=200)
     def clean(self):
         cleaned_data = super().clean()
-        try :
-            e = cleaned_data.get("event")
-            match = re.search("https://smash.gg/tournament/[^/]+/event/[^/]+", e)
+        try:
+            event = cleaned_data.get("event")
+            match = re.search("https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+", event)
             if match :
-                if not check_event(e[17:match.end()]) :
+                match = re.search("tournament/[^/]+/event/[^/]+", event)
+                if not check_event(match[0]) :
                     msg = "Event not found, has too few players or an iguana bit a cable."
                     self.add_error('event', msg)
             else :
-                match = re.search("https://challonge.com/[^/]+", e)
+                match = re.search("https://challonge.com/[^/]+", event)
                 if not check_challonge(e[22:match.end()]) :
                     msg = "Event not found, has too few players or an iguana bit a cable."
                     self.add_error('event', msg)
-        except :
+        except Exception as e:
             pass
         return cleaned_data
 
