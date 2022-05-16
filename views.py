@@ -621,3 +621,10 @@ def kofxv(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=hasextra,
                          color1="#FF0700", color2="#16b1e1")
     return hestia(request, "kofxv", FormClass, hasextra=hasextra)
+
+def tomandjerry(request) :
+    hasextra = True
+    c = ['Butch', 'Jerry', 'Nibbles', 'Quacker', 'Spike', 'Tom', 'Tyke']
+    FormClass = makeform(chars=c, numerito=1, hasextra=hasextra,
+                         color1="#c71a1a", color2="#f9521a")
+    return hestia(request, "tyj", FormClass, hasextra=hasextra)
