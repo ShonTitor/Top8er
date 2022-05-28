@@ -628,3 +628,24 @@ def tomandjerry(request) :
     FormClass = makeform(chars=c, numerito=1, hasextra=hasextra,
                          color1="#c71a1a", color2="#f9521a")
     return hestia(request, "tyj", FormClass, hasextra=hasextra)
+
+def kof2002um(request) :
+    hasextra = True
+    c = ['Andy', 'Angel', 'Athena', 'Bao', 'Benimaru', 'Billy', 'Chang', 'Chin',
+         'Choi', 'Chris', 'Clark', 'Clone', 'Daimon', 'EX Kensou', 'EX Robert', 'EX Takuma',
+         'Foxy', 'Geese', 'Goenitz', 'Heidern', 'Hinako', 'Igniz', 'Iori', 'Jhun', 'Joe', "K'",
+         'Kasumi', 'Kensou', 'Kim', 'King', 'Krizalid', 'Kula', 'Kusanagi', 'Kyo', 'Kyo-1', 'Kyo-2',
+         'Leona', 'Lin', 'Mai', 'Mary', 'Mature', 'Maxima', 'May', 'Nameless', 'Nightmare', 'Omega',
+         'Orochi Chris', 'Orochi Shermie', 'Orochi Yashiro', 'Ralf', 'Ramon', 'Robert', 'Ryo', 'Seth',
+         'Shermie', 'Shingo', 'Takuma', 'Terry', 'Vanessa', 'Vice', 'Whip', 'Xiangfei', 'Yamazaki', 
+         'Yashiro', 'Yuri', 'Zero']
+    FormClass = makeform(chars=c, numerito=1, hasextra=hasextra,
+                         color1="#c71a1a", color2="#f9521a")
+    return hestia(request, "kof2002um", FormClass, hasextra=hasextra)
+
+def breakersrevenge(request) :
+    hasextra = False
+    c = ['Alsion', 'Condor', 'Dao-long', 'Maherl', 'Pielle', 'Rila', 'Saizo', 'Sho', 'Tia']
+    FormClass = makeform(chars=c, numerito=4, hasextra=hasextra,
+                         color1="#c71a1a", color2="#f9521a")
+    return hestia(request, "breakersrevenge", FormClass, hasextra=hasextra)

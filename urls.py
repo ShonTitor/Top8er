@@ -59,6 +59,8 @@ urlpatterns = [
     path('P4AU', views.p4au),
     path('KOFXV', views.kofxv),
     path('TomAndJerry', views.tomandjerry),
+    path('KOF2002UM', views.kof2002um),
+    path('BreakersRevenge', views.breakersrevenge),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/salu2', views.salu2.as_view()),
