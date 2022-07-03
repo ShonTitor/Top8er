@@ -7,3 +7,6 @@
 /generar/gato.py
 *.pyc
 *.apikey
+*.DS_Store
+*.pal
+*.txt
