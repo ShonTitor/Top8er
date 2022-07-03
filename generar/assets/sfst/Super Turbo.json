@@ -1,0 +1,18 @@
+{
+'Blanka': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'Boxer': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'Cammy': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'Chun Li': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'Claw': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'Dee Jay': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'Dhalsim': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'Dictator': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'E.Honda': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'Fei long': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'Guile': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'Ken': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'Ryu': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'Sagat': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'T.Hawk': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old'],
+'Zangief': ['Jab', 'Short', 'Strong', 'Forward', 'Fierce', 'Roundhouse', 'Start, 'Hold', 'Old']
+}

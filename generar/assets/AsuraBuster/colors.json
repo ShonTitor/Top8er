@@ -1,0 +1,15 @@
+{
+'Goat': ['Default', 'B', 'C', 'A+B', 'B+C', 'A+C', 'A+B+C'],
+'Leon': ['Default', 'B', 'C', 'A+B', 'B+C', 'A+C', 'A+B+C'],
+'Yashaou': ['Default', 'B', 'C', 'A+B', 'B+C', 'A+C', 'A+B+C'],
+'Alice!': ['Default', 'B', 'C', 'A+B', 'B+C', 'A+C', 'A+B+C'], 
+'Sittara': ['Default', 'B', 'C', 'A+B', 'B+C', 'A+C', 'A+B+C'],
+'Rose Mary': ['Default', 'B', 'C', 'A+B', 'B+C', 'A+C', 'A+B+C'],
+'Alice(skeleton)': ['Default', 'B', 'C', 'A+B', 'B+C', 'A+C', 'A+B+C'],
+'Chen-Mao': ['Default', 'B', 'C', 'A+B', 'B+C', 'A+C', 'A+B+C'],
+'Taros': ['Default', 'B', 'C', 'A+B', 'B+C', 'A+C', 'A+B+C'],
+'Nanami': ['Default', 'B', 'C', 'A+B', 'B+C', 'A+C', 'A+B+C'],
+'Zam-B': ['Default', 'B', 'C', 'A+B', 'B+C', 'A+C', 'A+B+C'],
+'Rokurouta': ['Default', 'B', 'C', 'A+B', 'B+C', 'A+C', 'A+B+C'],
+'Zinsuke': ['Default', 'B', 'C', 'A+B', 'B+C', 'A+C', 'A+B+C'],
+}
