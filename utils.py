@@ -1,6 +1,13 @@
 import base64
+import json
+import os
+import re
 from .generar.perro import generate_banner
 from io import BytesIO
+from io import BytesIO
+from django.shortcuts import render
+from .forms import makeform, SmashggForm
+from .generar.getsets import event_data, challonge_data
 
 def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), default_bg="bg"):
     if request.POST["lcolor1"] == "#ff281a" :
@@ -110,3 +117,143 @@ def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), defa
     img.save(buffered, format="PNG")
     img = base64.b64encode(buffered.getvalue())
     return str(img)[2:-1]
+
+def hestia(request, game, FormClass,
+           hasextra=True, color_guide=None, icon_sizes=(64, 32),
+           default_bg="bg"):
+    if hasextra : has_extra = "true"
+    else : has_extra = "false"
+    
+    if request.method == 'POST':
+        form = FormClass(request.POST, request.FILES)
+        form2 = SmashggForm(request.POST, request.FILES)
+        v1 = form.is_valid()
+        v2 = form2.is_valid()
+
+        if v2 :
+            event = request.POST["event"]
+            match = re.search("https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+", request.POST["event"])
+            if match :
+                match = re.search("tournament/[^/]+/event/[^/]+", event)
+                datos = event_data(match[0])
+            else :
+                match = re.search("https://challonge.com/[^/]+", request.POST["event"])
+                datos = challonge_data(event[22:match.end()])
+            init_data = {}
+
+            init_data["ttext"] = datos["toptext"]
+            init_data["btext"] = datos["bottomtext"]
+            init_data["url"] = datos["url"]
+
+            for i in range(8) :
+                try :
+                    init_data["player"+str(i+1)] = {}
+                    init_data["player"+str(i+1)]["name"] = datos["players"][i]["tag"]
+                    init_data["player"+str(i+1)]["twitter"] = datos["players"][i]["twitter"]
+                    init_data["player"+str(i+1)]["char"] = datos["players"][i]["char"][0]
+                except :
+                    pass
+            
+            context = { "hasextra" : has_extra,
+                        "form" : FormClass(initial=init_data),
+                        "form2" : SmashggForm(),
+                        "off" : 2,
+                        "color_guide" : color_guide,
+                        "game" : game,
+                        "result" : None
+                      }
+            return render(request, 'index.html' , context)
+        if v1 :
+            img = graphic_from_request(request, game, hasextra=hasextra, icon_sizes=icon_sizes, default_bg=default_bg)
+
+            init_data = {}
+            field_keys = filter(lambda k: not "player" in k and not "csrf" in k, request.POST.keys())
+            for key in field_keys :
+                init_data[key] = request.POST[key]
+            check_field_keys = ["darken_bg", "blacksquares", "charshadow", "prmode"]
+            for key in check_field_keys :
+                init_data[key] = key in request.POST
+
+            for i in range(1,9) :
+                try :
+                    init_data["player{}".format(i)] = {
+                        "name": request.POST["player{}_name".format(i)],
+                        "twitter": request.POST["player{}_twitter".format(i)],
+                        "char": request.POST["player{}_char".format(i)],
+                        "color": request.POST["player{}_color".format(i)],
+                        "flag": request.POST["player{}_flag".format(i)],
+                    }
+                    for field in ["extra1", "extra_color1", "extra2", "extra_color2"] :
+                        f = "player{}_{}".format(i, field)
+                        if f in request.POST :
+                            init_data["player{}".format(i)][field] = request.POST[f]
+                            
+                except :
+                    pass
+
+            context = { "hasextra" : has_extra,
+                        "form" : FormClass(initial=init_data),
+                        "form2" : SmashggForm(),
+                        "off" : 2,
+                        "color_guide" : color_guide,
+                        "game" : game,
+                        "result" : img,
+                        "base_url" : request.get_host()
+                      }
+            return render(request, 'index.html' , context)
+
+        else :
+            context = {
+               "hasextra" : has_extra,
+               "color_guide" : color_guide,
+               "game" : game,
+               "result" : None
+            }
+            if "event" in request.POST :
+                form = FormClass()
+                context["off"] = 1
+            else :
+                form2 = SmashggForm()
+                context["off"] = 2
+
+            context["form"] = form
+            context["form2"] = form2
+    
+            return render(request, 'index.html' , context)
+            
+            
+    else :
+        form = FormClass()
+        form2 = SmashggForm()
+    context = {
+               "form" : form,
+               "form2" : form2,
+               "off" : 2,
+               "hasextra" : has_extra,
+               "color_guide" : color_guide,
+               "game" : game,
+               "result" : None,
+               "base_url" : request.get_host()
+               }
+    return render(request, 'index.html' , context)
+
+def game_data_from_json(game_path):
+    base_path = os.path.realpath(__file__)
+    base_path = os.path.abspath(os.path.join(base_path, os.pardir))
+    data_path = os.path.join(base_path, "generar", "assets", game_path, "game.json")
+    with open(data_path, "r") as f:
+        game_data = json.loads(f.read())
+    if game_data["colors"] == None:
+        game_data["colors"] = {c:["Default"] for c in game_data["characters"]}
+    game_data["maxColors"] = max([len(colors) for colors in game_data["colors"].values()])
+    return game_data
+
+def response_from_json(request, game_path):
+    game_data = game_data_from_json(game_path)
+
+    FormClass = makeform(chars=game_data["characters"],
+                        numerito=game_data["maxColors"], 
+                         hasextra=game_data["hasIcons"],
+                         color1=game_data["defaultLayoutColors"][0],
+                         color2=game_data["defaultLayoutColors"][1])
+    return hestia(request, game_path, FormClass, hasextra=game_data["hasIcons"], color_guide=game_data["hasIcons"])

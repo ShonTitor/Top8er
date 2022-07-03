@@ -1,14 +1,9 @@
-import os, base64, re
-from io import BytesIO
-from django.shortcuts import render, HttpResponse, loader
-import requests
-from .forms import makeform, SmashggForm
-from .generar.getsets import event_data, challonge_data
-from .utils import graphic_from_request
+from .forms import makeform
+from .utils import graphic_from_request, hestia, response_from_json
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import authentication, permissions
+from rest_framework import permissions
 
 class salu2(APIView):
     permission_classes = [permissions.AllowAny]
@@ -21,125 +16,6 @@ class salu2(APIView):
                 })
         except Exception as e:
             return Response({"jaja": "salu2", "error": str(e)})
-
-def hestia(request, game, FormClass,
-           hasextra=True, color_guide=None, icon_sizes=(64, 32),
-           default_bg="bg"):
-    if hasextra : has_extra = "true"
-    else : has_extra = "false"
-    
-    if request.method == 'POST':
-        form = FormClass(request.POST, request.FILES)
-        form2 = SmashggForm(request.POST, request.FILES)
-        v1 = form.is_valid()
-        v2 = form2.is_valid()
-
-        if v2 :
-            event = request.POST["event"]
-            match = re.search("https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+", request.POST["event"])
-            if match :
-                match = re.search("tournament/[^/]+/event/[^/]+", event)
-                datos = event_data(match[0])
-            else :
-                match = re.search("https://challonge.com/[^/]+", request.POST["event"])
-                datos = challonge_data(event[22:match.end()])
-            init_data = {}
-
-            init_data["ttext"] = datos["toptext"]
-            init_data["btext"] = datos["bottomtext"]
-            init_data["url"] = datos["url"]
-
-            for i in range(8) :
-                try :
-                    init_data["player"+str(i+1)] = {}
-                    init_data["player"+str(i+1)]["name"] = datos["players"][i]["tag"]
-                    init_data["player"+str(i+1)]["twitter"] = datos["players"][i]["twitter"]
-                    init_data["player"+str(i+1)]["char"] = datos["players"][i]["char"][0]
-                except :
-                    pass
-            
-            context = { "hasextra" : has_extra,
-                        "form" : FormClass(initial=init_data),
-                        "form2" : SmashggForm(),
-                        "off" : 2,
-                        "color_guide" : color_guide,
-                        "game" : game,
-                        "result" : None
-                      }
-            return render(request, 'index.html' , context)
-        if v1 :
-            img = graphic_from_request(request, game, hasextra=hasextra, icon_sizes=icon_sizes, default_bg=default_bg)
-
-            init_data = {}
-            field_keys = filter(lambda k: not "player" in k and not "csrf" in k, request.POST.keys())
-            for key in field_keys :
-                init_data[key] = request.POST[key]
-            check_field_keys = ["darken_bg", "blacksquares", "charshadow", "prmode"]
-            for key in check_field_keys :
-                init_data[key] = key in request.POST
-
-            for i in range(1,9) :
-                try :
-                    init_data["player{}".format(i)] = {
-                        "name": request.POST["player{}_name".format(i)],
-                        "twitter": request.POST["player{}_twitter".format(i)],
-                        "char": request.POST["player{}_char".format(i)],
-                        "color": request.POST["player{}_color".format(i)],
-                        "flag": request.POST["player{}_flag".format(i)],
-                    }
-                    for field in ["extra1", "extra_color1", "extra2", "extra_color2"] :
-                        f = "player{}_{}".format(i, field)
-                        if f in request.POST :
-                            init_data["player{}".format(i)][field] = request.POST[f]
-                            
-                except :
-                    pass
-
-            context = { "hasextra" : has_extra,
-                        "form" : FormClass(initial=init_data),
-                        "form2" : SmashggForm(),
-                        "off" : 2,
-                        "color_guide" : color_guide,
-                        "game" : game,
-                        "result" : img,
-                        "base_url" : request.get_host()
-                      }
-            return render(request, 'index.html' , context)
-
-        else :
-            context = {
-               "hasextra" : has_extra,
-               "color_guide" : color_guide,
-               "game" : game,
-               "result" : None
-            }
-            if "event" in request.POST :
-                form = FormClass()
-                context["off"] = 1
-            else :
-                form2 = SmashggForm()
-                context["off"] = 2
-
-            context["form"] = form
-            context["form2"] = form2
-    
-            return render(request, 'index.html' , context)
-            
-            
-    else :
-        form = FormClass()
-        form2 = SmashggForm()
-    context = {
-               "form" : form,
-               "form2" : form2,
-               "off" : 2,
-               "hasextra" : has_extra,
-               "color_guide" : color_guide,
-               "game" : game,
-               "result" : None,
-               "base_url" : request.get_host()
-               }
-    return render(request, 'index.html' , context)
 
 def index(request) :
     FormClass = makeform()
@@ -649,3 +525,9 @@ def breakersrevenge(request) :
     FormClass = makeform(chars=c, numerito=4, hasextra=hasextra,
                          color1="#c71a1a", color2="#f9521a")
     return hestia(request, "breakersrevenge", FormClass, hasextra=hasextra)
+
+def dnf(request) :
+    return response_from_json(request, "dnf")
+
+def pplusta(request) :
+    return response_from_json(request, "p+ta")

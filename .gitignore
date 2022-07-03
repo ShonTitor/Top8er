@@ -1,7 +1,8 @@
 /__pychache__/*
 /migrations/__pychache__/*
 /generar/__pycache__/*
-/generar/assets/*/
+/generar/assets/**/*.png
+/generar/assets/**/*.py
 /generar/sample.png
 /generar/gato.py
 *.pyc
