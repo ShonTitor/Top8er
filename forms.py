@@ -30,19 +30,25 @@ class SmashggForm(forms.Form) :
         cleaned_data = super().clean()
         try:
             event = cleaned_data.get("event")
-            match = re.search("https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+", event)
-            if match :
-                match = re.search("tournament/[^/]+/event/[^/]+", event)
-                if not check_event(match[0]) :
-                    msg = "Event not found, has too few players or an iguana bit a cable."
-                    self.add_error('event', msg)
-            else :
-                match = re.search("https://challonge.com/[^/]+", event)
-                if not check_challonge(e[22:match.end()]) :
-                    msg = "Event not found, has too few players or an iguana bit a cable."
-                    self.add_error('event', msg)
-        except Exception as e:
-            pass
+            patterns = [
+                    # start gg
+                    ("https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+",
+                     "tournament/[^/]+/event/[^/]+",
+                     check_event, 0),
+                     # challonge
+                    ("https://challonge.com/[^/]+", ".com/[^/]+", check_challonge, 5)
+                    ]
+            for pattern, slug_pattern, check_function, offset in patterns:
+                if re.search(pattern, event):
+                    match = re.search(slug_pattern, event)
+                    slug = match[0][offset:]
+                    if not check_function(slug):
+                        msg = "Event not found, has too few players or an iguana bit a cable."
+                        self.add_error('event', msg)
+        except Exception as ex:
+            print(ex)
+            msg = "Event not found, has too few players or an iguana bit a cable."
+            self.add_error('event', msg)
         return cleaned_data
 
 def makeform(chars=None, numerito=None, numerito_extra=None,

@@ -39,15 +39,14 @@ def check_event(slug) :
 
 def check_challonge(slug) :
     headers = { 'User-Agent': 'Top8er' }
-
+    
     url = "https://api.challonge.com/v1/tournaments/"+slug+".json?api_key="+challonge_key+"&include_participants=1"
     response = requests.get(url, headers=headers)
     datos = json.loads(response.content)
     if "tournament" in datos :
-        datos = datos["tournament"]
+        return True
     else :
         return False
-    return npart >= 8
 
 def event_query(slug) :
     query = '''
