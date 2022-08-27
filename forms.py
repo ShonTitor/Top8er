@@ -3,7 +3,7 @@ from django import forms
 from collections import Mapping
 from typing import Type
 from colorful.forms import RGBColorField
-from .generar.getsets import check_event, check_challonge
+from .generar.getsets import check_event, check_challonge, check_tonamel
 from django.core.exceptions import ValidationError
 
 class AncestorForm(forms.Form) :
@@ -24,7 +24,7 @@ class AncestorForm(forms.Form) :
 
 class SmashggForm(forms.Form) :
     event = forms.RegexField(label="External link",
-                             regex = "https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+.*|https://challonge.com/[^/]+.*",
+                             regex = "https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+.*|https://challonge.com/[^/]+.*|https://tonamel.com/competition/[^/]+.*",
                              max_length=200)
     def clean(self):
         cleaned_data = super().clean()
@@ -36,7 +36,9 @@ class SmashggForm(forms.Form) :
                      "tournament/[^/]+/event/[^/]+",
                      check_event, 0),
                      # challonge
-                    ("https://challonge.com/[^/]+", ".com/[^/]+", check_challonge, 5)
+                    ("https://challonge.com/[^/]+", ".com/[^/]+", check_challonge, 5),
+                    # tonamel
+                    ("https://tonamel.com/competition/[^/]+", ".com/competition/[^/]+", check_tonamel, 17),
                     ]
             for pattern, slug_pattern, check_function, offset in patterns:
                 if re.search(pattern, event):

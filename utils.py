@@ -7,7 +7,7 @@ from io import BytesIO
 from io import BytesIO
 from django.shortcuts import render
 from .forms import makeform, SmashggForm
-from .generar.getsets import event_data, challonge_data
+from .generar.getsets import event_data, challonge_data, tonamel_data
 
 def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), default_bg="bg"):
     if request.POST["lcolor1"] == "#ff281a" :
@@ -132,13 +132,21 @@ def hestia(request, game, FormClass,
 
         if v2 :
             event = request.POST["event"]
-            match = re.search("https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+", request.POST["event"])
-            if match :
-                match = re.search("tournament/[^/]+/event/[^/]+", event)
-                datos = event_data(match[0])
-            else :
-                match = re.search("https://challonge.com/[^/]+", request.POST["event"])
-                datos = challonge_data(event[22:match.end()])
+            patterns = [
+                    # start gg
+                    ("https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+",
+                     "tournament/[^/]+/event/[^/]+",
+                     event_data, 0),
+                     # challonge
+                    ("https://challonge.com/[^/]+", ".com/[^/]+", challonge_data, 5),
+                    # tonamel
+                    ("https://tonamel.com/competition/[^/]+", ".com/competition/[^/]+", tonamel_data, 17),
+                    ]
+            for pattern, slug_pattern, data_function, offset in patterns:
+                if re.search(pattern, event):
+                    match = re.search(slug_pattern, event)
+                    slug = match[0][offset:]
+                    datos = data_function(slug)
             init_data = {}
 
             init_data["ttext"] = datos["toptext"]

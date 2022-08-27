@@ -19,6 +19,11 @@ f = open(os.path.join(path, "challonge.apikey"), "r")
 challonge_key = f.read()
 f.close()
 
+# Cosas de tonamel
+f = open(os.path.join(path, "tonamel.apikey"), "r")
+tonamel_credentials = f.read()
+f.close()
+
 def check_event(slug) :
     query = '''
     query SetsQuery($slug: String) {
@@ -30,7 +35,7 @@ def check_event(slug) :
     payload = {"query" : query, "variables" : {"slug" : slug}}
     response = requests.post(url=url, headers=headers, json=payload)
     event = json.loads(response.content)["data"]["event"]
-    print(event)
+    #print(event)
     if event :
         if event["numEntrants"] >= 8 :
             return True
@@ -47,6 +52,67 @@ def check_challonge(slug) :
         return True
     else :
         return False
+
+def tonamel_token() :
+    headers = {
+                "Authorization": f"Basic {tonamel_credentials}",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json"
+            }
+    data = {
+                "redirect_uri": "https://127.0.0.1?grant_type=authorization_code",
+                "grant_type": "client_credentials"
+            }
+
+    r = requests.post("https://op.tonamel.com/oauth2/token",
+                    headers=headers, data=data)
+
+    access_token = json.loads(r.content)['access_token']
+    return access_token
+
+def check_tonamel(competition_id) :
+    access_token = tonamel_token()
+
+    headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json"
+            }
+
+    r = requests.get(f"https://op.tonamel.com/api/v1/competition_result/{competition_id}",
+                    headers=headers)
+    return r.status_code == 200
+
+def tonamel_data(competition_id) :
+    access_token = tonamel_token()
+
+    headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json"
+            }
+
+    r = requests.get(f"https://op.tonamel.com/api/v1/competition_result/{competition_id}",
+                    headers=headers)
+    data = json.loads(r.content)
+    players = [
+        {
+            "tag" : p['participant'].get('entry_name', p['participant']['player_name']),
+            "char" : ("Random", 0),
+            "twitter" : "",
+            "secondaries" : []
+        }
+        for p in data["places"]
+    ]
+
+    datos = {
+        "players" : players,
+        "toptext" : "",
+        "bottomtext" : "",
+        "url" : url,
+        "game" : "idk"
+        }
+    return datos
 
 def event_query(slug) :
     query = '''
@@ -100,7 +166,6 @@ def event_query(slug) :
 def event_data(slug) :
     freq = {}
     data = event_query(slug)
-    #print(data)
     data = data["data"]
     try :
         if data["event"] is None : return None
@@ -240,7 +305,7 @@ def challonge_data(slug) :
 
 
 if __name__ == "__main__":
-    from perro import generate_banner
+    #from perro import generate_banner
     #slug = "tournament/genesis-7-1/event/ultimate-singles"
     #slug = "tournament/combo-breaker-2019/event/skullgirls-2nd-encore"
     #slug = "tournament/ceo-2019-fighting-game-championships/event/super-smash-bros-ultimate-singles"
@@ -252,7 +317,9 @@ if __name__ == "__main__":
     print(d)
     #if d : generate_banner(d).show()
 
-    #slug = "SGSudBeginners"
-    #slug = "SGSudBeg"
     #print(check_challonge(slug))
     #challonge_data(slug)
+
+    #slug = "PnKAm"
+    #print(check_tonamel(slug))
+    #print(tonamel_data(slug))
