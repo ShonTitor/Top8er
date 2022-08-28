@@ -403,15 +403,6 @@ def karnov(request) :
                          color1="#ff2605", color2="#166bff")
     return hestia(request, "karnov", FormClass, hasextra=True)
 
-def sfa3(request) :
-    c = ['Adon', 'Akuma', 'Birdie', 'Blanka', 'Boxer', 'Cammy', 'Charlie_Nash',
-         'Chun-li', 'Claw', 'Cody', 'Dan', 'Dhalsim', 'Dictator', 'E.Honda', 'Gen',
-         'Guy', 'Juli', 'Juni', 'Karin', 'Ken', 'R.Mika', 'Rolento', 'Rose', 'Ryu',
-         'Sagat', 'Sakura', 'Sodom', 'Zangief']
-    FormClass = makeform(chars=c, numerito=1, hasextra=False,
-                         color1="#ff4c00", color2="#ffaa00")
-    return hestia(request, "sfa3", FormClass, hasextra=False)
-
 def tlb2(request) :
     c = ['Akari', 'Amano', 'Hibiki', 'Juzoh', 'Kaede', 'Kaede (Original)', 'Kagami', 'Kojiroh',
          'Lee', 'Moriya', 'Mukuro', 'Okina', 'Setsuna', 'Shigen', 'Washizuka', 'Yuki', 'Zantetsu']
@@ -531,3 +522,15 @@ def dnf(request) :
 
 def pplusta(request) :
     return response_from_json(request, "p+ta")
+
+def doa5(request) :
+    return response_from_json(request, "doa5")
+
+def doa6(request) :
+    return response_from_json(request, "doa6")
+
+def sfa3(request) :
+    return response_from_json(request, "sfa3")
+
+def vhun(request) :
+    return response_from_json(request, "vhun")

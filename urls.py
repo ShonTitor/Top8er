@@ -63,6 +63,9 @@ urlpatterns = [
     path('BreakersRevenge', views.breakersrevenge),
     path('DNFDuel', views.dnf),
     path('Project+TA', views.pplusta),
+    path('DoA5', views.doa5),
+    path('DoA6', views.doa6),
+    path('VHUN', views.vhun),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/salu2', views.salu2.as_view()),
