@@ -23,6 +23,7 @@ f.close()
 f = open(os.path.join(path, "tonamel.apikey"), "r")
 tonamel_credentials = f.read()
 f.close()
+tonamel_token = None
 
 def check_event(slug) :
     query = '''
@@ -53,7 +54,15 @@ def check_challonge(slug) :
     else :
         return False
 
-def tonamel_token() :
+def get_tonamel_token(force_new=False) :
+    global tonamel_token
+
+    if not(tonamel_token is None or force_new):
+        return tonamel_token
+
+    if force_new:
+        print("Renewing tonamel token")
+
     headers = {
                 "Authorization": f"Basic {tonamel_credentials}",
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -68,23 +77,30 @@ def tonamel_token() :
                     headers=headers, data=data)
 
     access_token = json.loads(r.content)['access_token']
+    tonamel_token = access_token
     return access_token
 
 def check_tonamel(competition_id) :
-    access_token = tonamel_token()
+    access_token = get_tonamel_token()
 
     headers = {
                 "Authorization": f"Bearer {access_token}",
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Accept": "application/json"
             }
+    url = f"https://op.tonamel.com/api/v1/competition_result/{competition_id}"
 
-    r = requests.get(f"https://op.tonamel.com/api/v1/competition_result/{competition_id}",
-                    headers=headers)
+    r = requests.get(url, headers=headers)
+    
+    if r.status_code == 401:
+        access_token = get_tonamel_token(force_new=True)
+        headers["Authorization"] = f"Bearer {access_token}"
+        r = requests.get(url, headers=headers)
+                        
     return r.status_code == 200
 
 def tonamel_data(competition_id) :
-    access_token = tonamel_token()
+    access_token = get_tonamel_token()
 
     headers = {
                 "Authorization": f"Bearer {access_token}",
@@ -109,7 +125,7 @@ def tonamel_data(competition_id) :
         "players" : players,
         "toptext" : "",
         "bottomtext" : "",
-        "url" : url,
+        "url" : f"https://tonamel.com/competition/{competition_id}",
         "game" : "idk"
         }
     return datos
