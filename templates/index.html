@@ -826,7 +826,7 @@
     <h4 style="text-align: center">Top 8 Graphic Generator</h4>
 
     <button class="toggleforms manualform" style="margin-left: 10%">Enter data manually</button>
-    <button class="toggleforms sggform">Enter start.gg or challonge link</button>
+    <button class="toggleforms sggform">Enter tournament link</button>
     <button class="toggleforms othergames">Other Games</button>
     <button class="toggleforms aboutus">About Us</button>
     <button class="toggleforms spthanks">Special Thanks</button>
@@ -834,13 +834,16 @@
     <form class="form2" enctype="multipart/form-data" method="post" action="">
     {% csrf_token %}
     <div class="row" style="width: 80%; margin-left: 10%">
-
+		<p>Supports start.gg, challonge and tonamel</p>
         <div class="form2box col-xs-12 col-sm-12 col-md-12 col-lg-12">
             {{ form2.event.label_tag }}
             {{ form2.event.errors }}
             {{ form2.event }}
-            <p>start.gg links <strong>MUST have this format:</strong> https://start.gg/tournament/.../event/...<br>
-               challonge links <strong>MUST have this format:</strong> https://challonge.com/.../...</p>
+            <p>
+			   start.gg links <strong>MUST have this format:</strong> https://start.gg/tournament/.../event/...<br>
+               challonge links <strong>MUST have this format:</strong> https://challonge.com/.../...<br>
+			   tonamel links <strong>MUST have this format:</strong> https://tonamel.com/competition/...
+			</p>
         </div>
 
         <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-left: 5%; padding-right: 5%
