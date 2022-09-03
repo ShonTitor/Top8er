@@ -534,3 +534,12 @@ def sfa3(request) :
 
 def vhun(request) :
     return response_from_json(request, "vhun")
+
+def kyanta2(request) :
+    return response_from_json(request, "kyanta2")
+
+def multiversus(request) :
+    return response_from_json(request, "multiversus")
+
+def umvc3(request) :
+    return response_from_json(request, "umvc3")

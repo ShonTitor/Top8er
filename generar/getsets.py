@@ -308,13 +308,13 @@ def challonge_data(slug) :
         btext = " - ".join([datos["completed_at"][:10].replace('-','/'), str(npart)+" participants"])
     else :
         btext = str(npart)+" participants"
-    url = datos['full_challonge_url']
+    url_torneo = datos['full_challonge_url']
     
     datos = {
         "players" : players,
         "toptext" : ttext,
         "bottomtext" : btext,
-        "url" : url,
+        "url" : url_torneo,
         "game" : "idk"
         }
     return datos

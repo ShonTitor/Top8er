@@ -251,16 +251,22 @@ def game_data_from_json(game_path):
     data_path = os.path.join(base_path, "generar", "assets", game_path, "game.json")
     with open(data_path, "r") as f:
         game_data = json.loads(f.read())
-    if game_data["colors"] == None:
+    if game_data["colors"] is None:
         game_data["colors"] = {c:["Default"] for c in game_data["characters"]}
+    if "iconColors" in game_data and game_data["iconColors"] is None:
+        game_data["iconColors"] = {c:["Default"] for c in game_data["characters"]}
+    else:
+        game_data["iconColors"] = game_data["colors"]
     game_data["maxColors"] = max([len(colors) for colors in game_data["colors"].values()])
+    game_data["maxIconColors"] = max([len(colors) for colors in game_data["iconColors"].values()])
     return game_data
 
 def response_from_json(request, game_path):
     game_data = game_data_from_json(game_path)
 
     FormClass = makeform(chars=game_data["characters"],
-                        numerito=game_data["maxColors"], 
+                         numerito=game_data["maxColors"], 
+                         numerito_extra=game_data["maxIconColors"],
                          hasextra=game_data["hasIcons"],
                          color1=game_data["defaultLayoutColors"][0],
                          color2=game_data["defaultLayoutColors"][1])
