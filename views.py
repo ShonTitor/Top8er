@@ -313,8 +313,11 @@ def abk(request) :
     return hestia(request, "abk", FormClass, hasextra=False)
 
 def mbtl(request) :
-    c = ['Akiha Tohno', 'Aoko Aozaki', 'Arcueid Brunestud', 'Ciel', 'Dead Apostle Noel', 'Hisui', 'Kohaku', 'Kouma Kishima',
-         'Maids', 'Mario Gallo Bestino', 'Michael Roa Valjamjong', 'Miyako Arima', 'Noel', 'Powerd Ciel', 'Red Arcueid', 'Saber', 'Shiki Tohno', 'Vlov Arkhangel']
+    c = ['Akiha Tohno', 'Aoko Aozaki', 'Arcueid Brunestud', 'Ciel', 'Dead Apostle Noel',
+         'Hisui', 'Kohaku', 'Kouma Kishima', 'Maids',
+         'Michael Roa Valjamjong', 'Mario Gallo Bestino', 'Mash Kyrielight',
+         'Miyako Arima', 'Neco Arc', 'Noel', 'Powerd Ciel', 'Red Arcueid',
+         'Saber', 'Shiki Tohno', 'Vlov Arkhangel']
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#06142a", color2="#d3000b",
                          default_black_squares=False)
