@@ -35,6 +35,7 @@
     },
     "iconColors": null,
     "hasIcons": true,
-    "defaultLayoutColors": ["#ff320a", "#0000c8"],
+    "blackSquares": false,
+    "defaultLayoutColors": ["#f5a9b8", "#5bcefa"],
     "colorGuide": null
 }

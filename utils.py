@@ -269,5 +269,6 @@ def response_from_json(request, game_path):
                          numerito_extra=game_data["maxIconColors"],
                          hasextra=game_data["hasIcons"],
                          color1=game_data["defaultLayoutColors"][0],
-                         color2=game_data["defaultLayoutColors"][1])
+                         color2=game_data["defaultLayoutColors"][1],
+                         default_black_squares=game_data.get("blackSquares", True))
     return hestia(request, game_path, FormClass, hasextra=game_data["hasIcons"], color_guide=game_data["hasIcons"])
