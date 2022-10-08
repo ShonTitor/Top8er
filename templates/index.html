@@ -768,6 +768,14 @@
 			"Velma": ["Default", "Luau"],
 			"Wonder Woman": ["Default", "Bloodlines"]
 		}
+
+		{% if color_dict %}
+		,
+		{% autoescape off %}
+		{{ color_dict }}
+		{% endautoescape %}
+		{% endif %}
+
     	};
     	dictsote = dictsote["{{game}}"];
 
@@ -1187,17 +1195,18 @@
 		<a href="/Project+"><img class="logo" src="{% static 'logos' %}/p+.png" alt="Project+"></a>
 		<a href="/Project+TA"><img class="logo" src="{% static 'logos' %}/p+ta.png" alt="Project+ Tournament Addition"></a>
 		<a href="/ProjectM"><img class="logo" src="{% static 'logos' %}/pm.png" alt="Project M"></a>
-		<a href="/SSB64"><img class="logo" src="{% static 'logos' %}/ssb64.png" alt="Super Smash Bros 64 Remix"></a>
 
+		<a href="/SSB64"><img class="logo" src="{% static 'logos' %}/ssb64.png" alt="Super Smash Bros 64 Remix"></a>
 		<a href="/BrawlMinus"><img class="logo" src="{% static 'logos' %}/ssbbminus.png" alt="Brawl Minus"></a>
 		<a href="/rivals"><img class="logo" src="{% static 'logos' %}/roa.png" alt="Rivals of Aether"></a>
 		<a href="/RushdownRevolt"><img class="logo" src="{% static 'logos' %}/rr.png" alt="Rushdown Revolt"></a>
 		<a href="/SlapCity"><img class="logo" src="{% static 'logos' %}/slapcity.png" alt="Slap City"></a>
-		<a href="/NASB"><img class="logo" src="{% static 'logos' %}/nasb.png" alt="Nickelodeon All-Star Brawl"></a>
 
+		<a href="/NASB"><img class="logo" src="{% static 'logos' %}/nasb.png" alt="Nickelodeon All-Star Brawl"></a>
 		<a href="/KirbyFighters2"><img class="logo" src="{% static 'logos' %}/kf2.png" alt="Kirby Fighters 2"></a>
 		<a href="/Multiversus"><img class="logo" src="{% static 'logos' %}/multiversus.png" alt="Multiversus"></a>
 		<a href="/SSBC"><img class="logo" src="{% static 'logos' %}/ssbc.png" alt="Super Smash Bros Crusade"></a>
+		<a href="/ElemensionalRift"><img class="logo" src="{% static 'logos' %}/elemensional.png" alt="/ElemensionalRift"></a>
 
 		<h3>2D Fighters</h3>
 		<a href="/GuiltyGearACPR"><img class="logo" src="{% static 'logos' %}/ggxx.png" alt="Guilty Gear XX Accent Core +R"></a>
@@ -1227,30 +1236,34 @@
 		<a href="/efz"><img class="logo" src="{% static 'logos' %}/efz.png" alt="Eternal Fighter Zero"></a>
 		<a href="/Garou"><img class="logo" src="{% static 'logos' %}/garou.png" alt="Garou Mark of the wolves"></a>
 		<a href="/AsuraBuster"><img class="logo" src="{% static 'logos' %}/AsuraBuster.png" alt="Asura Buster"></a>
-		<a href="/TouhouHisoutensoku"><img class="logo" src="{% static 'logos' %}/soku.png" alt="Touhou Hisoutensoku"></a>
+		<a href="/SFA3"><img class="logo" src="{% static 'logos' %}/sfa3.png" alt="Street Fighter Alpha 3"></a>
 		<a href="/ABK"><img class="logo" src="{% static 'logos' %}/abk.png" alt="Akatsuki Blitzkampf"></a>
 
 		<a href="/tla"><img class="logo" src="{% static 'logos' %}/tla.png" alt="Tough Love Arena"></a>
 		<a href="/amogus"><img class="logo" src="{% static 'logos' %}/amogus.png" alt="Among Us Arena"></a>
 		<a href="/dankuga"><img class="logo" src="{% static 'logos' %}/dankuga.png" alt="Dan-Ku-Ga"></a>
 		<a href="/SamuraiShodownV"><img class="logo" src="{% static 'logos' %}/ssv.png" alt="Samurai Shodown V Special"></a>
-		<a href="/VSAV"><img class="logo" src="{% static 'logos' %}/vsav.png" alt="Vampire Savior"></a>
+		<a href="/SamuraiShodown"><img class="logo" src="{% static 'logos' %}/samsho2019.png" alt="Samurai Shodown (2019)"></a>
 
+		<a href="/VSAV"><img class="logo" src="{% static 'logos' %}/vsav.png" alt="Vampire Savior"></a>
 		<a href="/VHUN"><img class="logo" src="{% static 'logos' %}/vhun.png" alt="Vampire Hunter"></a>
 		<a href="/Karnov"><img class="logo" src="{% static 'logos' %}/karnov.png" alt="Karnov's Revenge"></a>
 		<a href="/TheLastBlade2"><img class="logo" src="{% static 'logos' %}/tlb2.png" alt="TheLastBlade2"></a>
 		<a href="/JoyMechFight"><img class="logo" src="{% static 'logos' %}/joymechfight.png" alt="Joy Mech Fight"></a>
-		<a href="/MvC2"><img class="logo" src="{% static 'logos' %}/mvc2.png" alt="Marvel VS Capcom 2"></a>
 
+		<a href="/MvC2"><img class="logo" src="{% static 'logos' %}/mvc2.png" alt="Marvel VS Capcom 2"></a>
+		<a href="/UMvC3"><img class="logo" src="{% static 'logos' %}/umvc3.png" alt="Ultimate Marvel VS Capcom 3"></a>
 		<a href="/AvengersGalacticStorm"><img class="logo" src="{% static 'logos' %}/aigs.png" alt="Avengers in Galatic Storm"></a>
 		<a href="/KOFXV"><img class="logo" src="{% static 'logos' %}/kofxv.png" alt="The King of Fighters XV"></a>
 		<a href="/KOF2002UM"><img class="logo" src="{% static 'logos' %}/kof2002um.png" alt="The King of Fighters 2002 Ultimate Match"></a>
+
 		<a href="/BreakersRevenge"><img class="logo" src="{% static 'logos' %}/breakersrevenge.png" alt="Breaker's Revenge"></a>
 		<a href="/DNFDuel"><img class="logo" src="{% static 'logos' %}/dnf.png" alt="DNF Duel"></a>
-
-		<a href="/SFA3"><img class="logo" src="{% static 'logos' %}/sfa3.png" alt="Street Fighter Alpha 3"></a>
-		<a href="/UMvC3"><img class="logo" src="{% static 'logos' %}/umvc3.png" alt="Ultimate Marvel VS Capcom 3"></a>
 		<a href="/UltraFightDaKyanta2"><img class="logo" src="{% static 'logos' %}/kyanta2.png" alt="Ultra Fight Da Kyanta! 2"></a>
+		<a href="/TouhouHisoutensoku"><img class="logo" src="{% static 'logos' %}/soku.png" alt="Touhou Hisoutensoku"></a>
+		<a href="/AntinomyOfCommonFlower"><img class="logo" src="{% static 'logos' %}/touhouantinomy.png" alt="Antinomy Of Common Flower"></a>
+
+		<a href="/Moonatics"><img class="logo" src="{% static 'logos' %}/moonatics.png" alt="Moonatics"></a>
 
 		<h3>3D Fighters</h3>
 		<a href="/Tekken7"><img class="logo" src="{% static 'logos' %}/tekken7.png" alt="Tekken 7"></a>

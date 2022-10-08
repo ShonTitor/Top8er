@@ -8,6 +8,7 @@ from io import BytesIO
 from django.shortcuts import render
 from .forms import makeform, SmashggForm
 from .generar.getsets import event_data, challonge_data, tonamel_data
+from django.utils.encoding import smart_str
 
 def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), default_bg="bg"):
     if request.POST["lcolor1"] == "#ff281a" :
@@ -119,7 +120,7 @@ def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), defa
     return str(img)[2:-1]
 
 def hestia(request, game, FormClass,
-           hasextra=True, color_guide=None, icon_sizes=(64, 32),
+           hasextra=True, color_guide=None, icon_sizes=(64, 32), color_dict=None,
            default_bg="bg"):
     if hasextra : has_extra = "true"
     else : has_extra = "false"
@@ -167,6 +168,7 @@ def hestia(request, game, FormClass,
                         "form2" : SmashggForm(),
                         "off" : 2,
                         "color_guide" : color_guide,
+                        "color_dict" : color_dict,
                         "game" : game,
                         "result" : None
                       }
@@ -204,6 +206,7 @@ def hestia(request, game, FormClass,
                         "form2" : SmashggForm(),
                         "off" : 2,
                         "color_guide" : color_guide,
+                        "color_dict" : color_dict,
                         "game" : game,
                         "result" : img,
                         "base_url" : request.get_host()
@@ -214,6 +217,7 @@ def hestia(request, game, FormClass,
             context = {
                "hasextra" : has_extra,
                "color_guide" : color_guide,
+               "color_dict" : color_dict,
                "game" : game,
                "result" : None
             }
@@ -239,6 +243,7 @@ def hestia(request, game, FormClass,
                "off" : 2,
                "hasextra" : has_extra,
                "color_guide" : color_guide,
+               "color_dict" : color_dict,
                "game" : game,
                "result" : None,
                "base_url" : request.get_host()
@@ -271,4 +276,5 @@ def response_from_json(request, game_path):
                          color1=game_data["defaultLayoutColors"][0],
                          color2=game_data["defaultLayoutColors"][1],
                          default_black_squares=game_data.get("blackSquares", True))
-    return hestia(request, game_path, FormClass, hasextra=game_data["hasIcons"], color_guide=game_data["hasIcons"])
+    color_dict = json.dumps({game_path: game_data["colors"]})[1:-1]
+    return hestia(request, game_path, FormClass, hasextra=game_data["hasIcons"], color_guide=game_data["colorGuide"], color_dict=color_dict)

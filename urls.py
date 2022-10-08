@@ -69,6 +69,10 @@ urlpatterns = [
     path('UltraFightDaKyanta2', views.kyanta2),
     path('Multiversus', views.multiversus),
     path('UMvC3', views.umvc3),
+    path('ElemensionalRift', views.elemensional),
+    path('SamuraiShodown', views.samsho2019),
+    path('Moonatics', views.moonatics),
+    path('AntinomyOfCommonFlower', views.touhouantinomy),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/salu2', views.salu2.as_view()),

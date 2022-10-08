@@ -1,0 +1,10 @@
+{
+    "name": "Moonatics",
+    "characters": ["charlotta", "samson", "ronan"],
+    "colors": null,
+    "iconColors": null,
+    "hasIcons": true,
+    "blackSquares": true,
+    "defaultLayoutColors": ["#32325a", "#1e3770"],
+    "colorGuide": null
+}

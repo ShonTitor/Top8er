@@ -1,0 +1,10 @@
+{
+    "name": "Samurai Shodown",
+    "characters": ["Amakusa", "Baiken", "Basara", "Cham Cham", "Charlotte", "Darli", "Earthquake", "Galford", "Genjuro", "Gongsun Li", "Hanzo", "Haohmaru", "Hibiki", "Iroha", "Jubei", "Kazuki", "Kyoshiro", "Mina", "Nakoruru", "Rimururu", "Ruixiang", "Shiki", "Shizumaru", "Sogetsu", "Tam Tam", "Ukyo", "Wan-Fu", "Warden", "Yashamaru", "Yoshitora"],
+    "colors": null,
+    "iconColors": null,
+    "hasIcons": true,
+    "blackSquares": true,
+    "defaultLayoutColors": ["#640096", "#500024"],
+    "colorGuide": null
+}

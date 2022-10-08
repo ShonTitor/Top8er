@@ -546,3 +546,15 @@ def multiversus(request) :
 
 def umvc3(request) :
     return response_from_json(request, "umvc3")
+
+def elemensional(request) :
+    return response_from_json(request, "elemensional")
+
+def samsho2019(request) :
+    return response_from_json(request, "samsho2019")
+
+def moonatics(request) :
+    return response_from_json(request, "moonatics")
+
+def touhouantinomy(request) :
+    return response_from_json(request, "touhouantinomy")
