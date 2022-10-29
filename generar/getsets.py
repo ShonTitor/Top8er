@@ -6,7 +6,7 @@ path = os.path.abspath(os.path.join(path, os.pardir))
 
 # Cosas de smash gg
 f = open(os.path.join(path, "smashgg.apikey"), "r")
-authToken = f.read()
+authToken = f.read().strip()
 f.close()
 apiVersion = 'alpha'
 url = 'https://api.smash.gg/gql/' + apiVersion
@@ -16,12 +16,12 @@ headers = {'Content-Type': 'application/json',
 
 # Cosas de challonge
 f = open(os.path.join(path, "challonge.apikey"), "r")
-challonge_key = f.read()
+challonge_key = f.read().strip()
 f.close()
 
 # Cosas de tonamel
 f = open(os.path.join(path, "tonamel.apikey"), "r")
-tonamel_credentials = f.read()
+tonamel_credentials = f.read().strip()
 f.close()
 tonamel_token = None
 
@@ -43,9 +43,10 @@ def check_event(slug) :
     else :
         return False
 
-def check_challonge(slug) :
+def check_challonge(slug, org=None) :
     headers = { 'User-Agent': 'Top8er' }
-    
+    if org is not None:
+        slug = org+"-"+slug
     url = "https://api.challonge.com/v1/tournaments/"+slug+".json?api_key="+challonge_key+"&include_participants=1"
     response = requests.get(url, headers=headers)
     datos = json.loads(response.content)
@@ -259,7 +260,6 @@ def event_data(slug) :
     ttext = ""
 
     
-    
     for t in ttexts  :
         if len(ttext) + len(t) < 50 :
             ttext += t
@@ -277,9 +277,10 @@ def event_data(slug) :
         }
     return datos
 
-def challonge_data(slug) :
+def challonge_data(slug, org=None) :
     headers = { 'User-Agent': 'Top8er' }
-
+    if org:
+        slug = f'{org}-{slug}'
     url = "https://api.challonge.com/v1/tournaments/"+slug+".json?api_key="+challonge_key+"&include_participants=1"
     print(url)
     response = requests.get(url, headers=headers)

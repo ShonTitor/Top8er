@@ -24,29 +24,32 @@ class AncestorForm(forms.Form) :
 
 class SmashggForm(forms.Form) :
     event = forms.RegexField(label="External link",
-                             regex = "https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+.*|https://challonge.com/[^/]+.*|https://tonamel.com/competition/[^/]+.*",
+                             regex = r"https://(www\.)?(smash|start).gg/tournament/[^/]+/event/[^/]+.*|https://([^\.]+\.)?challonge.com/[^/]+.*|https://tonamel.com/competition/[^/]+.*",
                              max_length=200)
     def clean(self):
         cleaned_data = super().clean()
         try:
             event = cleaned_data.get("event")
-            patterns = [
-                    # start gg
-                    ("https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+",
-                     "tournament/[^/]+/event/[^/]+",
-                     check_event, 0),
-                     # challonge
-                    ("https://challonge.com/[^/]+", ".com/[^/]+", check_challonge, 5),
-                    # tonamel
-                    ("https://tonamel.com/competition/[^/]+", ".com/competition/[^/]+", check_tonamel, 17),
-                    ]
-            for pattern, slug_pattern, check_function, offset in patterns:
-                if re.search(pattern, event):
-                    match = re.search(slug_pattern, event)
-                    slug = match[0][offset:]
-                    if not check_function(slug):
-                        msg = "Event not found, has too few players or an iguana bit a cable."
-                        self.add_error('event', msg)
+            
+            # start gg
+            startgg_match = re.match(r"https://(www\.)?(smash|start)\.gg/(tournament/[^/]+/event/[^/]+)", event)
+            challonge_match = re.match(r"https://([^\.]*)\.?challonge\.com/([^/]+)", event)
+            tonamel_match = re.match(r"https://tonamel\.com/competition/([^/]+)", event)
+
+            if startgg_match is not None:
+                slug = startgg_match.groups()[-1]
+                check_event(slug)
+            elif challonge_match is not None:
+                org, slug = challonge_match.groups()
+                print(org, slug)
+                if org:
+                    check_challonge(slug, org=org)
+                else:
+                    check_challonge(slug)
+            elif tonamel_match is not None:
+                print('tonamel!')
+                check_tonamel(tonamel_match.group(1))
+
         except Exception as ex:
             print(ex)
             msg = "Event not found, has too few players or an iguana bit a cable."

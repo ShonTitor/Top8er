@@ -133,21 +133,21 @@ def hestia(request, game, FormClass,
 
         if v2 :
             event = request.POST["event"]
-            patterns = [
-                    # start gg
-                    ("https://[www\.][smash]|[start].gg/tournament/[^/]+/event/[^/]+",
-                     "tournament/[^/]+/event/[^/]+",
-                     event_data, 0),
-                     # challonge
-                    ("https://challonge.com/[^/]+", ".com/[^/]+", challonge_data, 5),
-                    # tonamel
-                    ("https://tonamel.com/competition/[^/]+", ".com/competition/[^/]+", tonamel_data, 17),
-                    ]
-            for pattern, slug_pattern, data_function, offset in patterns:
-                if re.search(pattern, event):
-                    match = re.search(slug_pattern, event)
-                    slug = match[0][offset:]
-                    datos = data_function(slug)
+             # start gg
+            startgg_match = re.match(r"https://(www\.)?(smash|start)\.gg/(tournament/[^/]+/event/[^/]+)", event)
+            if startgg_match is not None:
+                slug = startgg_match.groups()[-1]
+                datos = event_data(slug)
+            # challonge
+            challonge_match = re.match(r"https://([^\.]*)\.?challonge\.com/([^/]+)", event)
+            if challonge_match is not None:
+                org, slug = challonge_match.groups()
+                datos = challonge_data(slug, org=org)
+            # tonamel
+            tonamel_match = re.match(r"https://tonamel\.com/competition/([^/]+)", event)
+            if tonamel_match is not None:
+                datos = tonamel_data(tonamel_match.group(1))
+
             init_data = {}
 
             init_data["ttext"] = datos["toptext"]
