@@ -133,18 +133,16 @@ def hestia(request, game, FormClass,
 
         if v2 :
             event = request.POST["event"]
-             # start gg
-            startgg_match = re.match(r"https://(www\.)?(smash|start)\.gg/(tournament/[^/]+/event/[^/]+)", event)
+            # This is a copy of the validation code in forms.py, consider refactoring
+            startgg_match = re.match(form2.startgg_re, event)
             if startgg_match is not None:
                 slug = startgg_match.groups()[-1]
                 datos = event_data(slug)
-            # challonge
-            challonge_match = re.match(r"https://([^\.]*)\.?challonge\.com/([^/]+)", event)
+            challonge_match = re.match(form2.challonge_re, event)
             if challonge_match is not None:
                 org, slug = challonge_match.groups()
                 datos = challonge_data(slug, org=org)
-            # tonamel
-            tonamel_match = re.match(r"https://tonamel\.com/competition/([^/]+)", event)
+            tonamel_match = re.match(form2.tonamel_re, event)
             if tonamel_match is not None:
                 datos = tonamel_data(tonamel_match.group(1))
 

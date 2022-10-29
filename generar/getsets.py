@@ -282,7 +282,6 @@ def challonge_data(slug, org=None) :
     if org:
         slug = f'{org}-{slug}'
     url = "https://api.challonge.com/v1/tournaments/"+slug+".json?api_key="+challonge_key+"&include_participants=1"
-    print(url)
     response = requests.get(url, headers=headers)
     datos = json.loads(response.content)
     if "tournament" in datos :

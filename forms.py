@@ -23,32 +23,34 @@ class AncestorForm(forms.Form) :
     fscolor2 = RGBColorField(label="Font Shadow Color", initial="#000000")
 
 class SmashggForm(forms.Form) :
+    startgg_re = r"https://(www\.)?(smash|start)\.gg/(tournament/[^/]+/event/[^/]+)"
+    challonge_re = r"https://([^\.]*)\.?challonge\.com/([^/]+)"
+    tonamel_re = r"https://tonamel\.com/competition/([^/]+)"
+
     event = forms.RegexField(label="External link",
-                             regex = r"https://(www\.)?(smash|start).gg/tournament/[^/]+/event/[^/]+.*|https://([^\.]+\.)?challonge.com/[^/]+.*|https://tonamel.com/competition/[^/]+.*",
+                             regex = "|".join([startgg_re, challonge_re, tonamel_re]),
                              max_length=200)
     def clean(self):
         cleaned_data = super().clean()
         try:
             event = cleaned_data.get("event")
             
-            # start gg
-            startgg_match = re.match(r"https://(www\.)?(smash|start)\.gg/(tournament/[^/]+/event/[^/]+)", event)
-            challonge_match = re.match(r"https://([^\.]*)\.?challonge\.com/([^/]+)", event)
-            tonamel_match = re.match(r"https://tonamel\.com/competition/([^/]+)", event)
+            startgg_match = re.match(self.startgg_re, event)
+            challonge_match = re.match(self.challonge_re, event)
+            tonamel_match = re.match(self.tonamel_re, event)
 
             if startgg_match is not None:
                 slug = startgg_match.groups()[-1]
                 check_event(slug)
             elif challonge_match is not None:
                 org, slug = challonge_match.groups()
-                print(org, slug)
                 if org:
                     check_challonge(slug, org=org)
                 else:
                     check_challonge(slug)
             elif tonamel_match is not None:
-                print('tonamel!')
-                check_tonamel(tonamel_match.group(1))
+                slug = tonamel_match.group(1)
+                check_tonamel(slug)
 
         except Exception as ex:
             print(ex)
