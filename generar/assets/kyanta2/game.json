@@ -1,12 +1,13 @@
 {
     "name": "Ultra Fight Da! Kyanta 2",
-    "characters": ["Anna", "Blues", "Buttobi", "Chihiro", "Cocorn", "Garasha", "Gyanta", "Hatoyan", "Hisomi", "Investigator Azuma", "Jakor", "Katana Kyanta", "kinoko", "Kyanta", "M.Michelle", "Masako", "Masao", "Michelle", "Myusha", "Nanatsu", "Natanee", "Rare", "Robo Azuma", "Rogue", "Sendou", "Spike", "Taro", "Tsukinami", "Well Done", "ZackyWild"],
+    "characters": ["Anna", "Blues", "Buttobi", "Chihiro", "Cocorn", "Doctor K", "Garasha", "Gyanta", "Hatoyan", "Hisomi", "Investigator Azuma", "Jakor", "Katana Kyanta", "kinoko", "Kyanta", "M.Michelle", "Masako", "Masao", "Michelle", "Myusha", "Nanatsu", "Natanee", "Rare", "Robo Azuma", "Rogue", "Sendou", "Spike", "Taro", "Tsukinami", "Well Done", "ZackyWild"],
     "colors": {
         "Anna": ["top8", "top4", "champion", "champion winquote"], 
         "Blues": ["top8", "top4", "champion", "champion winquote"], 
         "Buttobi": ["top8", "top4", "champion", "champion winquote"], 
         "Chihiro": ["top8", "top4", "champion", "champion winquote"], 
         "Cocorn": ["top8", "top4", "champion", "champion winquote"], 
+        "Doctor K": ["top8", "top4", "champion", "champion winquote"], 
         "Garasha": ["top8", "top4", "champion", "champion winquote"], 
         "Gyanta": ["top8", "top4", "champion", "champion winquote"], 
         "Hatoyan": ["top8", "top4", "champion", "champion winquote"], 
