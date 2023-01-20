@@ -57,7 +57,7 @@ def melee(request) :
          'Luigi', 'Mario', 'Marth', 'Mewtwo', 'Mr Game & Watch', 'Ness',
          'Peach', 'Pichu', 'Pikachu', 'Roy', 'Samus', 'Sheik', 'Yoshi',
          'Young Link', 'Zelda']
-    FormClass = makeform(chars=c, numerito=6)
+    FormClass = makeform(chars=c, numerito=12)
     c_guide = "https://www.ssbwiki.com/Alternate_costume_(SSBM)"
     return hestia(request, "melee", FormClass, icon_sizes=(48,24))
 
@@ -131,14 +131,6 @@ def soku(request) :
          'suika', 'suwako', 'tenshi', 'utsuho', 'youmu', 'yukari', 'yuyuko']
     FormClass = makeform(chars=c, numerito=1, color1='#28516a', color2='#51a3d5')
     return hestia(request, "soku", FormClass)
-
-def slapcity(request) :
-    c = ['Asha', 'Business Casual Man', 'Frallan', 'Goddess of Explosions', 'Ittle Dew',
-         'Jenny Fox', 'Masked Ruby', 'Princess Remedy', 'Ultra Fishbunjin 3000']
-    FormClass = makeform(chars=c, numerito=24, hasextra=False,
-                         color1="#ff7100", color2='#25d0fb')
-    c_guide = "https://slapwiki.com/SlapWiki/"
-    return hestia(request, "slapcity", FormClass, color_guide=c_guide, hasextra=False)
 
 def dfci(request) :
     c = ['Akira Yuki', 'Ako Tamaki', 'Asuna', 'Emi Yusa', 'Kirino Kousaka',
@@ -316,8 +308,8 @@ def mbtl(request) :
     c = ['Akiha Tohno', 'Aoko Aozaki', 'Arcueid Brunestud', 'Ciel', 'Dead Apostle Noel',
          'Hisui', 'Kohaku', 'Kouma Kishima', 'Maids',
          'Michael Roa Valjamjong', 'Mario Gallo Bestino', 'Mash Kyrielight',
-         'Miyako Arima', 'Neco Arc', 'Noel', 'Powerd Ciel', 'Red Arcueid',
-         'Saber', 'Shiki Tohno', 'Vlov Arkhangel']
+         'Miyako Arima', 'Monte Cristo', 'Neco Arc', 'Noel', 'Powerd Ciel', 'Red Arcueid',
+         'Saber', 'Shiki Tohno', 'Ushiwakamaru', 'Vlov Arkhangel']
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
                          color1="#06142a", color2="#d3000b",
                          default_black_squares=False)
@@ -558,3 +550,19 @@ def moonatics(request) :
 
 def touhouantinomy(request) :
     return response_from_json(request, "touhouantinomy")
+
+def vf5(request) :
+    return response_from_json(request, "vf5")
+
+def slapcity(request) :
+    return response_from_json(request, "slapcity")
+
+"""
+def slapcity(request) :
+    c = ['Asha', 'Business Casual Man', 'Frallan', 'Goddess of Explosions', 'Ittle Dew',
+         'Jenny Fox', 'Masked Ruby', 'Princess Remedy', 'Ultra Fishbunjin 3000']
+    FormClass = makeform(chars=c, numerito=24, hasextra=False,
+                         color1="#ff7100", color2='#25d0fb')
+    c_guide = "https://slapwiki.com/SlapWiki/"
+    return hestia(request, "slapcity", FormClass, color_guide=c_guide, hasextra=False)
+"""
