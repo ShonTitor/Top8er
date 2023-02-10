@@ -75,7 +75,9 @@ urlpatterns = [
     path('AntinomyOfCommonFlower', views.touhouantinomy),
     path('VF5', views.vf5),
     #path('SamuraiKirby', views.samuraikirby),
-
+    path('SC6', views.sc6),
+    path('IEGO', views.iego),
+    path('SSB4', views.ssb4),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/salu2', views.salu2.as_view()),

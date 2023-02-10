@@ -474,12 +474,15 @@ def p4au(request) :
 
 def kofxv(request) :
     hasextra = True
-    c = c = ['Andy Bogard', 'Angel', 'Antonov', 'Ash Crimson', 'Athena Asamiya', 'B. Jenet', 'Benimaru Nikaido',
-             'Blue Mary', 'Chizuru Kagura', 'Chris', 'Clark Still', 'Dolores', 'Elisabeth Blanctorche', 'Gato', 'Heidern',
-             'Iori Yagami', 'Isla', 'Joe Higashi', "K'", 'King', 'King of Dinosaurs', 'Krohnen', 'Kukri', 'Kula Diamond',
-             'Kyo Kusanagi', 'Leona Heidern', 'Luong', 'Mai Shiranui', 'Maxima', 'Meitenkun', 'Omega Rugal', 'Ralf Jones',
-             'Ramón', 'Robert Garcia', 'Rock Howard', 'Ryo Sakazaki', 'Shermie', "Shun'ei", 'Terry Bogard', 'Vanessa', 'Whip',
-             'Yashiro Nanakase', 'Yuri Sakazaki']
+    c = ['Andy Bogard', 'Angel', 'Antonov', 'Ash Crimson', 'Athena Asamiya', 'B. Jenet',
+         'Benimaru Nikaido', 'Billy Kane', 'Blue Mary', 'Chizuru Kagura', 'Chris',
+         'Clark Still', 'Darli Dagger', 'Dolores', 'Elisabeth Blanctorche', 'Gato',
+         'Geese Howard', 'Haohmaru', 'Heidern', 'Iori Yagami', 'Isla', 'Joe Higashi',
+         "K'", 'King', 'King of Dinosaurs', 'Krohnen', 'Kukri', 'Kula Diamond', 'Kyo Kusanagi',
+         'Leona Heidern', 'Luong', 'Mai Shiranui', 'Maxima', 'Meitenkun', 'Nakoruru', 'Omega Rugal',
+         'Orochi Chris', 'Orochi Shermie', 'Oroshi Yashiro', 'Ralf Jones', 'Ramón', 'Robert Garcia',
+         'Rock Howard', 'Ryo Sakazaki', 'Ryuji Yamazaki', 'Shermie', 'Shingo Yabuki', "Shun'ei",
+         'Terry Bogard', 'Vanessa', 'Whip', 'Yashiro Nanakase', 'Yuri Sakazaki']
     FormClass = makeform(chars=c, numerito=1, hasextra=hasextra,
                          color1="#FF0700", color2="#16b1e1")
     return hestia(request, "kofxv", FormClass, hasextra=hasextra)
@@ -557,12 +560,11 @@ def vf5(request) :
 def slapcity(request) :
     return response_from_json(request, "slapcity")
 
-"""
-def slapcity(request) :
-    c = ['Asha', 'Business Casual Man', 'Frallan', 'Goddess of Explosions', 'Ittle Dew',
-         'Jenny Fox', 'Masked Ruby', 'Princess Remedy', 'Ultra Fishbunjin 3000']
-    FormClass = makeform(chars=c, numerito=24, hasextra=False,
-                         color1="#ff7100", color2='#25d0fb')
-    c_guide = "https://slapwiki.com/SlapWiki/"
-    return hestia(request, "slapcity", FormClass, color_guide=c_guide, hasextra=False)
-"""
+def sc6(request) :
+    return response_from_json(request, "sc6")
+
+def iego(request) :
+    return response_from_json(request, "iego")
+
+def ssb4(request) :
+    return response_from_json(request, "ssb4")
