@@ -19,6 +19,8 @@ Sprites, cropped full art or anything that would fit nicely on the layout's squa
 The folder structure must be as follows:
 ```
         game/
+             game.json
+             logo.png
              bg.png
              portraits/
                       Character/
@@ -49,11 +51,21 @@ Where `bg.png` is the background and `0.png 1.png ... n.png` are the character p
 
 ## About the json file
 
-JSON (JavaScript Object Notation) The It doesn't necessarily need to be in `.json` format, but it must have the json structure. Here is an example:
+JSON stands for JavaScript Object Notation. It's a text format with strict syntax. It is adviced to use a [JSON Validator](https://jsonlint.com) to verify it is correct. The JSON file must be named `game.json` and must have the following data:  
+`name`: The full name of the game (written without any abbreviations).  
+`characters`: A list with all the names of the characters (must match the names of their respective folders).  
+`colors`: A dictionary where the keys are the character names and the values are lists with a description of each of the character's skins in order (The first description in the list must match with the corresponding `0.png` file, the second one with the `1.png` file and so on). If your game has no alternate colors, you can leave it as `null` (which is a special value, not a string).  
+`iconColors`: Analogous to `colors` but as a separate dict for icons. Use only if the "characters" available (For example, Melty Blood AACC Moons). Leave it as         `null` otherwise.  
+`hasIcons`: Boolean indicating whether your game has icons (used for secondaries).  
+`blackSquares`: Boolean indicating whether the "Black Squares" settings will be on by default (when this setting is on, there will be a black background behind each character).  
+`defaultLayoutColors`: List containing two 24-bit colors in hexadecimal where the first will be the default main layout color and the second will be the default highlight color. For this you can use a [Color Picker](https://www.w3schools.com/colors/colors_picker.asp).  
+`colorGuide`: An external URL detailing the game alternate skins for better clarity. This is optional, leave as `null` if you don't wish to include it.  
+
+Below there's an example of what a `game.json` could look like for Super Smash Bros Melee. Notice that the only difference between `colors` and `iconColors` is the inclusion/exclusion of "Random".
 ```
 {
     "name": "Super Smash Bros Melee",
-    "characters": ["Bowser", "Captain Falcon", "Donkey Kong", "Dr Mario", "Falco", "Fox", "Ganondorf", "Ice Climbers", "Jigglypuff", "Kirby", "Link", "Luigi", "Mario", "Marth", "Mewtwo", "Mr Game & Watch", "Ness", "Peach", "Pichu", "Pikachu", "Roy", "Samus", "Sheik", "Yoshi", "Young Link", "Zelda"],
+    "characters": ["Random", "Bowser", "Captain Falcon", "Donkey Kong", "Dr Mario", "Falco", "Fox", "Ganondorf", "Ice Climbers", "Jigglypuff", "Kirby", "Link", "Luigi", "Mario", "Marth", "Mewtwo", "Mr Game & Watch", "Ness", "Peach", "Pichu", "Pikachu", "Roy", "Samus", "Sheik", "Yoshi", "Young Link", "Zelda"],
     "colors": {
         "Random": ["Sandbag", "Quetion Mark"],
         "Bowser": ["Default", "Red", "Blue", "Black"], 
@@ -117,8 +129,6 @@ JSON (JavaScript Object Notation) The It doesn't necessarily need to be in `.jso
     "colorGuide": "https://www.ssbwiki.com/Alternate_costume_(SSBM)"
 }
 ```
-Each character's name is followed by a list of "descriptions" or "labels" for the characters alts. 
-These can be the color of the alt, a button combination or anything descriptive and easy to understand by the game's playerbase.
 
 ## Contact
 If you have all these ready or have any questions please contact me on [twitter](https://twitter.com/Riokaru) or discord (Riokaru#7131). 
