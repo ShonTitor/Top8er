@@ -7,7 +7,8 @@ There are a few things that are necessary to add a game to Top8er:
 - 512x512 Portraits for all the colors of all the characters
 - 64x64 Icons for all the characters (optional)
 - 1423x800 Background relative to the game
-- A json file with color descriptions
+- A json file with additional data
+- A transparent logo of the game
 
 ## About assets
 
@@ -48,35 +49,72 @@ Where `bg.png` is the background and `0.png 1.png ... n.png` are the character p
 
 ## About the json file
 
-It doesn't necessarily need to be in `.json` format, but it must have the json structure. Here is an example:
+JSON (JavaScript Object Notation) The It doesn't necessarily need to be in `.json` format, but it must have the json structure. Here is an example:
 ```
 {
-'Bowser': ['Default', 'Red', 'Blue', 'Black'], 
-'Captain Falcon': ['Default', 'Black', 'Red', 'White', 'Green', 'Blue'], 
-'Donkey Kong': ['Default', 'Black', 'Red', 'Blue', 'Green'], 
-'Dr Mario': ['Default', 'Red', 'Blue', 'Green', 'Black'], 
-'Falco': ['Default', 'Red', 'Blue', 'Green'], 
-'Fox': ['Default', 'Red', 'Blue', 'Green'], 
-'Ganondorf': ['Default', 'Red', 'Blue', 'Green', 'Purple'], 
-'Ice Climbers': ['Default', 'Green', 'Orange', 'Red'], 
-'Jigglypuff': ['Default', 'Red', 'Blue', 'Green', 'Yellow'], 
-'Kirby': ['Default', 'Yellow', 'Blue', 'Red', 'Green', 'White'], 
-'Link': ['Default', 'Red', 'Blue', 'Black', 'White'], 
-'Luigi': ['Default', 'White', 'Blue', 'Pink'], 
-'Mario': ['Default', 'Yellow', 'Black', 'Blue', 'Green'], 
-'Marth': ['Default', 'Red', 'Green', 'Black', 'White'], 
-'Mewtwo': ['Default', 'Red', 'Blue', 'Green'], 
-'Mr Game & Watch': ['Default', 'Red', 'Blue', 'Green'], 
-'Ness': ['Default', 'Yellow', 'Blue', 'Green'], 
-'Peach': ['Default', 'Yellow', 'White', 'Blue', 'Green'], 
-'Pichu': ['Default', 'Red', 'Blue', 'Green'], 
-'Pikachu': ['Default', 'Red', 'Blue', 'Green'], 
-'Roy': ['Default', 'Red', 'Blue', 'Green', 'Yellow'], 
-'Samus': ['Default', 'Pink', 'Black', 'Green', 'Purple'], 
-'Sheik': ['Default', 'Red', 'Blue', 'Green', 'White'], 
-'Yoshi': ['Default', 'Red', 'Blue', 'Yellow', 'Pink', 'Cyan'], 
-'Young Link': ['Default', 'Red', 'Blue', 'White', 'Black'], 
-'Zelda': ['Default', 'Red', 'Blue', 'Green', 'White']
+    "name": "Super Smash Bros Melee",
+    "characters": ["Bowser", "Captain Falcon", "Donkey Kong", "Dr Mario", "Falco", "Fox", "Ganondorf", "Ice Climbers", "Jigglypuff", "Kirby", "Link", "Luigi", "Mario", "Marth", "Mewtwo", "Mr Game & Watch", "Ness", "Peach", "Pichu", "Pikachu", "Roy", "Samus", "Sheik", "Yoshi", "Young Link", "Zelda"],
+    "colors": {
+        "Random": ["Sandbag", "Quetion Mark"],
+        "Bowser": ["Default", "Red", "Blue", "Black"], 
+        "Captain Falcon": ["Default", "Black", "Red", "White", "Green", "Blue"], 
+        "Donkey Kong": ["Default", "Black", "Red", "Blue", "Green"], 
+        "Dr Mario": ["Default", "Red", "Blue", "Green", "Black"], 
+        "Falco": ["Default", "Red", "Blue", "Green"], 
+        "Fox": ["Default", "Red", "Blue", "Green"], 
+        "Ganondorf": ["Default", "Red", "Blue", "Green", "Purple"], 
+        "Ice Climbers": ["Default", "Green", "Orange", "Red"], 
+        "Jigglypuff": ["Default", "Red", "Blue", "Green", "Yellow"], 
+        "Kirby": ["Default", "Yellow", "Blue", "Red", "Green", "White"], 
+        "Link": ["Default", "Red", "Blue", "Black", "White"], 
+        "Luigi": ["Default", "White", "Blue", "Pink"], 
+        "Mario": ["Default", "Yellow", "Black", "Blue", "Green"], 
+        "Marth": ["Default", "Red", "Green", "Black", "White"], 
+        "Mewtwo": ["Default", "Red", "Blue", "Green"], 
+        "Mr Game & Watch": ["Default", "Red", "Blue", "Green"], 
+        "Ness": ["Default", "Yellow", "Blue", "Green"], 
+        "Peach": ["Default", "Yellow", "White", "Blue", "Green"], 
+        "Pichu": ["Default", "Red", "Blue", "Green"], 
+        "Pikachu": ["Default", "Red", "Blue", "Green"], 
+        "Roy": ["Default", "Red", "Blue", "Green", "Yellow"], 
+        "Samus": ["Default", "Pink", "Black", "Green", "Purple"], 
+        "Sheik": ["Default", "Red", "Blue", "Green", "White"], 
+        "Yoshi": ["Default", "Red", "Blue", "Yellow", "Pink", "Cyan"], 
+        "Young Link": ["Default", "Red", "Blue", "White", "Black"], 
+        "Zelda": ["Default", "Red", "Blue", "Green", "White"]
+    },
+    "iconColors": {
+        "Bowser": ["Default", "Red", "Blue", "Black"], 
+        "Captain Falcon": ["Default", "Black", "Red", "White", "Green", "Blue"], 
+        "Donkey Kong": ["Default", "Black", "Red", "Blue", "Green"], 
+        "Dr Mario": ["Default", "Red", "Blue", "Green", "Black"], 
+        "Falco": ["Default", "Red", "Blue", "Green"], 
+        "Fox": ["Default", "Red", "Blue", "Green"], 
+        "Ganondorf": ["Default", "Red", "Blue", "Green", "Purple"], 
+        "Ice Climbers": ["Default", "Green", "Orange", "Red"], 
+        "Jigglypuff": ["Default", "Red", "Blue", "Green", "Yellow"], 
+        "Kirby": ["Default", "Yellow", "Blue", "Red", "Green", "White"], 
+        "Link": ["Default", "Red", "Blue", "Black", "White"], 
+        "Luigi": ["Default", "White", "Blue", "Pink"], 
+        "Mario": ["Default", "Yellow", "Black", "Blue", "Green"], 
+        "Marth": ["Default", "Red", "Green", "Black", "White"], 
+        "Mewtwo": ["Default", "Red", "Blue", "Green"], 
+        "Mr Game & Watch": ["Default", "Red", "Blue", "Green"], 
+        "Ness": ["Default", "Yellow", "Blue", "Green"], 
+        "Peach": ["Default", "Yellow", "White", "Blue", "Green"], 
+        "Pichu": ["Default", "Red", "Blue", "Green"], 
+        "Pikachu": ["Default", "Red", "Blue", "Green"], 
+        "Roy": ["Default", "Red", "Blue", "Green", "Yellow"], 
+        "Samus": ["Default", "Pink", "Black", "Green", "Purple"], 
+        "Sheik": ["Default", "Red", "Blue", "Green", "White"], 
+        "Yoshi": ["Default", "Red", "Blue", "Yellow", "Pink", "Cyan"], 
+        "Young Link": ["Default", "Red", "Blue", "White", "Black"], 
+        "Zelda": ["Default", "Red", "Blue", "Green", "White"]
+    },
+    "hasIcons": true,
+    "blackSquares": false,
+    "defaultLayoutColors": ["#FF281A", "#FFB60C"],
+    "colorGuide": "https://www.ssbwiki.com/Alternate_costume_(SSBM)"
 }
 ```
 Each character's name is followed by a list of "descriptions" or "labels" for the characters alts. 
