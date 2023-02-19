@@ -182,13 +182,6 @@ def sfst(request) :
                          color1="#d214a0", color2="#d8d819")
     return hestia(request, "sfst", FormClass, hasextra=False)
 
-def AsuraBuster(request) :
-    c = ['Alice', 'Alice!', 'Chen-Mao', 'Goat', 'Leon', 'Nanami', 'Rokurouta', 
-         'Rose Mary', 'Sittara', 'Taros', 'Yashaou', 'Zam-B', 'Zinsuke']
-    FormClass = makeform(chars=c, numerito=1, hasextra=False,
-                         color1="#ba2315", color2="#1f0141")
-    return hestia(request, "AsuraBuster", FormClass, hasextra=False)
-
 def kf2(request) :
     c = ['Archer', 'Artist', 'Bandana Dee', 'Beam', 'Beetle', 'Bell', 'Bomb', 
          'Cutter', 'Fighter', 'Gooey', 'Hammer', 'King Dedede', 'Magolor', 'Meta Knight', 
@@ -568,3 +561,9 @@ def iego(request) :
 
 def ssb4(request) :
     return response_from_json(request, "ssb4")
+
+def llblaze(request) :
+    return response_from_json(request, "llblaze")
+
+def AsuraBuster(request) :
+    return response_from_json(request, "AsuraBuster")

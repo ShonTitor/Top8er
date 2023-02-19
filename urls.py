@@ -22,7 +22,6 @@ urlpatterns = [
     path('SpectralVS', views.svs, name='SpectralVS'),
     path('3rdStrike', views.sf3s, name='3rdStrike'),
     path('SuperTurbo', views.sfst, name='SuperTurbo'),
-    path('AsuraBuster', views.AsuraBuster, name='AsuraBuster'),
     path('KirbyFighters2', views.kf2, name='KirbyFighters2'),
     path('Project+', views.pplus, name='Project+'),
     path('ProjectM', views.pm, name='Project M'),
@@ -78,6 +77,8 @@ urlpatterns = [
     path('SC6', views.sc6),
     path('IEGO', views.iego),
     path('SSB4', views.ssb4),
+    path('LethalLeagueBlaze', views.llblaze),
+    path('AsuraBuster', views.AsuraBuster),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/salu2', views.salu2.as_view()),
