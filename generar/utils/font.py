@@ -3,7 +3,7 @@ from fontTools.ttLib import TTFont
 from fontTools.unicode import Unicode
 
 def draw_text(draw, pos, text, font,
-              fill=(255, 255, 255), shadow=None):
+              fill=(255, 255, 255), shadow=None, shadow_offset=(0.55, 0.55)):
     """
     Draws text on an image on the given position, with an optional shadow.
   
@@ -16,9 +16,10 @@ def draw_text(draw, pos, text, font,
     shadow (tuple): Color tuple (or string) to be used as font shadow color.
                     If the value is None, no shadow will be drawn.
     """  
-    if shadow :
-        offset = int((font.size**0.5)*0.55)
-        draw.text((pos[0]+offset, pos[1]+offset), text, font=font, fill=shadow)
+    if shadow:
+        offset_x = int((font.size**0.5)*shadow_offset[0])
+        offset_y = int((font.size**0.5)*shadow_offset[1])
+        draw.text((pos[0]+offset_x, pos[1]+offset_y), text, font=font, fill=shadow)
     draw.text(pos, text, font=font, fill=fill)
 
 
@@ -40,31 +41,30 @@ def has_glyph(font, glyph):
     return False
 
 
-def best_font(text, f1, f2):
+def best_font(text, fonts):
     """
     Takes a string and two fonts, returns the font with the least missing glyphs.
   
     Parameters:
     text (str): String to be checked for missing glyphs
-    f1 (str): Path to the first font
-    f2 (str): Path to the second font
+    fonts (list): List of font file paths
   
     Returns:
     str: Path to the font with the least missing glyphs
     """
-    font1 = TTFont(f1)
-    font2 = TTFont(f2)
-    count1 = 0
-    count2 = 0
-    for c in list(text) :
-        if not has_glyph(font1, c) :
-            count1 += 1
-        if not has_glyph(font2, c) :
-            count2 += 1
-    if count2 < count1 : 
-        return f2
-    else : 
-        return f1
+    best = None
+    best_hits = 0
+    for f in fonts:
+        hits = 0
+        font = TTFont(f)
+        for c in list(text):
+            if has_glyph(font, c):
+                hits += 1
+        if hits > best_hits:
+            best = f
+            best_hits = hits
+
+    return best
 
 
 def fitting_font(draw, width, height, text, fontdir, guess) :
@@ -104,7 +104,7 @@ def fitting_font(draw, width, height, text, fontdir, guess) :
 
    
 def fit_text(draw, box, text, fontdir, guess=30, align="left", alignv="top",
-             fill=(255, 255, 255), shadow=(0,0,0), forcedfont=None):
+             fill=(255, 255, 255), shadow=(0,0,0), shadow_offset=(0.55, 0.55), forcedfont=None):
     """
     Draws text to an image with the biggest possible font size
     to fit inside a giving rectangle.
@@ -147,4 +147,4 @@ def fit_text(draw, box, text, fontdir, guess=30, align="left", alignv="top",
     elif alignv == "middle" :
         posy += (height-y)//2
 
-    draw_text(draw, (posx, posy), text, fuente, fill=fill, shadow=shadow)
+    draw_text(draw, (posx, posy), text, fuente, fill=fill, shadow=shadow, shadow_offset=shadow_offset)

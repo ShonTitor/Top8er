@@ -76,7 +76,7 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
             text_blob += player['tag']
         font_option1 = os.path.join(path, 'fonts','DFGothic-SU-WIN-RKSJ-H-01.ttf')
         font_option2 = os.path.join(path, 'fonts','sansthirteenblack.ttf')
-        the_font = best_font(text_blob, font_option1, font_option2)
+        the_font = best_font(text_blob, [font_option1, font_option2])
     # Paths to assets
     portraits = os.path.join(path, "assets", game, "portraits")
     icons = os.path.join(path, "assets", game, "icons")
