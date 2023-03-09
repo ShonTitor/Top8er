@@ -567,3 +567,6 @@ def llblaze(request) :
 
 def AsuraBuster(request) :
     return response_from_json(request, "AsuraBuster")
+
+def jojoasbr(request) :
+    return response_from_json(request, "jojoasbr")

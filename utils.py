@@ -262,6 +262,8 @@ def game_data_from_json(game_path):
         game_data["iconColors"] = game_data["colors"]
     game_data["maxColors"] = max([len(colors) for colors in game_data["colors"].values()])
     game_data["maxIconColors"] = max([len(colors) for colors in game_data["iconColors"].values()])
+    if not "characterShadows" in game_data:
+        game_data["characterShadows"] = True
     return game_data
 
 def response_from_json(request, game_path):
@@ -273,6 +275,7 @@ def response_from_json(request, game_path):
                          hasextra=game_data["hasIcons"],
                          color1=game_data["defaultLayoutColors"][0],
                          color2=game_data["defaultLayoutColors"][1],
-                         default_black_squares=game_data.get("blackSquares", True))
+                         default_black_squares=game_data.get("blackSquares", True),
+                         default_character_shadows=game_data.get("characterShadows", True))
     color_dict = json.dumps({game_path: game_data["colors"]})[1:-1]
     return hestia(request, game_path, FormClass, hasextra=game_data["hasIcons"], color_guide=game_data["colorGuide"], color_dict=color_dict)

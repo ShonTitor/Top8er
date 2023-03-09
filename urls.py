@@ -79,6 +79,7 @@ urlpatterns = [
     path('SSB4', views.ssb4),
     path('LethalLeagueBlaze', views.llblaze),
     path('AsuraBuster', views.AsuraBuster),
+    path('JoJoASBR', views.jojoasbr),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/salu2', views.salu2.as_view()),

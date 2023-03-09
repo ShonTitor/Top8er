@@ -11,7 +11,6 @@ class AncestorForm(forms.Form) :
     logo = forms.ImageField(label="Logo", required=False)
     darken_bg = forms.BooleanField(label="Darken Background", widget=forms.CheckboxInput, initial=True, required=False)
     prmode = forms.BooleanField(label="PR Mode", widget=forms.CheckboxInput, initial=False, required=False)
-    charshadow = forms.BooleanField(label="Character Shadow", widget=forms.CheckboxInput, initial=True, required=False)
     fonts = [("auto", "Auto"),
              ("DFGothic-SU-WIN-RKSJ-H-01.ttf", "SSBU font (japanese characters)"),
              ("sansthirteenblack.ttf", "SansThirteenBlack (european characters)")]
@@ -61,7 +60,7 @@ class SmashggForm(forms.Form) :
 def makeform(chars=None, numerito=None, numerito_extra=None,
              echars=None, hasextra=True, efz=False, mb=False,
              color1="#ff281a", color2="#ffb60c",
-             default_black_squares=True) :
+             default_black_squares=True, default_character_shadows=True) :
     if chars is None :
         echars = ['Banjo & Kazooie', 'Bayonetta', 'Bowser', 'Bowser Jr', 'Byleth',
                  'Captain Falcon', 'Chrom', 'Cloud', 'Corrin', 'Daisy', 'Dark Pit', 'Dark Samus',
@@ -249,6 +248,8 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
 
         blacksquares = forms.BooleanField(label="Black Background for characters", widget=forms.CheckboxInput, 
                                           initial=default_black_squares, required=False)
+        charshadow = forms.BooleanField(label="Character Shadow", widget=forms.CheckboxInput,
+                                          initial=default_character_shadows, required=False)
         ttext = forms.CharField(label='Top Left Text', max_length=50, required=False)
         btext = forms.CharField(label='Bottom Text', max_length=70, required=False)
         url = forms.CharField(label='Top Right', max_length=55, required=False, initial="https://top8er.com/")
