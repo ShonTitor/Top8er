@@ -49,6 +49,7 @@ def check_challonge(slug, org=None) :
         slug = org+"-"+slug
     url = "https://api.challonge.com/v1/tournaments/"+slug+".json?api_key="+challonge_key+"&include_participants=1"
     response = requests.get(url, headers=headers)
+    print(url, response.content)
     datos = json.loads(response.content)
     if "tournament" in datos :
         return True
@@ -264,9 +265,9 @@ def event_data(slug) :
         if len(ttext) + len(t) < 50 :
             ttext += t
     if event["tournament"]["shortSlug"] :
-        link = "https://smash.gg/"+event["tournament"]["shortSlug"]
+        link = "https://start.gg/"+event["tournament"]["shortSlug"]
     else :
-        link = "smash.gg/"+event["tournament"]["slug"]
+        link = "start.gg/"+event["tournament"]["slug"]
 
     datos = {
         "players" : players,

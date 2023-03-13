@@ -32,7 +32,7 @@ def roa(request) :
          "Ori and Sein", "Ranno", "Shovel Knight",
          "Sylvanos", "Wrastor", "Zetterburn"]
     FormClass = makeform(chars=c, numerito=21, numerito_extra=1, echars=c,
-                        color1="#B4A5E6", color2="#261C50")
+                        color1="#B4A5E6", color2="#261C50", game="roa")
     return hestia(request, "roa", FormClass)
 
 def sg(request) :

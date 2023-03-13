@@ -40,16 +40,20 @@ class SmashggForm(forms.Form) :
 
             if startgg_match is not None:
                 slug = startgg_match.groups()[-1]
-                check_event(slug)
+                check = check_event(slug)
             elif challonge_match is not None:
                 org, slug = challonge_match.groups()
+                print(org, slug)
                 if org:
-                    check_challonge(slug, org=org)
+                    check = check_challonge(slug, org=org)
                 else:
-                    check_challonge(slug)
+                    check = check_challonge(slug)
             elif tonamel_match is not None:
                 slug = tonamel_match.group(1)
-                check_tonamel(slug)
+                check = check_tonamel(slug)
+
+            if not check:
+                raise Exception("check function returned False")
 
         except Exception as ex:
             print(ex)
@@ -58,7 +62,7 @@ class SmashggForm(forms.Form) :
         return cleaned_data
 
 def makeform(chars=None, numerito=None, numerito_extra=None,
-             echars=None, hasextra=True, efz=False, mb=False,
+             echars=None, hasextra=True, efz=False, mb=False, game=None,
              color1="#ff281a", color2="#ffb60c",
              default_black_squares=True, default_character_shadows=True) :
     if chars is None :
