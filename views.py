@@ -81,7 +81,7 @@ def ggxrd(request) :
     return hestia(request, "ggxrd", FormClass, hasextra=False)
 
 def ggst(request) :
-    c = ['Anji', 'Axl', 'Baiken', 'Bridget', 'Chipp', 'Faust', 'Giovanna', 'Goldlewis', 'Happy Chaos',
+    c = ['Anji', 'Axl', 'Baiken', 'Bedman', 'Bridget', 'Chipp', 'Faust', 'Giovanna', 'Goldlewis', 'Happy Chaos',
          'I-No', 'Jack-O\'', 'Ky', 'Leo', 'May', 'Millia',
          'Nagoriyuki', 'Potemkim', 'Ramlethal', 'Sol', 'Sin', 'Testament', 'Zato'] 
     FormClass = makeform(chars=c, numerito=1, hasextra=False,
