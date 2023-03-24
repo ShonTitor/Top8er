@@ -1,8 +1,0 @@
-{
-    "name": "Dead or Alive 5",
-    "characters": ["Akira", "Alpha-152", "Ayane", "Bass", "Bayman", "Brad Wong", "Christie", "Ein", "Eliot", "Gen Fu", "Hayabusa", "Hayate", "Helena", "Hitomi", "Honoka", "Jacky", "Jahn Lee", "Kasumi", "Kokoro", "Leifang", "Leon", "Lisa", "Mai", "Marie Rose", "Mila", "Momiji", "Naotora", "Nyotengu", "Pai", "Phase 4", "Rachel", "Raidou", "Random", "Rig", "Sarah", "Tina", "Zack"],
-    "colors": null,
-    "hasIcons": true,
-    "defaultLayoutColors": ["#150c0f", "#801c1a"],
-    "colorGuide": null
-}

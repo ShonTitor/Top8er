@@ -1,9 +1,0 @@
-{
-    "name": "Touhou 15.5: Antinomy of Common Flowers",
-    "characters": ["Byakuren", "Doremy", "Futo", "Ichirin", "Jo'on", "Kasen", "Koishi", "Kokoro", "Mamizou", "Marisa", "Miko", "Mokou", "Nitori", "Reimu", "Reisen", "Sukuna", "Sumireko", "Tenshi", "Yukari"],
-    "colors": null,
-    "hasIcons": true,
-    "defaultLayoutColors": ["#080436", "#5ae5fd"],
-    "colorGuide": null,
-	"blackSquares": false
-}

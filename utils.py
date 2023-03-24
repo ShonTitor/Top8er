@@ -2,13 +2,13 @@ import base64
 import json
 import os
 import re
-from .generar.perro import generate_banner
-from io import BytesIO
 from io import BytesIO
 from django.shortcuts import render
+
 from .forms import makeform, SmashggForm
+from .stuff import games, base_path, templates
 from .generar.getsets import event_data, challonge_data, tonamel_data
-from django.utils.encoding import smart_str
+from .generar.perro import generate_banner
 
 def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), default_bg="bg"):
     if request.POST["lcolor1"] == "#ff281a" :
@@ -122,6 +122,7 @@ def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), defa
 def hestia(request, game, FormClass,
            hasextra=True, color_guide=None, icon_sizes=(64, 32), color_dict=None,
            default_bg="bg"):
+
     if hasextra : has_extra = "true"
     else : has_extra = "false"
     
@@ -130,6 +131,9 @@ def hestia(request, game, FormClass,
         form2 = SmashggForm(request.POST, request.FILES)
         v1 = form.is_valid()
         v2 = form2.is_valid()
+
+        if not v1:
+            print("\n", form.errors,"\n")
 
         if v2 :
             event = request.POST["event"]
@@ -269,7 +273,8 @@ def game_data_from_json(game_path):
 def response_from_json(request, game_path):
     game_data = game_data_from_json(game_path)
 
-    FormClass = makeform(chars=game_data["characters"],
+    FormClass = makeform(game=game_path,
+                         chars=game_data["characters"],
                          numerito=game_data["maxColors"], 
                          numerito_extra=game_data["maxIconColors"],
                          hasextra=game_data["hasIcons"],
@@ -278,4 +283,34 @@ def response_from_json(request, game_path):
                          default_black_squares=game_data.get("blackSquares", True),
                          default_character_shadows=game_data.get("characterShadows", True))
     color_dict = json.dumps({game_path: game_data["colors"]})[1:-1]
-    return hestia(request, game_path, FormClass, hasextra=game_data["hasIcons"], color_guide=game_data["colorGuide"], color_dict=color_dict)
+    return hestia(request, game_path, FormClass,
+                  hasextra=game_data["hasIcons"], color_guide=game_data["colorGuide"],
+                  color_dict=color_dict)
+
+def is_url(string):
+    if type(string) is not str:
+        return False
+    url_pattern = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+    return re.match(url_pattern, string) is not None
+
+def read_game_data(game):
+    if game in [g for _, g in games]:
+        data_path = os.path.join(base_path, "generar", "assets", game, "game.json")
+        with open(data_path, "r") as f:
+            game_data = f.read()
+        return json.loads(game_data)
+
+def read_template_data(template, complete=False):
+        if template in templates:
+            data_path = os.path.join(base_path, "generar", "templates", template, "template.json")
+            with open(data_path, "r") as f:
+                template_data = f.read()
+            template_data = json.loads(template_data)
+
+            if complete:
+                return template_data
+            
+            return {
+                "player_fields": template_data["player_fields"],
+                "options": template_data["options"]
+            }

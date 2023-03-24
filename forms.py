@@ -43,7 +43,6 @@ class SmashggForm(forms.Form) :
                 check = check_event(slug)
             elif challonge_match is not None:
                 org, slug = challonge_match.groups()
-                print(org, slug)
                 if org:
                     check = check_challonge(slug, org=org)
                 else:
@@ -56,13 +55,13 @@ class SmashggForm(forms.Form) :
                 raise Exception("check function returned False")
 
         except Exception as ex:
-            print(ex)
+            #print(ex, "forms")
             msg = "Event not found, has too few players or an iguana bit a cable."
             self.add_error('event', msg)
         return cleaned_data
 
 def makeform(chars=None, numerito=None, numerito_extra=None,
-             echars=None, hasextra=True, efz=False, mb=False, game=None,
+             echars=None, hasextra=True, game=None,
              color1="#ff281a", color2="#ffb60c",
              default_black_squares=True, default_character_shadows=True) :
     if chars is None :
@@ -100,10 +99,10 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
     cc1 = color1
     cc2 = color2
 
-    if mb :
+    if game == "mbaacc":
         extra_label1 = 'Main Moon'
         extra_label2 = 'Secondary Moon'
-    else :
+    else:
         extra_label1 = "Secondary Character"
         extra_label2 = "Tertiary Character"
 
@@ -154,7 +153,7 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
         player_fields['extra_color1'] = forms.ChoiceField(label='Secondary Character Color', choices=num_e, required=False)
         player_fields['extra2'] = forms.ChoiceField(label=extra_label2, choices=e_chars, required=False)
         player_fields['extra_color2'] = forms.ChoiceField(label='Tertiary Character Color', choices=num_e, required=False)
-    if efz :
+    if game == "efz":
         player_fields['palette'] = forms.FileField(label="Color Palette", required=False)
 
     class PlayerField(forms.MultiValueField) :

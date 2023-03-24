@@ -1,8 +1,0 @@
-{
-    "name": "DNF Duel",
-    "characters": ["Berserker", "Crusader", "Dragon Knight", "Enchantress", "Ghost Blade", "Grappler", "Hitman", "Inquisitor", "Kunoichi", "Launcher", "Lost Warrior", "Ranger", "Striker", "Swift Master", "Troubleshooter", "Vanguard"],
-    "colors": null,
-    "hasIcons": true,
-    "defaultLayoutColors": ["#150c0f", "#801c1a"],
-    "colorGuide": null
-}

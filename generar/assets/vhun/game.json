@@ -1,8 +1,0 @@
-{
-    "name": "Vampire Hunter",
-    "characters": ["Anakaris", "Aulbath", "Bishamon", "Demitri", "Donovan", "Felicia", "Gallon", "Lei Lei", "Morrigan", "Phobos", "Pyron", "Sasquatch", "Victor", "Zabel"],
-    "colors": null,
-    "hasIcons": false,
-    "defaultLayoutColors": ["#150c0f", "#801c1a"],
-    "colorGuide": null
-}

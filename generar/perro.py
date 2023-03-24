@@ -270,7 +270,8 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
                                 mask=icon)
                     char_offset += 1
                 except Exception as e :
-                    print(e, str(route))
+                    pass
+                    #print(e, str(route), "perro")
 
     # Layout parts
     part  = Image.open(os.path.join(template,"marco.png"))
