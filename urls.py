@@ -12,6 +12,8 @@ urlpatterns = [
     path('api/template_data/<str:template>/', views.api_template_data.as_view()),
     path('api/generate/<str:template>/<str:game>/', views.api_generate.as_view()),
 
+    path('test_api/', TemplateView.as_view(template_name="test_api.html")),
+
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path('google6f9c6e66eb07f5ce.html', TemplateView.as_view(template_name="google6f9c6e66eb07f5ce.html"))
