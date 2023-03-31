@@ -283,7 +283,8 @@ def response_from_json(request, game_path):
                          default_black_squares=game_data.get("blackSquares", True),
                          default_character_shadows=game_data.get("characterShadows", True))
     if iconColors:
-        color_dict = iconColors.update(game_data["colors"])
+        color_dict = iconColors.copy()
+        color_dict.update(game_data["colors"])
     else:
         color_dict = game_data["colors"]
     color_dict = json.dumps({game_path: color_dict})[1:-1]
