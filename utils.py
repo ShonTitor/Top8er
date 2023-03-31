@@ -174,7 +174,7 @@ def hestia(request, game, FormClass,
                         "game" : game,
                         "result" : None
                       }
-            return render(request, 'index.html' , context)
+            return render(request, 'old_form.html' , context)
         if v1 :
             img = graphic_from_request(request, game, hasextra=hasextra, icon_sizes=icon_sizes, default_bg=default_bg)
 
@@ -213,7 +213,7 @@ def hestia(request, game, FormClass,
                         "result" : img,
                         "base_url" : request.get_host()
                       }
-            return render(request, 'index.html' , context)
+            return render(request, 'old_form.html' , context)
 
         else :
             context = {
@@ -233,7 +233,7 @@ def hestia(request, game, FormClass,
             context["form"] = form
             context["form2"] = form2
     
-            return render(request, 'index.html' , context)
+            return render(request, 'old_form.html' , context)
             
             
     else :
@@ -250,7 +250,7 @@ def hestia(request, game, FormClass,
                "result" : None,
                "base_url" : request.get_host()
                }
-    return render(request, 'index.html' , context)
+    return render(request, 'old_form.html' , context)
 
 def game_data_from_json(game_path):
     base_path = os.path.realpath(__file__)
@@ -260,10 +260,9 @@ def game_data_from_json(game_path):
         game_data = json.loads(f.read())
     if game_data["colors"] is None:
         game_data["colors"] = {c:["Default"] for c in game_data["characters"]}
-    if "iconColors" in game_data and game_data["iconColors"] is None:
+    if "iconColors" not in game_data and game_data["iconColors"] is None:
         game_data["iconColors"] = {c:["Default"] for c in game_data["characters"]}
-    else:
-        game_data["iconColors"] = game_data["colors"]
+
     game_data["maxColors"] = max([len(colors) for colors in game_data["colors"].values()])
     game_data["maxIconColors"] = max([len(colors) for colors in game_data["iconColors"].values()])
     if not "characterShadows" in game_data:
@@ -272,9 +271,10 @@ def game_data_from_json(game_path):
 
 def response_from_json(request, game_path):
     game_data = game_data_from_json(game_path)
-
+    iconColors = game_data.get("iconColors")
     FormClass = makeform(game=game_path,
                          chars=game_data["characters"],
+                         echars=None if iconColors is None else list(iconColors.keys()),
                          numerito=game_data["maxColors"], 
                          numerito_extra=game_data["maxIconColors"],
                          hasextra=game_data["hasIcons"],
@@ -282,7 +282,11 @@ def response_from_json(request, game_path):
                          color2=game_data["defaultLayoutColors"][1],
                          default_black_squares=game_data.get("blackSquares", True),
                          default_character_shadows=game_data.get("characterShadows", True))
-    color_dict = json.dumps({game_path: game_data["colors"]})[1:-1]
+    if iconColors:
+        color_dict = iconColors.update(game_data["colors"])
+    else:
+        color_dict = game_data["colors"]
+    color_dict = json.dumps({game_path: color_dict})[1:-1]
     return hestia(request, game_path, FormClass,
                   hasextra=game_data["hasIcons"], color_guide=game_data["colorGuide"],
                   color_dict=color_dict)
@@ -312,5 +316,6 @@ def read_template_data(template, complete=False):
             
             return {
                 "player_fields": template_data["player_fields"],
-                "options": template_data["options"]
+                "options": template_data["options"],
+                "player_number": template_data["player_number"]
             }

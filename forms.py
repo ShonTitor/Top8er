@@ -64,6 +64,7 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
              echars=None, hasextra=True, game=None,
              color1="#ff281a", color2="#ffb60c",
              default_black_squares=True, default_character_shadows=True) :
+    print(echars)
     if chars is None :
         echars = ['Banjo & Kazooie', 'Bayonetta', 'Bowser', 'Bowser Jr', 'Byleth',
                  'Captain Falcon', 'Chrom', 'Cloud', 'Corrin', 'Daisy', 'Dark Pit', 'Dark Samus',

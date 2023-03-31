@@ -1,8 +1,8 @@
-from .forms import makeform
 from .utils import graphic_from_request, response_from_json, read_game_data, read_template_data, is_url
 from .stuff import games, templates, flags, base_path
 from .generar.perro2 import generate_graphic
 
+from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
@@ -335,3 +335,6 @@ class api_generate(APIView):
 
 def response_from_game_path(game):
     return lambda x: response_from_json(x, game)
+
+def react_view(request):
+    return render(request, 'index.html' , {"title": "titulo"})
