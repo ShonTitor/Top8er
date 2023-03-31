@@ -1,0 +1,6 @@
+#result-img {
+    margin-top: 5px;
+    object-fit: scale-down;
+    max-height: 80%;
+    max-width: 100%;
+}
