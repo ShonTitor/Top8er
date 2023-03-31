@@ -15,7 +15,7 @@ function Top8erFieldAccordion({ fields, onChange, summary, name, defaultExpanded
     setExpanded(!expanded)
   }
 
-  const handleChange = (field_name, val) => {
+  const handleChange = (field_name, val, multiple_index) => {
     const new_state = {...state, [field_name]: val}
     setState(new_state)
     onChange(name, new_state)

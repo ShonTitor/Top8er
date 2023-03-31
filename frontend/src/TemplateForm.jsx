@@ -244,12 +244,6 @@ function TemplateForm() {
                 fields={templateData.options || []}
                 onChange={handleChange}
             />
-            {/*
-            <Top8erField field_data={field_data} onChange={handleChange}></Top8erField>
-            <Top8erField field_data={field_data2} onChange={handleChange}></Top8erField>
-            <Top8erField field_data={field_data3} onChange={handleChange}></Top8erField>
-            <Top8erField field_data={field_data4} onChange={handleChange}></Top8erField>
-            */}
 
         </Box>
 
