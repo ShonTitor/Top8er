@@ -12,7 +12,7 @@ function TemplateForm() {
     success: true,
     error_message: "",
     loading: false,
-    result_img_src: "https://i.imgur.com/dOjahqX.png"
+    result_img_src: "https://i.imgur.com/iH2jz30.png"//"https://i.imgur.com/dOjahqX.png"
   })
   const { template } = useParams();
   const templateName = template;
@@ -23,7 +23,7 @@ function TemplateForm() {
 
   const theme = useTheme()
 
-  const apiURL = "https://www.top8er.com/api/"
+  const apiURL = "https://www.top8er.com/api/" // "http://127.0.0.1:8000/api/"
 
   // GET template_data
   useEffect(() => {

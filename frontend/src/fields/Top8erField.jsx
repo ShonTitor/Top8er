@@ -87,7 +87,7 @@ function Top8erField({ field_data, value, onChange }) {
       field = <CharacterField value={value} field_data={field_data} onChange={handleChangeCharacterField}/>
       break;
     default:
-      field = <div>[unknown field type {field_data.type}]</div>
+      //field = <div>[unknown field type {field_data.type}]</div>
       //console.log('unknown field type ' + field_data.type)
   }
 
