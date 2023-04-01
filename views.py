@@ -269,7 +269,10 @@ class api_generate(APIView):
             
             elif field_type == "character":
                 for j, char in enumerate(value):
-                    image_types = player_field["image_types"]
+                    if "image_types" in player_field:
+                        image_types = player_field["image_types"]
+                    else:
+                        image_types = player_field["image_types_multiple"]
 
                     if type(char) is tuple:
                         if multiple:

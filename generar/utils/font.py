@@ -52,7 +52,7 @@ def best_font(text, fonts):
     Returns:
     str: Path to the font with the least missing glyphs
     """
-    best = None
+    best = fonts[0]
     best_hits = 0
     for f in fonts:
         hits = 0

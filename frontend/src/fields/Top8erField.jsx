@@ -8,24 +8,30 @@ import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import CharacterField from './CharacterField'
 
-function Top8erField({ field_data, onChange }) {
-  const [value, setValue] = useState(field_data.default || "")
+function Top8erField({ field_data, value, onChange }) {
+  //const [value, setValue] = useState(field_data.default || "")
   var field = <></>;
 
+  //useEffect(() => {
+  //  if (field_data.default) {
+  //    onChange(field_data.name, field_data.default)
+  //  }
+  //})
+
   const handleChange = (e) => {
-    setValue(e.target.value)
-    onChange(field_data.name, e.target.value)
+    //setValue(e.target.value)
+    onChange(field_data.name, e.target.value, field_data.multipleIndex)
   };
 
   const handleChangeCheckbox = (e) => {
-    setValue(e.target.value)
+    //setValue(e.target.value)
     const val = e.target.checked
-    onChange(field_data.name, val)
+    onChange(field_data.name, val, field_data.multipleIndex)
   };
 
   const handleChangeCharacterField = (name, val) => {
-    setValue(val)
-    onChange(field_data.name, val)
+    //setValue(val)
+    onChange(field_data.name, val, field_data.multipleIndex)
   };
   
   switch (field_data.type) {
@@ -67,7 +73,7 @@ function Top8erField({ field_data, onChange }) {
         field = (
           <FormControlLabel control={
             <Checkbox 
-            defaultChecked={field_data.default || false}
+            checked={value}
             name={field_data.name}
             onChange={handleChangeCheckbox}
             sx={{m: 1}}
@@ -78,7 +84,7 @@ function Top8erField({ field_data, onChange }) {
         )
         break;
     case 'character':
-      field = <CharacterField field_data={field_data} onChange={handleChangeCharacterField}/>
+      field = <CharacterField value={value} field_data={field_data} onChange={handleChangeCharacterField}/>
       break;
     default:
       field = <div>[unknown field type {field_data.type}]</div>

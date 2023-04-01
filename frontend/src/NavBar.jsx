@@ -9,12 +9,11 @@ import MenuIcon from '@mui/icons-material/Menu'
 import Container from '@mui/material/Container'
 import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
-import GamepadIcon from '@mui/icons-material/Gamepad'
 import { useTheme } from '@mui/material/styles'
 import Icon from '@mui/material/Icon';
 import logo from './assets/top8er_square_white.svg'
 
-const pages = ['Games', 'Templates', 'About Us', 'Special Thanks', 'Privacy Policy'];
+const pages = []//['Games', 'Templates', 'About Us', 'Special Thanks', 'Privacy Policy'];
 
 function NavBar() {
   const theme = useTheme()

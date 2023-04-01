@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
-import { TextField, Button, Grid, Paper, Card, List } from '@mui/material'
+import { useState, useEffect } from 'react'
+import { Button, Grid, Paper } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { Box } from '@mui/system'
 import { LinearProgress } from '@mui/material'
@@ -7,7 +7,7 @@ import Top8erFieldAccordion from './fields/Top8erFieldAccordion'
 import { useParams } from "react-router-dom";
 
 function TemplateForm() {
-  const [state, setState] = useState({})
+  const [formState, setFormState] = useState({})
   const [pageState, setPageState] = useState({
     success: true,
     error_message: "",
@@ -17,19 +17,18 @@ function TemplateForm() {
   const { template } = useParams();
   const templateName = template;
   //const [templateName, setTemplateName] = useState("top1er")
-  const [templateData, setTemplateData] = useState({})
+  const [templateData, setTemplateData] = useState(null)
   const [gameName, setGameName] = useState("ssbu")
-  const [gameData, setGameData] = useState({})
+  const [gameData, setGameData] = useState(null)
 
   const theme = useTheme()
 
-  const apiURL = "http://127.0.0.1:8000/api/" //"https://www.top8er.com/api/"
+  const apiURL = "https://www.top8er.com/api/"
 
   // GET template_data
   useEffect(() => {
     fetch(apiURL + "template_data/" + templateName + "/", {
       method: 'GET',
-      body: state.json_data,
       headers: {'Content-type': 'application/json; charset=UTF-8'}
     })
     .then((res) => res.json())
@@ -45,7 +44,6 @@ function TemplateForm() {
   useEffect(() => {
     fetch(apiURL + "game_data/" + gameName + "/", {
       method: 'GET',
-      body: state.json_data,
       headers: {'Content-type': 'application/json; charset=UTF-8'}
     })
     .then((res) => res.json())
@@ -57,20 +55,12 @@ function TemplateForm() {
     });
   }, [gameName])
 
-  const handleChange = (name, value) => {
-    console.log("DEEP STATE", state)
-    setState({
-      ...state,
-      [name]: value
-    })
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault()
     setPageState({...pageState, ['loading']: true})
-    fetch(state.url, {
+    fetch(apiURL + "generate/" + templateName + "/" + gameName + "/", {
       method: 'POST',
-      body: state.json_data,
+      body: JSON.stringify(formState),
       headers: {'Content-type': 'application/json; charset=UTF-8'}
     })
     .then((res) => res.json())
@@ -78,25 +68,37 @@ function TemplateForm() {
       if ("base64_img" in data) {
         var base64_img = data["base64_img"]
         setPageState({
-          ...state,
+          ...pageState,
           ['result_img_src']: 'data:image/png;base64,' + base64_img,
+          ['success']: true,
+          ['error_message']: "",
+          ['loading']: false
         })
-        setPageState({success: true, error_message: "", loading: false})
       }
       else {
-        setPageState({success: false, error_message: JSON.stringify(data), loading: false})
+        setPageState({
+          ...pageState,
+          ['success']: false,
+          ['error_message']: JSON.stringify(data),
+          ['loading']: false
+        })
       }
     })
     .catch((err) => {
-      setPageState({success: false, error_message: "Server error. Plase contact the administrator", loading: false})
+      console.log(err)
+      setPageState({
+        ...pageState,
+        ['success']: false,
+        ['error_message']: "Server error. Plase contact the administrator",
+        ['loading']: false
+      })
     });
   };
 
-  if (!(templateData && gameData)) {
-    return <>Not Found</>
-  }
+  const readyLoading = !!(templateData && gameData)
 
-  const playerNumber = templateData.player_number || 1;
+  const playerNumber = readyLoading ? templateData.player_number : 0
+  const options = readyLoading ? templateData.options : []
 
   // turn this into a flags endpoint
   const flags =  ['None', 'Abkhazia', 'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antartica',
@@ -147,7 +149,9 @@ function TemplateForm() {
         "options": field.options,
         "image_types": field.image_types,
         "required": field.required,
-        "default": field.default
+        "default": field.default,
+        "multiple": field.multiple,
+        "amount": field.amount
       }
   
       if (field.options == "flags") {
@@ -175,6 +179,7 @@ function TemplateForm() {
         for (var j=0; j < field.amount[i]; j++) {
           var finalField = {...betterField}
           finalField.multipleIndex = j
+          finalField.name = finalField.name
           finalField.label =  `${finalField.label} ${j+1}`
           if ("required_multiple" in field) {
             finalField.required = field.required_multiple[j]
@@ -200,6 +205,81 @@ function TemplateForm() {
       
     })
     playerFields.push(fields)
+  }
+
+  // Initial form state
+  var initial_state = {}
+
+  initial_state["players"] = [...Array(playerNumber).keys()].map(() => {return {}})
+
+  for (var i=0; i < playerFields.length; i++) {
+    for (var j=0; j < playerFields[i].length; j++) {
+      const fieldName = playerFields[i][j].name
+      const k = playerFields[i][j].multipleIndex
+      if (playerFields[i][j].multiple && initial_state["players"][i][fieldName] == undefined) {
+        const amount = playerFields[i][j].amount
+        initial_state["players"][i][fieldName] = 
+          [...Array(amount).keys()].map(() => {return null})
+      }
+
+      var field_initial = playerFields[i][j].default
+      if (!field_initial) {
+        switch (playerFields[i][j].type) {
+          case "text":
+            field_initial = ""
+            break
+          case "select":
+            field_initial = ""
+            break
+          case "checkbox":
+            field_initial = false
+            break
+          case "character":
+            field_initial = null
+            break
+        }
+      }
+      if (playerFields[i][j].multiple) {
+        initial_state["players"][i][fieldName][k] = field_initial
+      }
+      else {
+        initial_state["players"][i][fieldName] = field_initial
+      }
+      
+    }
+  }
+
+  initial_state["options"] = {}
+  for (var i=0; i < options.length; i++) {
+    initial_state["options"][options[i].name] = options[i].default || ""
+  }
+
+  useEffect(() => {
+    setFormState(initial_state)
+  }, [templateData, gameData])
+
+  const handleChange = (name, value, playerIndex, multipleIndex) => {
+    var stateCopy = JSON.parse(JSON.stringify(formState))
+    if (playerIndex != undefined) {
+      stateCopy["players"][playerIndex] = value
+      value = stateCopy["players"]
+      setFormState({
+        ...formState,
+        ["players"]: value
+      })
+    }
+    else {
+      setFormState({
+        ...formState,
+        [name]: value
+      })
+    }
+    console.log("DEEP STATE", formState)
+
+  };
+
+  if (!readyLoading) {
+    return <></>
   }
 
   return (
@@ -228,12 +308,15 @@ function TemplateForm() {
 
             <h2>Enter your data</h2>
             {
-              ([...Array(templateData.player_number).keys()]).map((field_data, i) => (
-                <Top8erFieldAccordion key={i} 
-                                      name={"player"+i}
-                                      summary={"Player "+(i+1)} 
-                                      fields={playerFields[i]}
-                                      onChange={handleChange}
+              ([...Array(playerNumber).keys()]).map((field_data, i) => (
+                <Top8erFieldAccordion 
+                  key={i}
+                  playerIndex={i}
+                  name={"players"}
+                  summary={"Player "+(i+1)} 
+                  fields={playerFields[i]}
+                  onChange={handleChange}
+                  value={formState["players"][i]}
                 />
               ))
             }
@@ -243,6 +326,7 @@ function TemplateForm() {
                 summary="Options" 
                 fields={templateData.options || []}
                 onChange={handleChange}
+                value={formState["options"]}
             />
 
         </Box>

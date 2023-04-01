@@ -5,7 +5,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 
-function CharacterField({ field_data, onChange }) {
+function CharacterField({ field_data, value, onChange }) {
   if (!field_data.characters) {
     return <></>
   }
@@ -13,8 +13,9 @@ function CharacterField({ field_data, onChange }) {
   if (!field_data.required) {
     field_data.characters = ["None"].concat(field_data.characters)
   }
-  const [char, setChar] = useState(field_data.characters ? field_data.characters[0] : "")
-  const [color, setColor] = useState(0)
+
+  const char = value ? value[0] : "None"
+  const color = value ? value[1] : "None"
 
   var hasColors
   var colors
@@ -31,21 +32,25 @@ function CharacterField({ field_data, onChange }) {
   }
 
   const handleChangeChar = (e) => {
-    setChar(e.target.value)
-    setColor(0)
-    onChange(field_data.id, [e.target.value, 0])
+    if (e.target.value == "None") {
+      onChange(field_data.name, null)
+    }
+    else {
+      onChange(field_data.name, [e.target.value, 0])
+    }
   };
 
   const handleChangeColor = (e) => {
-    setColor(e.target.value)
-    onChange(field_data.id, [char, e.target.value])
+    var value_copy = [...value]
+    value_copy[1] = e.target.value
+    onChange(field_data.name, value_copy)
   };
 
   const labelId = field_data.id+"-label"
   const labelIdColor = field_data.id+"-labelColor"
 
   const field1 = (
-    <FormControl fullWidth sx={{my: 1, width: 1, marginRight: 1}} component={Box}>
+    <FormControl fullWidth sx={{my: 1, width: 1, marginRight: (hasColors ? 1 : 0)}} component={Box}>
       <InputLabel color='secondary' id={labelId}>{field_data.label}</InputLabel>
       <Select
         value={char}

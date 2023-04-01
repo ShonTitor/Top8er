@@ -261,7 +261,7 @@ def game_data_from_json(game_path):
     if game_data["colors"] is None:
         game_data["colors"] = {c:["Default"] for c in game_data["characters"]}
     if "iconColors" not in game_data or game_data["iconColors"] is None:
-        game_data["iconColors"] = {c:["Default"] for c in game_data["characters"]}
+        game_data["iconColors"] = game_data["colors"] #{c:["Default"] for c in game_data["characters"]}
 
     game_data["maxColors"] = max([len(colors) for colors in game_data["colors"].values()])
     game_data["maxIconColors"] = max([len(colors) for colors in game_data["iconColors"].values()])
