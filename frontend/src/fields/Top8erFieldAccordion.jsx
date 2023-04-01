@@ -15,7 +15,6 @@ function Top8erFieldAccordion({ fields, value, onChange, summary, name, defaultE
   }
 
   const handleChange = (field_name, val, multiple_index) => {
-    console.log(field_name, val, multiple_index)
     if (multiple_index == undefined) {
       onChange(name, {...value, [field_name]: val}, playerIndex)
     }

@@ -274,7 +274,7 @@ function TemplateForm() {
         [name]: value
       })
     }
-    console.log("DEEP STATE", formState)
+    //console.log("DEEP STATE", formState)
 
   };
 
