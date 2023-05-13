@@ -126,7 +126,7 @@ class api_generate(APIView):
             enable_image_uploading = option.get("enable_image_uploading", False)
 
             is_image = False
-            if is_url(value):
+            if is_url(value) and option["type"] != "text":
                 with requests.get(value, stream=True) as r:
                     request_size = int(r.headers['content-length'])
                 if request_size > 10485760: # 10 MB
@@ -177,7 +177,11 @@ class api_generate(APIView):
             enable_image_uploading = player_field.get("enable_image_uploading", False)
             multiple = player_field.get("multiple", False)
             if multiple:
-                amount = player_field["amount"][i]
+                amount = player_field["amount"]
+                if type(amount) is list:
+                    amount = amount[i]
+                else:
+                    amount = amount
 
             if type(value) is list and len(value) == 2 and\
                 type(value[0]) is str and type(value[1]) is int:
@@ -259,12 +263,12 @@ class api_generate(APIView):
                     choices = flags
                 
                 for v in value:
-                    if v is not None and not value in choices\
+                    if v is not None and not v in choices\
                         and not(is_image and enable_image_uploading):
                         errors.append({
                             "scope": "player_fields",
                             "field": name,
-                            "message": f"{value} is not a valid option, options are {choices}"
+                            "message": f"{v} is not a valid option, options are {choices}"
                         })
             
             elif field_type == "character":

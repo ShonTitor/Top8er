@@ -3,7 +3,8 @@ from fontTools.ttLib import TTFont
 from fontTools.unicode import Unicode
 
 def draw_text(draw, pos, text, font,
-              fill=(255, 255, 255), shadow=None, shadow_offset=(0.55, 0.55)):
+              fill=(255, 255, 255), shadow=None, shadow_offset=(0.55, 0.55),
+              outline_thickness=0, outline_color=None):
     """
     Draws text on an image on the given position, with an optional shadow.
   
@@ -19,8 +20,13 @@ def draw_text(draw, pos, text, font,
     if shadow:
         offset_x = int((font.size**0.5)*shadow_offset[0])
         offset_y = int((font.size**0.5)*shadow_offset[1])
-        draw.text((pos[0]+offset_x, pos[1]+offset_y), text, font=font, fill=shadow)
-    draw.text(pos, text, font=font, fill=fill)
+        draw.text((pos[0]+offset_x, pos[1]+offset_y), text, font=font, fill=shadow,
+                  stroke_width=outline_thickness, stroke_fill=shadow
+                  )
+
+    draw.text(pos, text, font=font, fill=fill, 
+              stroke_width=outline_thickness, stroke_fill=(outline_color or fill)
+              )
 
 
 def has_glyph(font, glyph):
@@ -67,6 +73,15 @@ def best_font(text, fonts):
     return best
 
 
+def get_text_dimensions(text_string, font):
+    ascent, descent = font.getmetrics()
+
+    text_width = font.getmask(text_string).getbbox()[2]
+    text_height = font.getmask(text_string).getbbox()[3] #+ descent
+
+    return (text_width, text_height)
+
+
 def fitting_font(draw, width, height, text, fontdir, guess) :
     """
     Returns the font object with the biggest size that
@@ -86,6 +101,12 @@ def fitting_font(draw, width, height, text, fontdir, guess) :
     hi = guess
     guess = (lo+hi)//2
     font = ImageFont.truetype(fontdir, guess)
+    """
+    try:
+        print(font.get_variation_names())
+    except Exception:
+        pass
+    """
     x,y = draw.textsize(text, font=font)
     # Binary search (could probably be improved by using an heuristic instead)
     lold, hiold = lo, hi
@@ -100,11 +121,13 @@ def fitting_font(draw, width, height, text, fontdir, guess) :
         guess = (lo+hi)//2
         font = ImageFont.truetype(fontdir, guess)
         x,y = draw.textsize(text, font=font)
+        #x,y = get_text_dimensions(text, font)
     return font
 
    
 def fit_text(draw, box, text, fontdir, guess=30, align="left", alignv="top",
-             fill=(255, 255, 255), shadow=(0,0,0), shadow_offset=(0.55, 0.55), forcedfont=None):
+             fill=(255, 255, 255), shadow=(0,0,0), shadow_offset=(0.55, 0.55), forcedfont=None,
+             outline_thickness=0, outline_color=None):
     """
     Draws text to an image with the biggest possible font size
     to fit inside a giving rectangle.
@@ -134,6 +157,7 @@ def fit_text(draw, box, text, fontdir, guess=30, align="left", alignv="top",
         fuente = forcedfont
     # width and height of the text
     x,y = draw.textsize(text, font=fuente)
+    #x,y = get_text_dimensions(text, font=fuente)
     # top left corner of the bounding box
     posx, posy = x1,y1
     # Adjusting for horizontal align
@@ -147,4 +171,5 @@ def fit_text(draw, box, text, fontdir, guess=30, align="left", alignv="top",
     elif alignv == "middle" :
         posy += (height-y)//2
 
-    draw_text(draw, (posx, posy), text, fuente, fill=fill, shadow=shadow, shadow_offset=shadow_offset)
+    draw_text(draw, (posx, posy), text, fuente, fill=fill, shadow=shadow, shadow_offset=shadow_offset,
+              outline_thickness=outline_thickness, outline_color=outline_color)

@@ -312,11 +312,6 @@ def read_template_data(template, complete=False):
                 template_data = f.read()
             template_data = json.loads(template_data)
 
-            if complete:
-                return template_data
-            
-            return {
-                "player_fields": template_data["player_fields"],
-                "options": template_data["options"],
-                "player_number": template_data["player_number"]
-            }
+            if not complete:
+                template_data.pop("layers")
+            return template_data

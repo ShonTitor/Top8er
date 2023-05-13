@@ -7,15 +7,16 @@ import InputLabel from '@mui/material/InputLabel';
 
 function CharacterField({ field_data, value, onChange }) {
   if (!field_data.characters) {
+    console.log(field_data)
     return <></>
   }
 
   if (!field_data.required) {
     field_data.characters = ["None"].concat(field_data.characters)
   }
-
-  const char = value ? value[0] : "None"
-  const color = value ? value[1] : "None"
+  
+  const char = value ? value[0] : field_data.characters[0]
+  const color = value ? value[1] : 0
 
   var hasColors
   var colors
@@ -27,8 +28,8 @@ function CharacterField({ field_data, value, onChange }) {
     colors = field_data.colors[char]
   }
 
-  if (!field_data.required) {
-    
+  if (field_data.required && value == null) {
+    //onChange(field_data.name, [char, color])
   }
 
   const handleChangeChar = (e) => {

@@ -23,7 +23,7 @@ function TemplateForm() {
 
   const theme = useTheme()
 
-  const apiURL = "https://www.top8er.com/api/" // "http://127.0.0.1:8000/api/"
+  const apiURL = "http://127.0.0.1:8000/api/" // "https://www.top8er.com/api/" // 
 
   // GET template_data
   useEffect(() => {
@@ -101,7 +101,7 @@ function TemplateForm() {
   const options = readyLoading ? templateData.options : []
 
   // turn this into a flags endpoint
-  const flags =  ['None', 'Abkhazia', 'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antartica',
+  const flags =  ['Abkhazia', 'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antartica',
                   'Antigua and Barbuda', 'Argentina', 'Armenia', 'Artsakh', 'Australia', 'Austria', 
                   'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 
                   'Belize', 'Benin', 'Bhutan', 'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 
@@ -150,12 +150,19 @@ function TemplateForm() {
         "image_types": field.image_types,
         "required": field.required,
         "default": field.default,
-        "multiple": field.multiple,
-        "amount": field.amount
+        "multiple": field.multiple
+      }
+
+      if (field.amount != undefined) {
+        betterField.amount = typeof(field.amount) == "number" ? field.amount : field.amount[i]
       }
   
       if (field.options == "flags") {
         field.options = flags
+      }
+
+      if (field.type == "font") {
+        field.options = Object.keys(templateData.available_fonts)
       }
   
       if (field.type == "character" && field.image_types) {
@@ -176,20 +183,20 @@ function TemplateForm() {
       }
   
       if (field.multiple) {
-        for (var j=0; j < field.amount[i]; j++) {
+        for (var j=0; j < betterField.amount; j++) {
           var finalField = {...betterField}
           finalField.multipleIndex = j
           finalField.name = finalField.name
           finalField.label =  `${finalField.label} ${j+1}`
-          if ("required_multiple" in field) {
-            finalField.required = field.required_multiple[j]
+          if ("required" in field) {
+            finalField.required = field.required[i][j]
           }
-          if ("image_types_multiple" in field) {
-            if (field.image_types_multiple[i][j] == "portraits") {
+          if ("image_types" in field) {
+            if (field.image_types[i][j] == "portraits") {
               finalField.characters = gameData.characters
               finalField.colors = gameData.colors
             }
-            else if (field.image_types_multiple[i][j] == "icons") {
+            else if (field.image_types[i][j] == "icons") {
               if (gameData.hasIcons) {
                 finalField.characters = Object.keys(gameData.iconColors)
                 finalField.colors = gameData.iconColors
@@ -229,12 +236,19 @@ function TemplateForm() {
             field_initial = ""
             break
           case "select":
-            field_initial = ""
+            field_initial = null
             break
           case "checkbox":
             field_initial = false
             break
           case "character":
+            const firstChar = playerFields[i][j].characters[0]
+            field_initial = playerFields[i][j].required ? [firstChar, 0] : null
+            break
+          case "color":
+            field_initial = "#111111"
+            break
+          case "font":
             field_initial = null
             break
         }
@@ -251,7 +265,32 @@ function TemplateForm() {
 
   initial_state["options"] = {}
   for (var i=0; i < options.length; i++) {
-    initial_state["options"][options[i].name] = options[i].default || ""
+    var field_initial = options[i].default
+    if (!field_initial) {
+      switch (options[i].type) {
+        case "text":
+          field_initial = ""
+          break
+        case "select":
+          field_initial = null
+          break
+        case "checkbox":
+          field_initial = false
+          break
+        case "character":
+          const firstChar = playerFields[i][j].characters[0]
+          field_initial = options[i].required ? [firstChar, 0] : null
+          break
+        case "color":
+          field_initial = "#000000"
+          break
+        case "font":
+          field_initial = null
+          options[i].options = Object.keys(templateData.available_fonts)
+          break
+      }
+    }
+    initial_state["options"][options[i].name] = field_initial
   }
 
   useEffect(() => {
@@ -274,7 +313,7 @@ function TemplateForm() {
         [name]: value
       })
     }
-    //console.log("DEEP STATE", formState)
+    console.log("DEEP STATE", JSON.stringify(formState))
 
   };
 
