@@ -23,7 +23,7 @@ function TemplateForm() {
 
   const theme = useTheme()
 
-  const apiURL = "http://127.0.0.1:8000/api/" // "https://www.top8er.com/api/" // 
+  const apiURL = "https://www.top8er.com/api/" // "http://127.0.0.1:8000/api/"
 
   // GET template_data
   useEffect(() => {
