@@ -167,13 +167,11 @@ class Top8erAPITests(TestCase):
         data = {
             "players": [{
                 "name": "Riokaru",
-                "character": [("Bedman", 0)]
+                "character": [("Bedman", 0), None, None]
             }],
             "options": {
                 "background": "https://i.imgur.com/xJmSRnf.png"
-            },
-            "font_colors": ["#ffffff", "#000000"],
-            "layout_colors": ["#5e0a00"],
+            }
         }
         c = Client()
         r = c.post(f"/api/generate/{template}/{game}/", data, content_type='application/json')

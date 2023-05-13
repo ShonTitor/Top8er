@@ -104,17 +104,6 @@ class api_generate(APIView):
                 "field": key,
                 "message": "This key is required"
             })
-        
-        for key in ["layout_colors", "font_colors"]:
-            if key in request_data:
-                data[key] = request_data[key]
-                N = template_data[f"{key[:-1]}_number"]
-                if len(data[key])  != N:
-                    errors.append({
-                        "scope": "root",
-                        "field": key,
-                        "message": f"Incorrect length, must be {N}"
-                    })
 
         if len(errors) > 0:
             return Response(errors, 400)
