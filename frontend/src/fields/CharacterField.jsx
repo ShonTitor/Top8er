@@ -84,7 +84,7 @@ function CharacterField({ field_data, value, onChange }) {
       >
         {
           (colors || []).map((op, i) => 
-            <MenuItem color='secondary' key={i} value={i}>{op}</MenuItem>)
+            <MenuItem color='secondary' key={i} value={i}>{i}: {op}</MenuItem>)
         }
       </Select>
     </FormControl>

@@ -14,11 +14,11 @@ function TemplateForm() {
     loading: false,
     result_img_src: "https://i.imgur.com/iH2jz30.png"//"https://i.imgur.com/dOjahqX.png"
   })
-  const { template } = useParams();
+  const { template, gameName } = useParams();
   const templateName = template;
   //const [templateName, setTemplateName] = useState("top1er")
   const [templateData, setTemplateData] = useState(null)
-  const [gameName, setGameName] = useState("ssbu")
+  //const [gameName, setGameName] = useState("ssbu")
   const [gameData, setGameData] = useState(null)
 
   const theme = useTheme()
@@ -175,6 +175,9 @@ function TemplateForm() {
             betterField.characters = Object.keys(gameData.iconColors)
             betterField.colors = gameData.iconColors
           }
+          else {
+            return
+          }
         }
       }
 
@@ -200,6 +203,9 @@ function TemplateForm() {
               if (gameData.hasIcons) {
                 finalField.characters = Object.keys(gameData.iconColors)
                 finalField.colors = gameData.iconColors
+              }
+              else {
+                return
               }
             }
           }

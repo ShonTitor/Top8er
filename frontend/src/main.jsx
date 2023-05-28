@@ -16,14 +16,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <Routes>
         <Route path="/static/beta/" element={<Base />}>
-          <Route index element={<Dog />} />
           <Route path="test_api/" element={<TestAPI />} />
           <Route path="template/:template/" element={<TemplateForm />} />
+          <Route path="template/:template/game/:gameName" element={<TemplateForm />} />
         </Route>
         <Route path="/beta/" element={<Base />}>
-          <Route index element={<Dog />} />
           <Route path="test_api" element={<TestAPI />} />
           <Route path="template/:template" element={<TemplateForm />} />
+          <Route path="template/:template/game/:gameName" element={<TemplateForm />} />
         </Route>
       </Routes>
     </BrowserRouter>

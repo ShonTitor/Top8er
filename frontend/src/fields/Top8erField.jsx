@@ -137,6 +137,7 @@ function Top8erField({ field_data, value, onChange }) {
       )
       break;
     case 'image':
+      break;
       field = (
         <FormControl sx={{ my: 1, width: 1 }}>
           <Button
