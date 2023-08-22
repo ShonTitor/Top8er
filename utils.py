@@ -289,7 +289,7 @@ def response_from_json(request, game_path):
         color_dict = game_data["colors"]
     color_dict = json.dumps({game_path: color_dict})[1:-1]
     return hestia(request, game_path, FormClass,
-                  hasextra=game_data["hasIcons"], color_guide=game_data["colorGuide"],
+                  hasextra=game_data["hasIcons"], color_guide=game_data.get("colorGuide"),
                   color_dict=color_dict)
 
 def is_url(string):
