@@ -6,7 +6,7 @@ from io import BytesIO
 from django.shortcuts import render
 
 from .forms import makeform, SmashggForm
-from .stuff import games, base_path, templates
+from .stuff import games, base_path, templates, categories, categories_order
 from .generar.getsets import event_data, challonge_data, tonamel_data
 from .generar.perro import generate_banner
 
@@ -53,7 +53,7 @@ def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), defa
             twitter.append(None)
         else :
             twitter.append(request.POST["player"+str(i)+"_twitter"])
-            
+
         if game == "efz" and "player"+str(i)+"_palette" in request.FILES :
             chars.append( (request.POST["player"+str(i)+"_char"],
                             request.FILES["player"+str(i)+"_palette"])
@@ -74,7 +74,7 @@ def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), defa
         logo = request.FILES["logo"]
     else:
         logo = None
-        
+
     players = [{"tag" : names[j],
                 "char" : chars[j],
                 "twitter" : twitter[j],
@@ -93,11 +93,11 @@ def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), defa
             }
 
     fuente = request.POST["fontt"]
-    if fuente == "auto" : 
+    if fuente == "auto" :
         fuente = None
     if "font_file" in request.FILES :
         fuente = request.FILES["font_file"]
-    
+
     img = generate_banner(datos,
                             customcolor= c1,
                             customcolor2=c2,
@@ -123,9 +123,17 @@ def hestia(request, game, FormClass,
            hasextra=True, color_guide=None, icon_sizes=(64, 32), color_dict=None,
            default_bg="bg"):
 
+    games_categories = [
+        {
+            'category_name': c,
+            'games': [{'slug': game[0], 'path': game[1]} for game in categories[c]]
+        }
+        for c in categories_order
+    ]
+
     if hasextra : has_extra = "true"
     else : has_extra = "false"
-    
+
     if request.method == 'POST':
         form = FormClass(request.POST, request.FILES)
         form2 = SmashggForm(request.POST, request.FILES)
@@ -164,7 +172,7 @@ def hestia(request, game, FormClass,
                     init_data["player"+str(i+1)]["char"] = datos["players"][i]["char"][0]
                 except :
                     pass
-            
+
             context = { "hasextra" : has_extra,
                         "form" : FormClass(initial=init_data),
                         "form2" : SmashggForm(),
@@ -172,7 +180,8 @@ def hestia(request, game, FormClass,
                         "color_guide" : color_guide,
                         "color_dict" : color_dict,
                         "game" : game,
-                        "result" : None
+                        "result" : None,
+                        "games_categories": games_categories,
                       }
             return render(request, 'old_form.html' , context)
         if v1 :
@@ -199,7 +208,7 @@ def hestia(request, game, FormClass,
                         f = "player{}_{}".format(i, field)
                         if f in request.POST :
                             init_data["player{}".format(i)][field] = request.POST[f]
-                            
+
                 except :
                     pass
 
@@ -211,7 +220,8 @@ def hestia(request, game, FormClass,
                         "color_dict" : color_dict,
                         "game" : game,
                         "result" : img,
-                        "base_url" : request.get_host()
+                        "base_url" : request.get_host(),
+                        "games_categories": games_categories,
                       }
             return render(request, 'old_form.html' , context)
 
@@ -221,7 +231,8 @@ def hestia(request, game, FormClass,
                "color_guide" : color_guide,
                "color_dict" : color_dict,
                "game" : game,
-               "result" : None
+               "result" : None,
+               "games_categories": games_categories,
             }
             if "event" in request.POST :
                 form = FormClass()
@@ -232,10 +243,10 @@ def hestia(request, game, FormClass,
 
             context["form"] = form
             context["form2"] = form2
-    
+
             return render(request, 'old_form.html' , context)
-            
-            
+
+
     else :
         form = FormClass()
         form2 = SmashggForm()
@@ -248,7 +259,8 @@ def hestia(request, game, FormClass,
                "color_dict" : color_dict,
                "game" : game,
                "result" : None,
-               "base_url" : request.get_host()
+               "base_url" : request.get_host(),
+               "games_categories": games_categories,
                }
     return render(request, 'old_form.html' , context)
 
@@ -275,7 +287,7 @@ def response_from_json(request, game_path):
     FormClass = makeform(game=game_path,
                          chars=game_data["characters"],
                          echars=None if iconColors is None else list(iconColors.keys()),
-                         numerito=game_data["maxColors"], 
+                         numerito=game_data["maxColors"],
                          numerito_extra=game_data["maxIconColors"],
                          hasextra=game_data["hasIcons"],
                          color1=game_data["defaultLayoutColors"][0],
