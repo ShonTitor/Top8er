@@ -25,8 +25,6 @@ class Top8erTests(TestCase):
     def test_get(self, slug):
         c = Client()
         r = c.get(f"/{slug}")
-        if r.status_code != 200:
-            print(r.status_code, slug)
         assert r.status_code == 200
 
     @parameterized.expand(settings.GAMES)
@@ -132,8 +130,6 @@ class Top8erAPITests(TestCase):
     def test_game_data(self, game):
         c = Client()
         r = c.get(f"/api/game_data/{game}/")
-        if r.status_code != 200:
-            print(r.status_code, game)
         self.assertEqual(r.status_code, 200)
 
     @parameterized.expand(settings.GRAPHIC_TEMPLATES)
@@ -141,8 +137,6 @@ class Top8erAPITests(TestCase):
     def test_template_data(self, template):
         c = Client()
         r = c.get(f"/api/template_data/{template}/")
-        if r.status_code != 200:
-            print(r.status_code, template)
         self.assertEqual(r.status_code, 200)
 
     @tag("api")
@@ -173,5 +167,4 @@ class Top8erAPITests(TestCase):
         }
         c = Client()
         r = c.post(f"/api/generate/{template}/{game}/", data, content_type='application/json')
-        print(f"/api/generate/{template}/{game}/")
         self.assertEqual(r.status_code, 200)
