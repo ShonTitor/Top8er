@@ -1,0 +1,24 @@
+# From top8er_app/.gitignore
+top8er_app/__pychache__/*
+top8er_app/migrations/*
+top8er_app/generar/__pycache__/*
+top8er_app/generar/assets/
+top8er_app/generar/templates/
+top8er_app/generar/*.png
+top8er_app/generar/perro2.py
+top8er_app/generar/stuff.py
+*.pyc
+*.apikey
+*.DS_Store
+*.pal
+*.txt
+
+static/admin/*
+static/rest_framework/*
+frontend/node_modules/*
+frontend/dist/*
+venv/*
+*.env
+*.log
+*.sqlite3
+gato.py

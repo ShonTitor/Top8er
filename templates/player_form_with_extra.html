@@ -1,0 +1,13 @@
+<div>
+{% for subwidget in widget.subwidgets %}
+    {% if subwidget.attrs.label == 'Secondary Character' or subwidget.attrs.label == 'Main Moon' or subwidget.attrs.label == 'Color Palette' %}
+        <span class="showextra">+</span>
+        <div class="extra_chars">
+    {% endif %}
+    <div>
+        {{ subwidget.attrs.label }}<br>
+        {% include subwidget.template_name with widget=subwidget %}<br>
+    </div>
+{% endfor %}
+    </div>
+</div>
