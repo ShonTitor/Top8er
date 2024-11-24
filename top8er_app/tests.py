@@ -161,11 +161,11 @@ class Top8erAPITests(TestCase):
     def test_generate(self):
         
         template = "top1er"
-        game = "ggst"
+        game = "kf2"
         data = {
             "players": [{
                 "name": "Riokaru",
-                "character": [("Bedman", 0), None, None]
+                "character": [("Meta Knight", 0), None, None]
             }],
             "options": {
                 "background": "https://i.imgur.com/xJmSRnf.png"
@@ -173,4 +173,5 @@ class Top8erAPITests(TestCase):
         }
         c = Client()
         r = c.post(f"/api/generate/{template}/{game}/", data, content_type='application/json')
+        print(f"/api/generate/{template}/{game}/")
         self.assertEqual(r.status_code, 200)
