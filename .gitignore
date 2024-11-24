@@ -10,8 +10,7 @@ top8er_app/generar/*.png
 *.DS_Store
 *.pal
 
-static/admin/*
-static/rest_framework/*
+static/*
 frontend/node_modules/*
 frontend/dist/*
 venv/*
