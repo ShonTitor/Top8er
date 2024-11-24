@@ -1,0 +1,1 @@
+{% load static %}Sitemap: https://www.top8er.com{% static 'sitemap.xml' %}
