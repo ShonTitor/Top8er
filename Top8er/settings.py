@@ -30,18 +30,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = [
-    "www.top8er.com",
-    "localhost",
-    "127.0.0.1"
-]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', "www.top8er.com,localhost,127.0.0.1").split(",")
 
-CORS_ALLOWED_ORIGINS = [
-    "https://www.top8er.com",
-    "http://localhost:8080",
-    "http://127.0.0.1:8000",
-    "http://localhost:5173"
-]
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', "https://www.top8er.com,http://127.0.0.1:8000,http://localhost:5173").split(",")
 
 CORS_ALLOW_ALL_ORIGINS = False
 
@@ -83,6 +74,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -163,7 +155,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 if DEBUG:
-    STATIC_URL = '/static/'
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'static'),
         FRONTEND_DIR

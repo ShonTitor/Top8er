@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Base from './Base'
-import Dog from './Dog'
 import TestAPI from './TestAPI'
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';

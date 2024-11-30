@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
-import { TextField, Button, Grid, Paper, Card, List } from '@mui/material'
+import { useState } from 'react'
+import { TextField, Button, Grid, Paper } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { Box } from '@mui/system'
 import { LinearProgress } from '@mui/material'
-import Top8erField from './fields/Top8erField'
 
 function TestAPI() {
   const [state, setState] = useState({

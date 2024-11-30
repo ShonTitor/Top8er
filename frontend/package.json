@@ -18,7 +18,8 @@
     "mui-image": "^1.0.7",
     "npm-watch": "^0.11.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "vite-plugin-env-compatible": "^2.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

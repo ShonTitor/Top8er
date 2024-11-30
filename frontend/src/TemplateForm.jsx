@@ -23,11 +23,11 @@ function TemplateForm() {
 
   const theme = useTheme()
 
-  const apiURL = "https://www.top8er.com/api/" // "http://127.0.0.1:8000/api/"
+  const apiURL = import.meta.env.VITE_TOP8ER_API_URL
 
   // GET template_data
   useEffect(() => {
-    fetch(apiURL + "template_data/" + templateName + "/", {
+    fetch(apiURL + "/template_data/" + templateName + "/", {
       method: 'GET',
       headers: {'Content-type': 'application/json; charset=UTF-8'}
     })
@@ -36,13 +36,13 @@ function TemplateForm() {
       setTemplateData(data)
     })
     .catch((err) => {
-      console.log(err)
+      setPageState({ ...pageState, success: false, error_message: "Failed to fetch template data" })
     });
   }, [templateName])
 
   // GET game_data
   useEffect(() => {
-    fetch(apiURL + "game_data/" + gameName + "/", {
+    fetch(apiURL + "/game_data/" + gameName + "/", {
       method: 'GET',
       headers: {'Content-type': 'application/json; charset=UTF-8'}
     })
@@ -58,7 +58,7 @@ function TemplateForm() {
   const handleSubmit = (e) => {
     e.preventDefault()
     setPageState({...pageState, ['loading']: true})
-    fetch(apiURL + "generate/" + templateName + "/" + gameName + "/", {
+    fetch(apiURL + "/generate/" + templateName + "/" + gameName + "/", {
       method: 'POST',
       body: JSON.stringify(formState),
       headers: {'Content-type': 'application/json; charset=UTF-8'}
@@ -319,7 +319,6 @@ function TemplateForm() {
         [name]: value
       })
     }
-    console.log("DEEP STATE", JSON.stringify(formState))
 
   };
 
