@@ -1,0 +1,412 @@
+{
+    "canvas_size": [1423,800],
+    "player_number": 8,
+    "available_fonts": {
+        "Smash Ultimate Font": "DFGothic-SU-WIN-RKSJ-H-01.ttf",
+        "Sans Thirteen Black": "sansthirteenblack.ttf"
+    },
+    "layers": [
+        {
+            "type": "option",
+            "name": "numbers",
+            "choices": {
+                "default": {
+                    "type": "image",
+                    "filename": "numeros.png",
+                    "color": "$fontcolor",
+                    "ignore_recoloring_with": ["#ffffff"],
+                    "label": "Double Elimination"
+                },
+                "prmode": {
+                    "type": "image",
+                    "filename": "numerospr.png",
+                    "color": "$fontcolor",
+                    "ignore_recoloring_with": ["#ffffff"],
+                    "label": "PR mode"
+                },
+                "cleanmode": {
+                    "type": "image",
+                    "filename": null,
+                    "label": "Clean mode"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "name": "$topleft",
+            "textbox": [53, 45, 803, 80],
+            "align": "left",
+            "font_color": "$fontcolor2",
+            "font_shadow_color": "$fontshadowcolor2",
+            "enable_font_shadow": true,
+            "font_shadow_condition": "textshadow",
+            "font_shadow_offset": [0.55, 0.55],
+            "font": "$mainfont"
+        },
+        {
+            "type": "text",
+            "name": "$bottomleft",
+            "textbox": [53, 730, 997, 765],
+            "align": "left",
+            "font_color": "$fontcolor2",
+            "font_shadow_color": "$fontshadowcolor2",
+            "enable_font_shadow": true,
+            "font_shadow_condition": "textshadow",
+            "font_shadow_offset": [0.55, 0.55],
+            "font": "$mainfont"
+        },
+        {
+            "type": "image",
+            "name": "$logo",
+            "position": [53, 15],
+            "size": [750, 110],
+            "align": "left",
+            "alignv": "middle",
+            "condition": "$logo"
+        },
+        {
+            "type": "text",
+            "name": "$topright",
+            "textbox": [876, 45, 1367, 80],
+            "align": "right",
+            "font_color": "$fontcolor2",
+            "font_shadow_color": "$fontshadowcolor2",
+            "enable_font_shadow": true,
+            "font_shadow_condition": "textshadow",
+            "font_shadow_offset": [0.55, 0.55],
+            "font": "$mainfont"
+        },
+        {
+            "type": "text",
+            "name": "credits",
+            "textbox": [1075, 726, 1361, 778],
+            "content": "Design by:  @Elenriqu3\nGenerator by: @Riokaru",
+            "align": "right",
+            "font_color": "$fontcolor2",
+            "font_shadow_color": "$fontshadowcolor2",
+            "enable_font_shadow": true,
+            "font_shadow_condition": "textshadow",
+            "font_shadow_offset": [0.55, 0.55],
+            "font": "$mainfont"
+        },
+        {
+            "type": "text",
+            "name": "creditsurl",
+            "textbox": [1170, 780, 1361, 795],
+            "content": "made in www.top8er.com",
+            "align": "right",
+            "font_color": "$fontcolor2",
+            "font_shadow_color": "$fontshadowcolor2",
+            "enable_font_shadow": true,
+            "font_shadow_condition": "textshadow",
+            "font_shadow_offset": [0.55, 0.55],
+            "font": "$mainfont"
+        },
+        {
+            "type": "player_images",
+            "name": "twitter",
+            "size": [
+                [29, 39], [21, 29], [21, 29], [21, 29],
+                [18, 26], [18, 26], [18, 26], [18, 26]
+            ],
+            "position": [
+                [61, 624], [557, 398], [836, 398], [1114, 398],
+                [555, 637], [762, 637], [970, 637], [1178, 637]
+            ],
+            "fit_type": [["stretch"], ["stretch"], ["stretch"], ["stretch"], 
+                          ["stretch"], ["stretch"], ["stretch"], ["stretch"]],
+            "source_folder": "@social",
+            "condition": "%social_handle",
+            "color": "$fontcolor"
+        },
+        {
+            "type": "player_text",
+            "name": "%social_handle",
+            "textbox": [[86, 627, 535, 659], [577, 400, 809, 424], [856, 400, 1088, 424], [1134, 400, 1366, 424],
+                          [573, 639, 744, 660], [780, 639, 951, 660], [988, 639, 1159, 660], [1196, 639, 1367, 660]],
+            "font": "$mainfont",
+            "font_color": "$fontcolor",
+            "font_shadow_condition": "$textshadow",
+            "font_shadow_color": "$fontshadowcolor",
+            "font_shadow_offsets": [[0.55, 0.55], [0.55, 0.55], [0.55, 0.55], [0.55, 0.55],
+                                   [0.55, 0.55], [0.55, 0.55], [0.55, 0.55], [0.55, 0.55]],
+            "alignv": ["bottom", "bottom", "bottom", "bottom", 
+                       "bottom", "bottom", "bottom", "bottom"]
+        },
+        {
+            "type": "player_text",
+            "name": "%name",
+            "textbox": [[65, 135, 523, 607], [565, 135, 798, 386], [843, 135, 1076, 386], [1122, 135, 1355, 386],
+                          [565, 441, 732, 628], [772, 441, 939, 628], [980, 441, 1147, 628], [1188, 441, 1355, 628]],
+            "font": "$mainfont",
+            "font_color": "$fontcolor",
+            "enable_font_shadow": [true, true, true, true, true, true, true, true],
+            "font_shadow_condition": "$textshadow",
+            "font_shadow_color": "$fontshadowcolor",
+            "font_shadow_offsets": [[0.55, 0.55], [0.55, 0.55], [0.55, 0.55], [0.55, 0.55],
+                                   [0.55, 0.55], [0.55, 0.55], [0.55, 0.55], [0.55, 0.55]],
+            "alignv": ["bottom", "bottom", "bottom", "bottom", 
+                       "bottom", "bottom", "bottom", "bottom"]
+        },
+        {
+            "type": "image",
+            "filename": "polo.png",
+            "color": "$layoutcolor2"
+        },
+        {
+            "type": "player_rectangles",
+            "shape": [[52, 624, 535, 663], [552, 398, 809, 427], 
+                           [831, 398, 1088, 427], [1109, 398, 1366, 427],
+                           [552, 637, 744, 663], [759, 637, 951, 663],
+                           [967, 637, 1159, 663], [1175, 637, 1367, 663]],
+            "color": "$layoutcolor",
+            "condition": "%social_handle"
+        },
+        {
+            "type": "image",
+            "filename": "marco.png",
+            "color": "$layoutcolor"
+        },
+        {
+            "type": "player_images",
+            "name": "%flag",
+            "size": [[100, 100], [50, 50], [50, 50], [50, 50],
+                      [40, 40], [40, 40], [40, 40], [40, 40]],
+            "position": [[410, 391], [747, 275], [1025, 275], [1304, 275],
+                          [694, 542], [901, 542], [1109, 542], [1317, 542]],
+            "fit_type": ["fit", "fit", "fit", "fit", 
+                          "fit", "fit", "fit", "fit"],
+            "alignv": ["bottom", "bottom", "bottom", "bottom", 
+                       "bottom", "bottom", "bottom", "bottom"],
+            "source_folder": "@flags"
+        },
+        {
+            "type": "player_images",
+            "name": "%character",
+            "size": [[[482, 482], [64, 64], [64, 64]], 
+                      [[257, 257], [32, 32], [32, 32]], 
+                      [[257, 257], [32, 32], [32, 32]], 
+                      [[257, 257], [32, 32], [32, 32]], 
+                      [[191, 191], [32, 32], [32, 32]], 
+                      [[191, 191], [32, 32], [32, 32]], 
+                      [[191, 191], [32, 32], [32, 32]], 
+                      [[191, 191], [32, 32], [32, 32]]],
+            "position": [[[53, 135], [457, 149], [457, 217]],
+                          [[553, 135], [770, 143], [770, 179]],
+                          [[831, 135], [1048, 143], [1048, 179]],
+                          [[1110, 135], [1327, 143], [1327, 179]],
+                          [[553, 441], [706, 447], [706, 483]],
+                          [[760, 441], [913, 447], [913, 483]],
+                          [[968, 441], [1121, 447], [1121, 483]],
+                          [[1176, 441], [1329, 447], [1329, 483]]],
+            "image_type": [["portraits", "icons", "icons"],
+                            ["portraits", "icons", "icons"],
+                            ["portraits", "icons", "icons"],
+                            ["portraits", "icons", "icons"],
+                            ["portraits", "icons", "icons"],
+                            ["portraits", "icons", "icons"],
+                            ["portraits", "icons", "icons"],
+                            ["portraits", "icons", "icons"]],
+            "fit_type": [["crop", "fit", "fit"],
+                          ["crop", "fit", "fit"],
+                          ["crop", "fit", "fit"],
+                          ["crop", "fit", "fit"],
+                          ["crop", "fit", "fit"],
+                          ["crop", "fit", "fit"],
+                          ["crop", "fit", "fit"],
+                          ["crop", "fit", "fit"]],
+            "enable_shadow": [[true, false, false],
+                              [true, false, false],
+                              [true, false, false],
+                              [true, false, false],
+                              [true, false, false],
+                              [true, false, false],
+                              [true, false, false],
+                              [true, false, false]],
+            "shadow_condition": "charshadow",
+            "shadow_color": "$layoutcolor",
+            "shadow_offsets": [[[14, 14]], [[7, 7]], [[7, 7]], [[7, 7]], [[5, 5]], [[5, 5]], [[5, 5]], [[5, 5]]],
+            "source_folder": "@game",
+            "multiple": true,
+            "amount": 3
+        },
+        {
+            "type": "player_rectangles",
+            "shape": [[53, 135, 535, 617], [553, 135, 810, 392], 
+                           [831, 135, 1088, 392], [1110, 135, 1367, 392],
+                           [553, 441, 744, 632], [760, 441, 951, 632],
+                           [968, 441, 1159, 632], [1176, 441, 1367, 632]],
+            "color": "#000000",
+            "condition": "$blacksquares"
+        },
+        {
+            "type": "image",
+            "name": "$background",
+            "filename": "bg.png",
+            "fit_type": "crop",
+            "align": "center",
+            "alignv": "middle",
+            "size": [1423,800],
+            "source_folder": "@game",
+            "darken_condition": "$darkenbg",
+            "darken_proportion": 0.3
+        }
+    ],
+    "player_fields": [
+        {
+            "label": "Name",
+            "name": "name",
+            "type": "text",
+            "description": "Player name",
+            "default": ""
+        },
+        {
+            "label": "Character",
+            "name": "character",
+            "type": "character",
+            "description": "Character",
+            "enable_image_uploading": true,
+            "multiple": true,
+            "amount": [3, 3, 3, 3, 3, 3, 3, 3],
+            "required_multiple": [
+                [true, false, false], [true, false, false],
+                [true, false, false], [true, false, false],
+                [true, false, false], [true, false, false],
+                [true, false, false], [true, false, false]
+            ],
+            "image_types": [
+                ["portraits", "icons", "icons"],
+                ["portraits", "icons", "icons"],
+                ["portraits", "icons", "icons"],
+                ["portraits", "icons", "icons"],
+                ["portraits", "icons", "icons"],
+                ["portraits", "icons", "icons"],
+                ["portraits", "icons", "icons"],
+                ["portraits", "icons", "icons"]
+        ]
+        },
+        {
+            "label": "Social Media Handle",
+            "name": "social_handle",
+            "type": "text",
+            "description": "Social media handle or username",
+            "default": ""
+        },
+        {
+            "label": "Flag",
+            "name": "flag",
+            "type": "select",
+            "description": "Social media icon to display next to handle",
+            "options": "flags",
+            "enable_image_uploading": true
+        }
+    ],
+    "options": [
+        {
+            "label": "Black Squares",
+            "name": "blacksquares",
+            "type": "checkbox",
+            "description": "Add a solid black background to each character's portraits",
+            "default": true
+        },
+        {
+            "label": "Character Shadow",
+            "name": "charshadow",
+            "type": "checkbox",
+            "description": "Add a shadow of the main layout color to each character's portraits",
+            "default": true
+        },
+        {
+            "label": "Text Shadow",
+            "name": "textshadow",
+            "type": "checkbox",
+            "description": "Add a shadow to text",
+            "default": true
+        },
+        {
+            "label": "Darken Background",
+            "name": "darkenbg",
+            "type": "checkbox",
+            "description": "Darken background for better readability",
+            "default": true
+        },
+        {
+            "label": "Top left text",
+            "name": "topleft",
+            "type": "text",
+            "description": "Text to insert on the top left corner",
+            "default": ""
+        },
+        {
+            "label": "Top right text",
+            "name": "topright",
+            "type": "text",
+            "description": "Text to insert on the top right corner",
+            "default": "https://www.top8er.com"
+        },
+        {
+            "label": "Bottom left text",
+            "name": "bottomleft",
+            "type": "text",
+            "description": "Text to insert on the bottom left corner",
+            "default": ""
+        },
+        {
+            "label": "Placing Numbers",
+            "name": "numbers",
+            "type": "select",
+            "description": "Social media icon to display next to handle",
+            "options": ["default", "prmode", "cleanmode"],
+            "enable_image_uploading": true,
+            "default": "default"
+        },
+        {
+            "label": "Layout Color",
+            "name": "layoutcolor",
+            "type": "color",
+            "description": "Layout color",
+            "default": "#df2c3b"
+        },
+        {
+            "label": "Layout Highlight Color",
+            "name": "layoutcolor2",
+            "type": "color",
+            "description": "Layout color",
+            "default": "#ffb60c"
+        },
+        {
+            "label": "Main Font Color",
+            "name": "fontcolor",
+            "type": "color",
+            "description": "Font color",
+            "default": "#ffffff"
+        },
+        {
+            "label": "Secondary Font Color",
+            "name": "fontcolor2",
+            "type": "color",
+            "description": "Font color",
+            "default": "#ffffff"
+        },
+        {
+            "label": "Main Font Shadow Color",
+            "name": "fontshadowcolor",
+            "type": "color",
+            "description": "Font Shadow color",
+            "default": "#000000"
+        },
+        {
+            "label": "Secondary Font Shadow Color",
+            "name": "fontshadowcolor2",
+            "type": "color",
+            "description": "Font color",
+            "default": "#000000"
+        },
+        {
+            "label": "Font",
+            "name": "mainfont",
+            "type": "font",
+            "description": "Font type"
+        }
+    ]
+}

@@ -1,0 +1,181 @@
+{
+    "canvas_size": [482, 482],
+    "player_number": 1,
+    "available_fonts": {
+        "SSBU font": "DFGothic-SU-WIN-RKSJ-H-01.ttf",
+        "sansthirteenblack": "sansthirteenblack.ttf"
+    },
+    "layers": [
+        {
+            "type": "text",
+            "name": "credits",
+            "textbox": [15, 0, 470, 12],
+            "content": "https://www.top8er.com/",
+            "align": "left",
+            "font_color": "$fontcolor",
+            "font_shadow_condition": "$textshadow",
+            "font_shadow_color": "$fontshadowcolor",
+            "font_shadow_offset": [0.55, 0.55],
+            "font": "$mainfont",
+            "condition": true
+        },
+        {
+            "type": "player_images",
+            "name": "%flag",
+            "size": [[100, 100]],
+            "position": [[357, 256]],
+            "fit_type": ["fit"],
+            "alignv": ["bottom"],
+            "source_folder": "@flags"
+        },
+        {
+            "type": "player_text",
+            "name": "%name",
+            "textbox": [[12, 350, 470, 472]],
+            "font_color": ["$fontcolor"],
+            "font_shadow_condition": ["$textshadow"],
+            "font_shadow_color": ["$fontshadowcolor"],
+            "font_shadow_offset": [[0.55, 0.55]],
+            "alignv": ["bottom"],
+            "font": "$mainfont"
+        },
+        {
+            "type": "image",
+            "filename": "marco.png",
+            "color": "$layoutcolor",
+            "condition": "$layout"
+        },
+        {
+            "type": "player_images",
+            "name": "%character",
+            "size": [[[482, 482], [64, 64], [64, 64]]],
+            "position": [[[0, 0], [404, 14], [404, 82]]],
+            "image_type": [["portraits", "icons", "icons"]],
+            "fit_type": [["crop", "fit", "fit"]],
+            "shadow_condition": [["$charshadow", false, false]],
+            "shadow_color": "$layoutcolor",
+            "shadow_offset": [[[14, 14]]],
+            "source_folder": "@game",
+            "multiple": true,
+            "amount": 3
+        },
+        {
+            "type": "rectangle",
+            "shape": [0, 0, 482, 482],
+            "color": "#000000",
+            "condition": "$blacksquares"
+        },
+        {
+            "type": "image",
+            "name": "$background",
+            "filename": "bg.png",
+            "fit_type": "crop",
+            "align": "center",
+            "alignv": "middle",
+            "size": [482, 482],
+            "source_folder": "@game",
+            "darken_condition": "$darkenbg",
+            "darken_proportion": 0.3
+        }
+    ],
+    "player_fields": [
+        {
+            "label": "Name",
+            "name": "name",
+            "type": "text",
+            "description": "Player name",
+            "default": ""
+        },
+        {
+            "label": "Character",
+            "name": "character",
+            "type": "character",
+            "description": "Character",
+            "enable_image_uploading": true,
+            "multiple": true,
+            "amount": 3,
+            "required_multiple": [[true, false, false]],
+            "image_types": [["portraits", "icons", "icons"]]
+        },
+        {
+            "label": "Flag",
+            "name": "flag",
+            "type": "select",
+            "description": "",
+            "options": "flags",
+            "enable_image_uploading": true,
+            "default": null
+        }
+    ],
+    "options": [
+        {
+            "label": "Layout Color",
+            "name": "layoutcolor",
+            "type": "color",
+            "description": "Layout color",
+            "default": "#df2c3b"
+        },
+        {
+            "label": "Font Color",
+            "name": "fontcolor",
+            "type": "color",
+            "description": "Font color",
+            "default": "#ffffff"
+        },
+        {
+            "label": "Font Shadow Color",
+            "name": "fontshadowcolor",
+            "type": "color",
+            "description": "Font Shadow color",
+            "default": "#000000"
+        },
+        {
+            "label": "Font",
+            "name": "mainfont",
+            "type": "font",
+            "description": "Font type"
+        },
+        {
+            "label": "Black Square",
+            "name": "blacksquares",
+            "type": "checkbox",
+            "description": "Add a solid black background to each character's portraits",
+            "default": false
+        },
+        {
+            "label": "Character Shadow",
+            "name": "charshadow",
+            "type": "checkbox",
+            "description": "Add a shadow of the main layout color to each character's portraits",
+            "default": true
+        },
+        {
+            "label": "Text Shadow",
+            "name": "textshadow",
+            "type": "checkbox",
+            "description": "Add a shadow to text",
+            "default": true
+        },
+        {
+            "label": "Darken Background",
+            "name": "darkenbg",
+            "type": "checkbox",
+            "description": "Darken background for better readability",
+            "default": false
+        },
+        {
+            "label": "Enable Layout",
+            "name": "layout",
+            "type": "checkbox",
+            "description": "",
+            "default": true
+        },
+        {
+            "label": "Background",
+            "name": "background",
+            "type": "image",
+            "description": "Background Image",
+            "enable_image_uploading": true
+        }
+    ]
+}
