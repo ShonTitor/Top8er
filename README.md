@@ -28,8 +28,8 @@ Top8er is a Django app that generates top 8 result graphics for many different f
 
 ### Previous Requirements
 
-- Python 3.12
-- Node.js (any version)
+- Python 3.12 with virtualenv installed
+- Node.js 14 or higher
 
 ### Installation Instructions
 
@@ -66,18 +66,34 @@ Top8er is a Django app that generates top 8 result graphics for many different f
     python manage.py runserver
     ```
 
-7. Navigate to the `frontend` directory and install the required Node packages:
+7. Open your browser and navigate to `http://127.0.0.1:8000` to see the app in action.
+
+### Try out the new frontend (beta)
+
+1. Navigate to the `frontend` directory and install the required Node packages:
     ```sh
     cd frontend
     npm install
     ```
 
-8. Build the frontend assets:
+2. Build the frontend assets:
     ```sh
     npm run build
     ```
 
-9. Open your browser and navigate to `http://127.0.0.1:8000` to see the app in action.
+3. Copy the bult assets to the static folder:
+    ```sh
+    cp -r dist/assets/* ../static/assets
+    ```
+
+4. With the Django server still running, open your browser and navigate to `http://127.0.0.1:8000/beta/template/top1er/game/kf2`.
+
+5. Alternatively, you can run the frontend in development mode.
+    ```sh
+    npm run dev
+    ```
+
+4. With both servers running, open your browser and navigate to `http://localhost:5173/static/beta/template/top1er/game/kf2`.
 
 ## Contributing
 
