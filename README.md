@@ -68,6 +68,9 @@ Top8er is a Django app that generates top 8 result graphics for many different f
 
 7. Open your browser and navigate to `http://127.0.0.1:8000` to see the app in action.
 
+   ![imagen](https://github.com/user-attachments/assets/8e0d29de-023f-4d19-8e1e-3c7d3092578c)
+
+
 ### Try out the new frontend (beta)
 
 1. Navigate to the `frontend` directory and install the required Node packages:
@@ -87,6 +90,9 @@ Top8er is a Django app that generates top 8 result graphics for many different f
     ```
 
 4. With the Django server still running, open your browser and navigate to `http://127.0.0.1:8000/beta/template/top1er/game/kf2`.
+
+  ![imagen](https://github.com/user-attachments/assets/7f46f802-6521-4325-80eb-61544c23d461)
+
 
 5. Alternatively, you can run the frontend in development mode.
     ```sh
