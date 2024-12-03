@@ -1,4 +1,4 @@
-# Top 8 Graphic Generator
+# Top8er
 
 Top8er is a Django app that generates top 8 result graphics for many different fighting games tournaments using Pillow. These graphics include a picture of the player's main character as well as their nicknames and tournament placing. The graphic template parts used were made by [EDM](https://twitter.com/Elenriqu3). Character portraits are not included in this repository. You can see the app working [here](https://www.top8er.com/).
 
@@ -35,13 +35,13 @@ Top8er is a Django app that generates top 8 result graphics for many different f
 
 1. Clone the repository:
     ```sh
-    git clone -b new-project-structure git@github.com:ShonTitor/Top8er.git
+    git clone -b new-project-structure --single-branch git@github.com:ShonTitor/Top8er.git
     cd Top8er
     ```
 
 2. Copy the contents of the `starter_files` directory to the project root:
     ```sh
-    cp -r starter_files/* .
+    cp -rT starter_files/ .
     ```
 
 3. Set up a virtual environment and install the required Python packages:
