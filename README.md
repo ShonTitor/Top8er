@@ -35,7 +35,7 @@ Top8er is a Django app that generates top 8 result graphics for many different f
 
 1. Clone the repository:
     ```sh
-    git clone -b new-project-structure --single-branch git@github.com:ShonTitor/Top8er.git
+    git clone -b master --single-branch git@github.com:ShonTitor/Top8er.git
     cd Top8er
     ```
 
