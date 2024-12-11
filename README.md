@@ -28,7 +28,7 @@ Top8er is a Django app that generates top 8 result graphics for many different f
 
 ### Previous Requirements
 
-- Python 3.12 with virtualenv installed
+- Python 3.10 with virtualenv installed
 - Node.js 14 or higher
 
 ### Installation Instructions
