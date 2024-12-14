@@ -125,13 +125,14 @@ def hestia(request, game, FormClass,
            hasextra=True, color_guide=None, icon_sizes=(64, 32), color_dict=None,
            default_bg="bg"):
     
-    games_categories = [
-        {
-            'category_name': c,
-            'games': [{'slug': game[0], 'path': game[1]} for game in settings.CATEGORIES[c]]
-        }
-        for c in settings.CATEGORIES_ORDER
-    ]
+    # games_categories = [
+    #     {
+    #         'category_name': c,
+    #         'games': [{'slug': game[0], 'path': game[1]} for game in settings.CATEGORIES[c]]
+    #     }
+    #     for c in settings.CATEGORIES_ORDER
+    # ]
+    games_categories = read_home_data()["categories"]
 
     if hasextra : has_extra = "true"
     else : has_extra = "false"
@@ -293,6 +294,8 @@ def game_data_from_json(game_path):
     return game_data
 
 def response_from_json(request, game_path):
+    home_data = read_home_data()
+
     game_data = game_data_from_json(game_path)
     iconColors = game_data.get("iconColors")
     FormClass = makeform(game=game_path,
@@ -356,3 +359,39 @@ def read_template_data(template, complete=False):
     if not complete:
         template_data.pop("layers")
     return template_data
+
+def read_home_data():
+    home_data = cache.get("home_data")
+    if home_data is not None:
+        return home_data
+    
+    home_data = {
+        "templates": settings.GRAPHIC_TEMPLATES,
+    }
+
+    minmal_game_data = {}
+    for slug, code in settings.GAMES:
+        game_data = read_game_data(code)
+        minmal_game_data[slug] = {
+            "path": code,
+            "full_name": game_data["name"],
+            "slug": slug,
+        }
+
+    home_data["categories"] = [
+        {
+            "category_name": cat,
+            "games": sorted([
+                {
+                    "slug": slug,
+                    "path": path,
+                    "full_name": minmal_game_data[slug]["full_name"]
+                }
+                for slug, path in games
+            ], key=lambda x: x["full_name"])
+        }
+        for cat, games in settings.CATEGORIES.items()
+    ]
+
+    cache.set("home_data", home_data, None)
+    return home_data

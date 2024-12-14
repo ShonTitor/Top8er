@@ -1,4 +1,4 @@
-from .utils import graphic_from_request, response_from_json, read_game_data, read_template_data, is_url
+from .utils import graphic_from_request, read_home_data, response_from_json, read_game_data, read_template_data, is_url
 from .generar.perro2 import generate_graphic
 
 from django.conf import settings
@@ -333,4 +333,4 @@ def response_from_game_path(game):
     return lambda x: response_from_json(x, game)
 
 def react_view(request):
-    return render(request, 'index.html' , {"title": "titulo"})
+    return render(request, 'index.html')

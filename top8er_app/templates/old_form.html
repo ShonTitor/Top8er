@@ -579,16 +579,28 @@
 
 		<style>
 			.logo {
-				width: 19%;
+				max-width: 80%;
 				height: auto;
 				margin: 0; padding: 0;
+			}
+			.logo-container {
+				display: inline-block;
+				width: 15%;
+				text-align: center;
+				margin: 0; padding: 0;
+				margin-bottom: 20px;
 			}
 		</style>
 
 		{% for cat in games_categories %}
 			<h3>{{ cat.category_name }}</h3>
 			{% for g in cat.games %}
-				<a href="/{{ g.slug }}"><img class="logo" src="{% static 'logos' %}/{{ g.path }}.png"></a>
+				<div class="logo-container">
+					<a href="/{{ g.slug }}">
+						<img class="logo" src="{% static 'logos' %}/{{ g.path }}.png">
+						<div>{{ g.full_name }}</div>
+					</a>
+				</div>
 			{% endfor %}
 		{% endfor %}
 
