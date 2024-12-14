@@ -6,6 +6,7 @@ from io import BytesIO
 
 from django.shortcuts import render
 from django.conf import settings
+from django.core.cache import cache
 
 from .forms import makeform, SmashggForm
 from .generar.getsets import event_data, challonge_data, tonamel_data
@@ -273,9 +274,13 @@ def hestia(request, game, FormClass,
     return render(request, 'old_form.html' , context)
 
 def game_data_from_json(game_path):
-    data_path = os.path.join(settings.APP_BASE_DIR, "generar", "assets", game_path, "game.json")
-    with open(data_path, "r") as f:
-        game_data = json.loads(f.read())
+    game_data = cache.get(f"game_date_{game_path}")
+    if game_data is None:
+        data_path = os.path.join(settings.APP_BASE_DIR, "generar", "assets", game_path, "game.json")
+        with open(data_path, "r") as f:
+            game_data = json.loads(f.read())
+            cache.set(f"game_date_{game_path}", game_data, None)
+
     if game_data["colors"] is None:
         game_data["colors"] = {c:["Default"] for c in game_data["characters"]}
     if "iconColors" not in game_data or game_data["iconColors"] is None:
@@ -317,19 +322,37 @@ def is_url(string):
     return re.match(url_pattern, string) is not None
 
 def read_game_data(game):
-    if game in [g for _, g in settings.GAMES]:
+    if game not in [g for _, g in settings.GAMES]:
+        return None
+
+    game_data = cache.get(f"game_date_{game}")
+
+    if game_data is None:
         data_path = os.path.join(settings.APP_BASE_DIR, "generar", "assets", game, "game.json")
+
         with open(data_path, "r") as f:
             game_data = f.read()
-        return json.loads(game_data)
+
+        game_data = json.loads(game_data)
+        cache.set(f"game_date_{game}", game_data, None)
+
+    return game_data
 
 def read_template_data(template, complete=False):
-        if template in settings.GRAPHIC_TEMPLATES:
-            data_path = os.path.join(settings.APP_BASE_DIR, "generar", "templates", template, "template.json")
-            with open(data_path, "r") as f:
-                template_data = f.read()
-            template_data = json.loads(template_data)
+    if template not in settings.GRAPHIC_TEMPLATES:
+        return None
+    
+    template_data = cache.get(f"template_data_{template}")
 
-            if not complete:
-                template_data.pop("layers")
-            return template_data
+    if template_data is None:
+        data_path = os.path.join(settings.APP_BASE_DIR, "generar", "templates", template, "template.json")
+
+        with open(data_path, "r") as f:
+            template_data = f.read()
+
+        template_data = json.loads(template_data)
+        cache.set(f"template_data_{template}", template_data, None)
+
+    if not complete:
+        template_data.pop("layers")
+    return template_data
