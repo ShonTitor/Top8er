@@ -131,5 +131,5 @@ Below there's an example of what a `game.json` could look like for Super Smash B
 ```
 
 ## Contact
-If you have all these ready or have any questions please contact me on [twitter](https://twitter.com/Riokaru) or discord (Riokaru#7131). 
+If you have followed these instructions or have any questions please join the [Top8er discord](https://discord.gg/pPS92jYvJT) and post on the appropriate channel. 
 Make sure to send a `.zip`, `.rar` or any other format of your choice containing all the files to prevent any unwanted compression and preserve the folder structure.
