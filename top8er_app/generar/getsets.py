@@ -5,7 +5,7 @@ from django.conf import settings
 # Cosas de smash gg
 authToken = settings.START_GG_API_KEY
 apiVersion = 'alpha'
-url = 'https://api.smash.gg/gql/' + apiVersion
+url = settings.START_GG_API_URL + apiVersion
 headers = {'Content-Type': 'application/json',
            'Authorization': 'Bearer ' + authToken
            }
@@ -303,9 +303,9 @@ def challonge_data(slug, org=None) :
     ttext = datos["name"] + " - Top 8"
 
     if "complete_at" in datos :
-        btext = " - ".join([datos["completed_at"][:10].replace('-','/'), str(npart)+" participants"])
+        btext = " - ".join([datos["completed_at"][:10].replace('-','/'), str(npart)+" participantes"])
     else :
-        btext = str(npart)+" participants"
+        btext = str(npart)+" participantes"
     url_torneo = datos['full_challonge_url']
     
     datos = {

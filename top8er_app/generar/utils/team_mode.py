@@ -50,12 +50,11 @@ def team_portrait(chars, size, portraits_path):
             offset = 0.06
             m = 0.6
             if j == 0 :
-                position = (-int(size[0]*offset),
-                            size[0]-newsize)
+                position = (-int(size[0]*offset), size[0]-newsize)
                 base = size[0]-m*size[0]
                 is_out = lambda t : t[0]-t[1] > base
             elif j == 1 :
-                position = (size[0]-newsize+int(size[0]*offset), 0)
+                position = (size[0]-newsize+int(size[0]*offset), 15)
                 base = size[0]-m*size[0]
                 is_out = lambda t : t[0]-t[1] < base
 

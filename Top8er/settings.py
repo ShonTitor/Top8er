@@ -178,6 +178,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # API keys
 START_GG_API_KEY = os.getenv('START_GG_API_KEY')
+START_GG_API_URL = os.getenv('START_GG_API_URL', 'https://api.start.gg/gql/')
 CHALLONGE_API_KEY = os.getenv('CHALLONGE_API_KEY')
 TONAMEL_API_KEY = os.getenv('TONAMEL_API_KEY')
 

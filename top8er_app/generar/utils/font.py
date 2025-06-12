@@ -116,9 +116,9 @@ def fitting_font(draw, width, height, text, fontdir, guess) :
     return font
 
    
-def fit_text(draw, box, text, fontdir, guess=30, align="left", alignv="top",
+def fit_text(draw, box, text, fontdir, guess=100, align="left", alignv="top",
              fill=(255, 255, 255), shadow=(0,0,0), shadow_offset=(0.55, 0.55), forcedfont=None,
-             outline_thickness=0, outline_color=None):
+             outline_thickness=0, outline_color=None, smaller_lowercase=False):
     """
     Draws text to an image with the biggest possible font size
     to fit inside a giving rectangle.
@@ -135,31 +135,85 @@ def fit_text(draw, box, text, fontdir, guess=30, align="left", alignv="top",
                     If the value is None, no shadow will be drawn
     forcedfont (TTFont): If given, ignores fontdir and is used instead
                          No size calculations are performed in this case
+    smaller_lowercase (bool): If True, lowercase characters will be drawn at 85% of the font size
     """
     x1,y1,x2,y2 = box
     # width and height of the bounding box
-    width, height = (x2-x1, y2-y1)
+    width, height = (x2-x1, y2-y1) 
 
-    if forcedfont is None :
+    if forcedfont is None:
         # If forcedfont was not given, calculate the appropriate font size
         fuente = fitting_font(draw, width, height, text, fontdir, guess)
-    else :
+    else:
         # If forcedfont was given, use it instead
         fuente = forcedfont
-    # width and height of the text
-    x,y = get_text_dimensions(text, font=fuente)
-    # top left corner of the bounding box
-    posx, posy = x1,y1
-    # Adjusting for horizontal align
-    if align == "center" :
-        posx += (width-x)//2
-    elif align == "right" :
-        posx += width-x
-    # Adjusting for vertical align
-    if alignv == "bottom" :
-        posy += height-y
-    elif alignv == "middle" :
-        posy += (height-y)//2
 
-    draw_text(draw, (posx, posy), text, fuente, fill=fill, shadow=shadow, shadow_offset=shadow_offset,
-              outline_thickness=outline_thickness, outline_color=outline_color)
+    if not smaller_lowercase:
+        # Original behavior - draw all text with same font size
+        x,y = get_text_dimensions(text, font=fuente)
+        posx, posy = x1,y1
+        if align == "center":
+            posx += (width-x)//2
+        elif align == "right":
+            posx += width-x
+        if alignv == "bottom":
+            posy += height-y
+        elif alignv == "middle":
+            posy += (height-y)//2
+
+        draw_text(draw, (posx, posy), text, fuente, fill=fill, shadow=shadow, shadow_offset=shadow_offset,
+                 outline_thickness=outline_thickness, outline_color=outline_color)
+    else:
+        # Split text into segments of same case
+        segments = []
+        current_segment = ""
+        current_case = None
+        
+        for char in text:
+            is_lower = char.islower()
+            if current_case is None:
+                current_case = is_lower
+                current_segment = char
+            elif current_case == is_lower:
+                current_segment += char
+            else:
+                segments.append((current_segment, current_case))
+                current_segment = char
+                current_case = is_lower
+        
+        if current_segment:
+            segments.append((current_segment, current_case))
+
+        _, uppercase_height = get_text_dimensions("A", fuente)
+
+        # Calculate total width to determine starting position
+        total_width = 0
+        segment_widths = []
+        for segment, is_lower in segments:
+            if is_lower:
+                small_font = ImageFont.truetype(fontdir, int(fuente.size * 0.85))
+                w, _ = get_text_dimensions(segment, font=small_font)
+            else:
+                w, _ = get_text_dimensions(segment, font=fuente)
+            total_width += w
+            segment_widths.append(w)
+
+        # Calculate starting position based on alignment
+        posx, posy = x1, y1
+        if align == "center":
+            posx += (width - total_width) // 2
+        elif align == "right":
+            posx += width - total_width
+
+        # Draw each segment
+        for (segment, is_lower), segment_width in zip(segments, segment_widths):
+            if is_lower:
+                small_font = ImageFont.truetype(fontdir, int(fuente.size * 0.85))
+                draw_text(draw, (posx, posy + uppercase_height * 0.16), segment, small_font, fill=fill, shadow=shadow, 
+                         shadow_offset=shadow_offset, outline_thickness=outline_thickness, 
+                         outline_color=outline_color)
+            else:
+                draw_text(draw, (posx, posy), segment, fuente, fill=fill, shadow=shadow,
+                         shadow_offset=shadow_offset, outline_thickness=outline_thickness,
+                         outline_color=outline_color)
+            posx += segment_width

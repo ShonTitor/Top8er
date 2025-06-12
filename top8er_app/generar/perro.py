@@ -16,11 +16,11 @@ class RereadableFile(io.BytesIO) :
 def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True,
                     custombg=None, darkenbg=True,
                     customcolor=None, customcolor2=None,
-                    font=None, teammode=False,
-                    font_color1=(255,255,255), font_shadow1=(0,0,0),
-                    font_color2=(255,255,255), font_shadow2=(0,0,0),
+                    font=None, teammode=True,
+                    font_color1=(255, 251, 213), font_shadow1=(0,0,0),
+                    font_color2=(51,51,51), font_shadow2=(0,0,0),
                     shadow=True, icon_sizes=(64, 32),
-                    default_bg="bg") :
+                    default_bg="#fffbd5") :
     """
     Generates a top 8 graphic with the given parameters.
   
@@ -74,8 +74,8 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
         text_blob = data["toptext"]+data["bottomtext"]+data["url"]
         for player in data['players'] :
             text_blob += player['tag']
-        font_option1 = os.path.join(path, 'fonts','DFGothic-SU-WIN-RKSJ-H-01.ttf')
-        font_option2 = os.path.join(path, 'fonts','sansthirteenblack.ttf')
+        font_option1 = os.path.join(path, 'fonts','BebasNeue-Regular.ttf')
+        font_option2 = os.path.join(path, 'fonts','BebasNeue-Regular.ttf')
         the_font = best_font(text_blob, [font_option1, font_option2])
     # Paths to assets
     portraits = os.path.join(path, "assets", game, "portraits")
@@ -98,14 +98,14 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
     POSTWI = [(52, 624), (552, 398), (831, 398), (1109, 398),
               (552, 637), (759, 637), (967, 637), (1175, 637)]
     # Boxes of texts in the corner
-    POSTXT = [(53, 45, 803, 80), # top left
-              (53, 730, 997, 765), # bottom left
-              (1075, 726, 1361, 778), # botttom right (credits)
-              (1170, 780, 1361, 795), # bottom right (credits url small)
-              (876, 45, 1367, 80) # top right (url)
+    POSTXT = [(53, 30, 650, 100), # top left
+              (53, 700, 600, 770), # bottom left
+              (810, 700, 1361, 770), # botttom right (credits)
+              (1170, 770, 1361, 795), # bottom right (credits url small)
+              (700, 30, 1367, 100) # top right (url)
               ]
-    POSLOGO = (53, 15) # (53, 15, 803, 125)
-    SIZELOGO = (750, 110)
+    POSLOGO = (712, 735) # (53, 15, 803, 125)
+    SIZELOGO = (750, 250)
     # The final image will be stored in this image
     canvas = Image.new('RGBA', SIZE, (0, 0, 0))
     # Flag parametes
@@ -115,23 +115,30 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
                  for i in range(8)]
 
     # Background
-    if custombg :
+    if custombg:
         background = Image.open(custombg, mode="r")
         width, height = background.size
         w, h = int(width*SIZE[1]/height), int(height*SIZE[0]/width)
-        if w < SIZE[0] :
+        if w < SIZE[0]:
             width, height = SIZE[0], h
-        else :
+        else:
             width, height = w, SIZE[1]
         # Resizing the background to fit the canvas
         background = background.resize((width, height), resample=Image.LANCZOS)
-        canvas.paste(background, (int((SIZE[0]-width)/2), int((SIZE[1]-height)/2)) )
-        if darkenbg :
+        canvas.paste(background, (int((SIZE[0]-width)/2), int((SIZE[1]-height)/2)))
+        if darkenbg:
             background = Image.new('RGBA', SIZE, (0, 0, 0, 0))
             canvas = Image.blend(canvas, background, 0.30)
-    else :
-        background  = Image.open(os.path.join(path, "assets", game, "{}.png".format(default_bg))).convert("RGBA")
-        canvas.paste(background, (0,0), mask=background)
+    else:
+        # Create a solid color background instead of using an image
+        if default_bg.startswith('#'):
+            # If default_bg is a color hex code, use it
+            background_color = default_bg
+        else:
+            # Default cream color if no color specified
+            background_color = '#fffbd5'
+        background = Image.new('RGBA', SIZE, background_color)
+        canvas.paste(background, (0, 0))
 
     canvas = canvas.convert('RGB')
     # Draw object, to draw text on the image
@@ -151,7 +158,7 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
         # Fills the square with solid black if the option is enabled
         if blacksquares :
             shape = [POS[i], (POS[i][0]+size[0], POS[i][1]+size[1])]
-            draw.rectangle(shape, fill=(0,0,0))
+            draw.rectangle(shape, fill=(51,51,51))
 
         # Experimental, many characters in a single square
         if teammode and len(players[i]["secondaries"]) != 0 :
@@ -178,7 +185,7 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
                     portrait = Image.open(route).convert("RGBA")
 
             if players[i]["portrait"]:
-                # Resizing and cropping to fit the square
+                # Resizizng and cropping to fit the square
                 portrait_width, portrait_height = portrait.size
                 if portrait_width > portrait_height :
                     new_width = int((portrait_width/portrait_height)*size[1])
@@ -281,23 +288,24 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
     else :
         canvas.paste(part, (0,0), mask=part)
 
-    part = Image.open(os.path.join(template,"polo.png"))
-    if customcolor2 :
-        solid = Image.new('RGB', SIZE, customcolor2)
-        canvas.paste(solid, (0,0), mask=part)
-    else :
-        canvas.paste(part, (0,0), mask=part)
+    # part = Image.open(os.path.join(template,"polo.png"))
+    # if customcolor2 :
+    #     solid = Image.new('RGB', SIZE, customcolor2)
+    #     canvas.paste(solid, (0,0), mask=part)
+    # else :
+    #     canvas.paste(part, (0,0), mask=part)
 
     # Placing numbers
+    placing_numbers_color = (255, 255, 255)
     if old_number_style:
         if prmode :
             part = Image.open(os.path.join(template,"numerospr.png"))
         else :
             part = Image.open(os.path.join(template,"numeros.png"))
 
-        if font_color1 != (255, 255, 255) and font_color1 != "#ffffff" :
+        if placing_numbers_color != (255, 255, 255) and placing_numbers_color != "#ffffff" :
             mask = part
-            part = Image.new('RGBA', SIZE, font_color1)
+            part = Image.new('RGBA', SIZE, placing_numbers_color)
         else :
             mask = part
 
@@ -312,45 +320,54 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
                             POS[i][0]+int(SIZE_SQUARE[i]*0.3), POS[i][1]+int(SIZE_SQUARE[i]*0.3)), 
                     str(placing_numbers[i]), the_font,
                     align="left", alignv="top", guess=150,
-                    fill=font_color1, shadow=font_shadow1)
+                    fill=placing_numbers_color, shadow=font_shadow1)
 
     # Corner texts
+    font_shadow2 = None
+    font_color2 = (51,51,51)
 
     # Top and bottom texts
-    if data["logo"]:
-        logo = Image.open(data["logo"]).convert("RGBA")
-        logo_width, logo_height = logo.size
-        new_logo_width = SIZELOGO[0]
-        new_logo_height = int(new_logo_width * logo_height/logo_width)
-        if new_logo_height > SIZELOGO[1]:
-            new_logo_height = SIZELOGO[1]
-            new_logo_width = int(new_logo_height * logo_width/logo_height)
-        print(new_logo_height, new_logo_width)
-        new_logo = logo.resize((new_logo_width, new_logo_height), resample=Image.LANCZOS)
-        canvas.paste(new_logo, (POSLOGO[0], POSLOGO[1]+(SIZELOGO[1]-new_logo_height)//2), mask=new_logo)
-    else:
-        fit_text(draw, POSTXT[0], data["toptext"], the_font,
-                align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
+    logo = Image.open(os.path.join(template,"btb.png")).convert("RGBA")
+    logo_width, logo_height = logo.size
+    new_logo_width = SIZELOGO[0]
+    new_logo_height = int(new_logo_width * logo_height/logo_width)
+    if new_logo_height > SIZELOGO[1]:
+        new_logo_height = SIZELOGO[1]
+        new_logo_width = int(new_logo_height * logo_width/logo_height)
+    print(new_logo_height, new_logo_width)
+    new_logo = logo.resize((new_logo_width, new_logo_height), resample=Image.LANCZOS)
+    canvas.paste(new_logo, (POSLOGO[0] - new_logo_width//2, POSLOGO[1] - new_logo_height//2), mask=new_logo)
+
+    # draw.rectangle([(POSTXT[0][0], POSTXT[0][1]), (POSTXT[0][2], POSTXT[0][3])], outline=(0, 0, 0, 0))
+    # draw.rectangle([(POSTXT[1][0], POSTXT[1][1]), (POSTXT[1][2], POSTXT[1][3])], outline=(0, 0, 0, 0))
+    # draw.rectangle([(POSTXT[2][0], POSTXT[2][1]), (POSTXT[2][2], POSTXT[2][3])], outline=(0, 0, 0, 0))
+    # draw.rectangle([(POSTXT[3][0], POSTXT[3][1]), (POSTXT[3][2], POSTXT[3][3])], outline=(0, 0, 0, 0))
+    # draw.rectangle([(POSTXT[4][0], POSTXT[4][1]), (POSTXT[4][2], POSTXT[4][3])], outline=(0, 0, 0, 0))
+
+    fit_text(draw, POSTXT[0], "Blame The Beasts", the_font,
+            align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
+
+    fit_text(draw, POSTXT[4], data["toptext"], the_font,
+            align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
+
     fit_text(draw, POSTXT[1], data["bottomtext"], the_font,
              align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
 
     # Credits
-    fit_text(draw, POSTXT[2], "Design by:  @Elenriqu3\nGenerator by: @Riokaru", the_font,
+    fit_text(draw, POSTXT[3], "Based on top8er by @Riokaru", the_font,
              align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
-    fit_text(draw, POSTXT[3], "made in www.top8er.com", the_font,
-            align="right", alignv="middle", fill=font_color2, shadow=False)
     # URL
-    fit_text(draw, POSTXT[4], data["url"], the_font,
+    fit_text(draw, POSTXT[2], data["url"], the_font,
              align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
              
 
-    pajarito = Image.open(os.path.join(template,"pajarito.png")) # Twitter bird icon
+    pajarito = Image.open(os.path.join(template,"x.png")) # Twitter bird icon
     # Recolor bid icon if needed
-    if font_color1 != (255, 255, 255) and font_color1 != "#ffffff" :
-        box = Image.new('RGBA', pajarito.size, (255, 255, 255, 0))
-        solid = Image.new('RGBA', pajarito.size, font_color1)
-        box.paste(solid, (0,0), mask=pajarito)
-        pajarito = box
+    # if font_color1 != (255, 255, 255) and font_color1 != "#ffffff" :
+    box = Image.new('RGBA', pajarito.size, (255, 255, 255, 0))
+    solid = Image.new('RGBA', pajarito.size, font_color1)
+    box.paste(solid, (0,0), mask=pajarito)
+    pajarito = box
     # Names loop
     for i in range(8) :
         if i == 0 : 
@@ -380,7 +397,7 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
                     (int(POSTWI[i][0]+SIZETWI[i][0]*0.02), POSTWI[i][1]),
                     mask=pajarito)
 
-            left_margin = pajarito.size[0]*1.2
+            left_margin = pajarito.size[0]*0.8
             top_margin = 0.1*SIZETWI[i][1]
             bottom_margin = 0.1*SIZETWI[i][1]
 
@@ -395,15 +412,20 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
             # Twitter handle
             fit_text(draw, twitter_box, players[i]["twitter"], the_font, guess=54,
                      align="center", alignv="middle", forcedfont=ffont,
-                     fill=font_color1, shadow=font_shadow1)
+                     fill=font_color1, shadow=False, smaller_lowercase=True)
 
-        name = players[i]["tag"].replace(". ", ".").replace(" | ", "|")
+        name = players[i]["tag"].replace(". ", ".").replace(" | ", " I ").replace("|", " I ")
 
-        cajita_nombre = (POS[i][0]+12, POS[i][1],
-                         POS[i][0]+size[0]-12, POS[i][1]+size[1]*0.98)
+        cajita_nombre = (
+            POS[i][0]+12, 
+            POS[i][1]+size[1] * 0.82, 
+            POS[i][0]+size[0]-12, 
+            POS[i][1]+size[1]*0.99
+        )
         # Player name
         fit_text(draw, cajita_nombre, name, the_font, guess=int(size[0]*0.26),
-                 align="center", alignv="bottom",
-                 fill=font_color1, shadow=font_shadow1)
+                 align="center", alignv="middle",
+                #  fill=font_color1, shadow=font_shadow1)
+                 fill=font_color1, shadow=False, smaller_lowercase=True)
 
     return canvas
