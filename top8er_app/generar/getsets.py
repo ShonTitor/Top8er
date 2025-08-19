@@ -1,6 +1,14 @@
-import requests, json, os
+import requests
+import json
+import time
+
 from datetime import datetime
 from django.conf import settings
+from django.core.cache import cache
+
+from thefuzz import process
+
+from top8er_app.cached_functions import get_sgg_char_data, game_data_from_json
 
 # Cosas de smash gg
 authToken = settings.START_GG_API_KEY
@@ -17,7 +25,7 @@ challonge_key = settings.CHALLONGE_API_KEY
 tonamel_credentials = settings.TONAMEL_API_KEY
 tonamel_token = None
 
-def check_event(slug) :
+def check_event(slug):
     query = '''
     query SetsQuery($slug: String) {
         event(slug: $slug) {
@@ -28,7 +36,6 @@ def check_event(slug) :
     payload = {"query" : query, "variables" : {"slug" : slug}}
     response = requests.post(url=url, headers=headers, json=payload)
     event = json.loads(response.content)["data"]["event"]
-    #print(event)
     if event :
         if event["numEntrants"] >= 8 :
             return True
@@ -40,12 +47,10 @@ def check_challonge(slug, org=None) :
     if org is not None:
         slug = org+"-"+slug
     url = "https://api.challonge.com/v1/tournaments/" + slug + ".json?api_key=" + challonge_key + "&include_participants=1"
-    print(url, slug, type(slug), org)
     try:
         response = requests.get(url, headers=headers)
         datos = json.loads(response.content)
     except Exception:
-        print(response.content)
         return False
     
     if "tournament" in datos :
@@ -58,9 +63,6 @@ def get_tonamel_token(force_new=False) :
 
     if not(tonamel_token is None or force_new):
         return tonamel_token
-
-    if force_new:
-        print("Renewing tonamel token")
 
     headers = {
                 "Authorization": f"Basic {tonamel_credentials}",
@@ -317,23 +319,225 @@ def challonge_data(slug, org=None) :
         }
     return datos
 
+def check_sgg(slug) :
+    query = '''
+    query CompletedQuery($slug: String) {
+        event(slug: $slug) {
+          numEntrants
+          state
+        }
+    }
+    '''
+    payload = {"query" : query, "variables" : {"slug" : slug}}
+    response = requests.post(url=url, headers=headers, json=payload)
+    event = json.loads(response.content)["data"]["event"]
+    if event is None :
+      return None
+    if event["numEntrants"] \
+       and event["numEntrants"] > 0 \
+       and event["state"] == "COMPLETED" :
+            return True
+    else :
+        return False
 
-if __name__ == "__main__":
-    #from perro import generate_banner
-    #slug = "tournament/genesis-7-1/event/ultimate-singles"
-    #slug = "tournament/combo-breaker-2019/event/skullgirls-2nd-encore"
-    #slug = "tournament/ceo-2019-fighting-game-championships/event/super-smash-bros-ultimate-singles"
-    #slug = "tournament/bowser-castle-1/event/smash-ultimate-singles"
-    slug = "tournament/frosty-faustings-xii-2020/event/under-night-in-birth-exe-late-st"
+def sgg_query(slug) :
+    query = '''
+    query StandingsQuery($slug: String) {
+      event(slug: $slug) {
+        id
+        name
+        numEntrants
+        state
+        startAt
+        videogame {
+          id
+        }
+        tournament {
+          name
+          countryCode
+          slug
+          shortSlug
+          city
+          images {
+            type
+            url
+          }
+        }
+        standings(query: {page: 1, perPage: 16, sortBy: "standing"}) {
+          nodes {
+            placement
+            entrant {
+              name
+              participants {
+                user {
+                  discriminator
+                  authorizations(types: TWITTER) {
+                    externalUsername
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    '''
+    payload = {"query" : query, "variables" : {"slug" : slug}}
+    response = requests.post(url=url, headers=headers, json=payload)
+    return json.loads(response.content)
 
-    print(check_event(slug))
-    d = event_data(slug)
-    print(d)
-    #if d : generate_banner(d).show()
+def sgg_sets_query(slug) :
+    query = '''
+    query SetsQuery($slug: String, $page: Int) {
+      event(slug: $slug) {
+        sets(page: $page, perPage: 50, sortType: MAGIC) {
+          nodes {
+            games {
+              selections {
+                entrant {
+                  name
+                }
+                selectionValue
+              }
+            }
+          }
+        }
+      }
+    }
+    '''
+    sets = []
+    page = 1
+    max_page = 3
+    while True:
+        payload = {"query" : query, "variables" : {"slug" : slug, "page": page}}
+        response = requests.post(url=url, headers=headers, json=payload)
+        data = json.loads(response.content)
+        new_sets = data["data"]["event"]["sets"]["nodes"]
+        if len(new_sets) == 0:
+            break
+        sets += new_sets
+        page += 1
+        if page > max_page:
+            break
+        time.sleep(1)
 
-    #print(check_challonge(slug))
-    #challonge_data(slug)
+    return sets
 
-    #slug = "PnKAm"
-    #print(check_tonamel(slug))
-    #print(tonamel_data(slug))
+def sgg_char_freq(sets, gameId):
+    char_dict = get_sgg_char_data().get(gameId, {})
+
+    freq = {}
+
+    for node in sets:
+        if node["games"] is None : continue
+        for game in node["games"] :
+            if game["selections"] :
+                for selection in game["selections"] :
+                    player = selection["entrant"]["name"]
+                    char = selection["selectionValue"]
+                    if player in freq :
+                        if char in freq[player] :
+                            freq[player][char] += 1
+                        else :
+                            freq[player][char] = 1
+                    else :
+                        freq[player] = {char : 1}
+    return {
+      key:sorted([(v, char_dict.get(gameId, {}).get(k, k)) for k,v in value.items()], reverse=True)
+      for key, value in freq.items()
+    }
+
+def sgg_data(slug, game=None):
+    if game:
+        game_data = game_data_from_json(game)
+
+    character_data = get_sgg_char_data()
+
+    data = sgg_query(slug)
+    data = data["data"]
+    sets = sgg_sets_query(slug)
+    gameId = data["event"]["videogame"]["id"]
+
+    char_freq = sgg_char_freq(sets, gameId)
+
+    players = []
+    for p in data["event"]["standings"]["nodes"] :
+      name = p["entrant"]["name"]
+      twi = None
+      position = p["placement"]
+      tag = name
+      if " | " in tag:
+          tag = tag.split(" | ")[-1]
+
+      P = p["entrant"]["participants"]
+
+      if not twi and len(p["entrant"]["participants"]) == 1 :
+        if P[0]["user"] and P[0]["user"]["authorizations"] :
+          twi = "@"+P[0]["user"]["authorizations"][0]["externalUsername"]
+
+      if not twi:
+          twi = ""
+      
+      char_id = char_freq.get(name, [(0, None)])[0][1]
+      char = character_data.get(gameId, {}).get(char_id)
+
+      possible_chars = list(game_data["characters"]) if game else []
+      if game and char is not None and char not in possible_chars and len(possible_chars) > 0:
+          print("toca fuzzy con el personaje", char)
+          p = process.extract(char, possible_chars, limit=1)
+          print(f"{char} => {p[0][0]}")
+          char = p[0][0]
+          
+      if len(possible_chars) == 0:
+          char = None
+
+      if char is not None:
+          char = (char, 0)
+              
+      if game and type(char) is tuple and char[0] not in possible_chars and len(possible_chars) > 0:
+          print("toca fuzzy con el personaje parte 2", char[0])
+          p = process.extract(char[0], possible_chars, limit=1)
+          print(f"{char[0]} => {p[0][0]}")
+          char = (p[0][0], char[1])
+
+      players.append({
+        "tag" : name,
+        "twitter" : twi,
+        "position": position,
+        "char": char
+      })
+
+    event = data["event"]
+    if event["tournament"]["countryCode"] :
+        country = event["tournament"]["countryCode"]
+    else : country = None
+    name = event["tournament"]["name"] + " - " + event["name"]
+
+    if event["tournament"]["shortSlug"] :
+        link = "https://www.start.gg/"+event["tournament"]["shortSlug"]
+    else :
+        link = "https://www.start.gg/"+event["tournament"]["slug"]
+
+    ttext = f"{event['tournament']['name']} - {event['name']}"
+    btext = []
+    if event["startAt"] :
+        fecha = datetime.fromtimestamp(event["startAt"])
+        fecha = fecha.strftime("%Y/%m/%d")
+        btext.append(fecha)
+    if event["tournament"]["city"] :
+        ciudad = event["tournament"]["city"]
+        btext.append(ciudad)
+    btext.append(str(event["numEntrants"])+" Participantes")
+    btext = " - ".join(btext)
+
+    datos = {
+        "players" : players,
+        "name" : name,
+        "url" : link,
+        "country" : country,
+        "participants_number": event["numEntrants"],
+        "toptext": ttext,
+        "bottomtext": btext,
+        "gameId": gameId
+        }
+    return datos

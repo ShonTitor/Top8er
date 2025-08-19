@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/templates/', views.api_templates.as_view()),
     path('api/template_data/<str:template>/', views.api_template_data.as_view()),
     path('api/generate/<str:template>/<str:game>/', views.api_generate.as_view()),
+    path('api/results/', views.api_results.as_view()),
 
     path('test_api/', TemplateView.as_view(template_name="test_api.html")),
     re_path(r'beta/.*', views.react_view),

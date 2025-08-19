@@ -5,11 +5,11 @@ import re
 from io import BytesIO
 
 from django.shortcuts import render
-from django.conf import settings
-from django.core.cache import cache
 
-from .forms import makeform, SmashggForm
-from .generar.getsets import event_data, challonge_data, tonamel_data
+from top8er_app.cached_functions import game_data_from_json, read_home_data
+
+from .forms import identify_slug, makeform, SmashggForm
+from .generar.getsets import event_data, challonge_data, sgg_data, tonamel_data
 from .generar.perro import generate_banner
 
 def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), default_bg="bg"):
@@ -143,30 +143,17 @@ def hestia(request, game, FormClass,
         v1 = form.is_valid()
         v2 = form2.is_valid()
 
-        #if not v1:
-        #    print("\n", form.errors,"\n")
-
         if v2 :
-            event = request.POST["event"]
-            # This is a copy of the validation code in forms.py, consider refactoring
-            startgg_match = re.match(form2.startgg_re, event)
-            if startgg_match is not None:
-                slug = startgg_match.groups()[-1]
-                datos = event_data(slug)
-            challonge_match = re.match(form2.challonge_re, event)
-            if challonge_match is not None:
-                org, slug = challonge_match.groups()
+            url = request.POST["event"]
 
-                slug_parts = slug.split("/")
-                if len(slug_parts) > 1 and len(slug_parts[0]) == 2:
-                    slug = slug_parts[1]
-                else:
-                    slug = slug_parts[0]
+            data_functions = {
+                "startgg": lambda x: sgg_data(x, game),
+                "challonge": challonge_data,
+                "tonamel": tonamel_data
+            }
 
-                datos = challonge_data(slug, org=org)
-            tonamel_match = re.match(form2.tonamel_re, event)
-            if tonamel_match is not None:
-                datos = tonamel_data(tonamel_match.group(1))
+            slug_type, slug = identify_slug(url)
+            datos = data_functions.get(slug_type, lambda x: None)(slug)
 
             init_data = {}
 
@@ -274,28 +261,7 @@ def hestia(request, game, FormClass,
                }
     return render(request, 'old_form.html' , context)
 
-def game_data_from_json(game_path):
-    game_data = cache.get(f"game_date_{game_path}")
-    if game_data is None:
-        data_path = os.path.join(settings.APP_BASE_DIR, "generar", "assets", game_path, "game.json")
-        with open(data_path, "r") as f:
-            game_data = json.loads(f.read())
-            cache.set(f"game_date_{game_path}", game_data, None)
-
-    if game_data["colors"] is None:
-        game_data["colors"] = {c:["Default"] for c in game_data["characters"]}
-    if "iconColors" not in game_data or game_data["iconColors"] is None:
-        game_data["iconColors"] = game_data["colors"] #{c:["Default"] for c in game_data["characters"]}
-
-    game_data["maxColors"] = max([len(colors) for colors in game_data["colors"].values()])
-    game_data["maxIconColors"] = max([len(colors) for colors in game_data["iconColors"].values()])
-    if not "characterShadows" in game_data:
-        game_data["characterShadows"] = True
-    return game_data
-
 def response_from_json(request, game_path):
-    home_data = read_home_data()
-
     game_data = game_data_from_json(game_path)
     iconColors = game_data.get("iconColors")
     FormClass = makeform(game=game_path,
@@ -324,74 +290,3 @@ def is_url(string):
     url_pattern = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
     return re.match(url_pattern, string) is not None
 
-def read_game_data(game):
-    if game not in [g for _, g in settings.GAMES]:
-        return None
-
-    game_data = cache.get(f"game_date_{game}")
-
-    if game_data is None:
-        data_path = os.path.join(settings.APP_BASE_DIR, "generar", "assets", game, "game.json")
-
-        with open(data_path, "r") as f:
-            game_data = f.read()
-
-        game_data = json.loads(game_data)
-        cache.set(f"game_date_{game}", game_data, None)
-
-    return game_data
-
-def read_template_data(template, complete=False):
-    if template not in settings.GRAPHIC_TEMPLATES:
-        return None
-    
-    template_data = cache.get(f"template_data_{template}")
-
-    if template_data is None:
-        data_path = os.path.join(settings.APP_BASE_DIR, "generar", "templates", template, "template.json")
-
-        with open(data_path, "r") as f:
-            template_data = f.read()
-
-        template_data = json.loads(template_data)
-        cache.set(f"template_data_{template}", template_data, None)
-
-    if not complete:
-        template_data.pop("layers")
-    return template_data
-
-def read_home_data():
-    home_data = cache.get("home_data")
-    if home_data is not None:
-        return home_data
-    
-    home_data = {
-        "templates": settings.GRAPHIC_TEMPLATES,
-    }
-
-    minmal_game_data = {}
-    for slug, code in settings.GAMES:
-        game_data = read_game_data(code)
-        minmal_game_data[slug] = {
-            "path": code,
-            "full_name": game_data["name"],
-            "slug": slug,
-        }
-
-    home_data["categories"] = [
-        {
-            "category_name": cat,
-            "games": sorted([
-                {
-                    "slug": slug,
-                    "path": path,
-                    "full_name": minmal_game_data[slug]["full_name"]
-                }
-                for slug, path in games
-            ], key=lambda x: x["full_name"])
-        }
-        for cat, games in settings.CATEGORIES.items()
-    ]
-
-    cache.set("home_data", home_data, None)
-    return home_data

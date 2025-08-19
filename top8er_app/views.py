@@ -1,4 +1,6 @@
-from .utils import graphic_from_request, read_home_data, response_from_json, read_game_data, read_template_data, is_url
+from top8er_app.cached_functions import read_game_data, read_home_data, read_template_data
+from top8er_app.generar.getsets import sgg_data
+from .utils import graphic_from_request, response_from_json, is_url
 from .generar.perro2 import generate_graphic
 
 from django.conf import settings
@@ -58,6 +60,22 @@ class api_templates(APIView):
 
     def get(self, request):
         return Response(settings.GRAPHIC_TEMPLATES)
+    
+class api_home_data(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        home_data = read_home_data()
+        return Response(home_data)
+
+class api_results(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        slug = request.GET.get("slug")
+        slug = "tournament/gaita-gear/event/las-gaitas-de-strive"
+        data = sgg_data(slug, "ggst")
+        return Response(data)
 
 class api_generate(APIView):
     permission_classes = [permissions.AllowAny]
