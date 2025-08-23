@@ -1,6 +1,7 @@
 import requests
 import json
 import time
+import grpc
 
 from datetime import datetime
 from django.conf import settings
@@ -9,6 +10,11 @@ from django.core.cache import cache
 from thefuzz import process
 
 from top8er_app.cached_functions import get_sgg_char_data, game_data_from_json
+
+from parrygg.services.event_service_pb2_grpc import EventServiceStub
+from parrygg.services.tournament_service_pb2_grpc import TournamentServiceStub
+from parrygg.services.tournament_service_pb2 import GetTournamentRequest
+from parrygg.services.event_service_pb2 import GetEventPlacementsRequest
 
 # Cosas de smash gg
 authToken = settings.START_GG_API_KEY
@@ -24,6 +30,266 @@ challonge_key = settings.CHALLONGE_API_KEY
 # Cosas de tonamel
 tonamel_credentials = settings.TONAMEL_API_KEY
 tonamel_token = None
+
+# Cosas de parry gg
+parrygg_api_key = settings.PARRYGG_API_KEY
+parrygg_channel = grpc.secure_channel("api.parry.gg:443", grpc.ssl_channel_credentials())
+parrygg_event_service = EventServiceStub(parrygg_channel)
+parrygg_tournament_service = TournamentServiceStub(parrygg_channel)
+parrygg_metadata = [("x-api-key", parrygg_api_key)]
+parrygg_countries_dict = {
+  "US": "United States",
+  "CA": "Canada",
+  "MX": "Mexico",
+  "AF": "Afghanistan",
+  "AX": "Aland Islands",
+  "AL": "Albania",
+  "DZ": "Algeria",
+  "AS": "American Samoa",
+  "AD": "Andorra",
+  "AO": "Angola",
+  "AI": "Anguilla",
+  "AQ": "Antartica",
+  "AG": "Antigua and Barbuda",
+  "AR": "Argentina",
+  "AM": "Armenia",
+  "AW": "Aruba",
+  "AU": "Australia",
+  "AT": "Austria",
+  "AZ": "Azerbaijan",
+  "BS": "Bahamas",
+  "BH": "Bahrain",
+  "BD": "Bangladesh",
+  "BB": "Barbados",
+  "BY": "Belarus",
+  "BE": "Belgium",
+  "BZ": "Belize",
+  "BJ": "Benin",
+  "BM": "Bermuda",
+  "BT": "Bhutan",
+  "BO": "Bolivia",
+  "BA": "Bosnia and Herzegovina",
+  "BW": "Botswana",
+  "BV": "Bouvet Island",
+  "BR": "Brazil",
+  "IO": "British Indian Ocean Territory",
+  "BN": "Brunei",
+  "BG": "Bulgaria",
+  "BF": "Burkina Faso",
+  "BI": "Burundi",
+  "KH": "Cambodia",
+  "CM": "Cameroon",
+  "CV": "Cape Verde",
+  "KY": "Cayman Islands",
+  "CF": "Central African Republic",
+  "TD": "Chad",
+  "CL": "Chile",
+  "CN": "China",
+  "CX": "Christmas Island",
+  "CC": "Cocos (Keeling) Islands",
+  "CO": "Colombia",
+  "KM": "Comoros",
+  "CG": "Republic of Congo",
+  "CD": "Democratic Republic of Congo",
+  "CK": "Cook Islands",
+  "CR": "Costa Rica",
+  "CI": "Ivory Coast",
+  "HR": "Croatia",
+  "CU": "Cuba",
+  "CY": "Cyprus",
+  "CZ": "Czech Republic",
+  "DK": "Denmark",
+  "DJ": "Djibouti",
+  "DM": "Dominica",
+  "DO": "Dominican Republic",
+  "TL": "East Timor",
+  "EC": "Ecuador",
+  "EG": "Egypt",
+  "SV": "El Salvador",
+  "GQ": "Equatorial Guinea",
+  "ER": "Eritrea",
+  "EE": "Estonia",
+  "ET": "Ethiopia",
+  "FK": "Falkland Islands",
+  "FO": "Faroe Islands",
+  "FJ": "Fiji",
+  "FI": "Finland",
+  "FR": "France",
+  "GF": "French Guiana",
+  "PF": "French Polynesia",
+  "TF": "French Southern Territories",
+  "GA": "Gabon",
+  "GM": "Gambia",
+  "GE": "Georgia",
+  "DE": "Germany",
+  "GH": "Ghana",
+  "GI": "Gibraltar",
+  "GR": "Greece",
+  "GL": "Greenland",
+  "GD": "Grenada",
+  "GP": "Guadeloupe",
+  "GU": "Guam",
+  "GT": "Guatemala",
+  "GG": "Guernsey and Alderney",
+  "GN": "Guinea",
+  "GW": "Guinea-Bissau",
+  "GY": "Guyana",
+  "HT": "Haiti",
+  "HM": "Heard Island and McDonald Islands",
+  "HN": "Honduras",
+  "HK": "Hong Kong",
+  "HU": "Hungary",
+  "IS": "Iceland",
+  "IN": "India",
+  "ID": "Indonesia",
+  "IR": "Iran",
+  "IQ": "Iraq",
+  "IE": "Ireland",
+  "IL": "Israel",
+  "IT": "Italy",
+  "JM": "Jamaica",
+  "JP": "Japan",
+  "JE": "Jersey",
+  "JO": "Jordan",
+  "KZ": "Kazakhstan",
+  "KE": "Kenya",
+  "KI": "Kiribati",
+  "KP": "North Korea",
+  "KR": "South Korea",
+  "KW": "Kuwait",
+  "KG": "Kyrgyzstan",
+  "LA": "Laos",
+  "LV": "Latvia",
+  "LB": "Lebanon",
+  "LS": "Lesotho",
+  "LR": "Liberia",
+  "LY": "Libya",
+  "LI": "Liechtenstein",
+  "LT": "Lithuania",
+  "LU": "Luxembourg",
+  "MO": "Macau S.A.R.",
+  "MK": "North Macedonia",
+  "MG": "Madagascar",
+  "MW": "Malawi",
+  "MY": "Malaysia",
+  "MV": "Maldives",
+  "ML": "Mali",
+  "MT": "Malta",
+  "IM": "Man (Isle of)",
+  "MH": "Marshall Islands",
+  "MQ": "Martinique",
+  "MR": "Mauritania",
+  "MU": "Mauritius",
+  "YT": "Mayotte",
+  "FM": "Federated States of Micronesia",
+  "MD": "Moldova",
+  "MC": "Monaco",
+  "MN": "Mongolia",
+  "ME": "Montenegro",
+  "MS": "Montserrat",
+  "MA": "Morocco",
+  "MZ": "Mozambique",
+  "MM": "Myanmar",
+  "NA": "Namibia",
+  "NR": "Nauru",
+  "NP": "Nepal",
+  "BQ": "Bonaire, Sint Eustatius and Saba",
+  "NL": "Netherlands",
+  "NC": "New Caledonia",
+  "NZ": "New Zealand",
+  "NI": "Nicaragua",
+  "NE": "Niger",
+  "NG": "Nigeria",
+  "NU": "Niue",
+  "NF": "Norfolk Island",
+  "MP": "Northern Mariana Islands",
+  "NO": "Norway",
+  "OM": "Oman",
+  "PK": "Pakistan",
+  "PW": "Palau",
+  "PS": "Palestine",
+  "PA": "Panama",
+  "PG": "Papua New Guinea",
+  "PY": "Paraguay",
+  "PE": "Peru",
+  "PH": "Philippines",
+  "PN": "Pitcairn Island",
+  "PL": "Poland",
+  "PT": "Portugal",
+  "PR": "Puerto Rico",
+  "QA": "Qatar",
+  "RE": "Reunion",
+  "RO": "Romania",
+  "RU": "Russia",
+  "RW": "Rwanda",
+  "SH": "Saint Helena",
+  "KN": "Saint Kitts and Nevis",
+  "LC": "Saint Lucia",
+  "PM": "Saint Pierre and Miquelon",
+  "VC": "Saint Vincent and the Grenadines",
+  "BL": "Saint-Barthelemy",
+  "MF": "Saint-Martin (French part)",
+  "WS": "Samoa",
+  "SM": "San Marino",
+  "ST": "São Tomé and Príncipe",
+  "SA": "Saudi Arabia",
+  "SN": "Senegal",
+  "RS": "Serbia",
+  "SC": "Seychelles",
+  "SL": "Sierra Leone",
+  "SG": "Singapore",
+  "SK": "Slovakia",
+  "SI": "Slovenia",
+  "SB": "Solomon Islands",
+  "SO": "Somalia",
+  "ZA": "South Africa",
+  "GS": "South Georgia",
+  "SS": "South Sudan",
+  "ES": "Spain",
+  "LK": "Sri Lanka",
+  "SD": "Sudan",
+  "SR": "Suriname",
+  "SJ": "Svalbard And Jan Mayen Islands",
+  "SZ": "Eswatini",
+  "SE": "Sweden",
+  "CH": "Switzerland",
+  "SY": "Syria",
+  "TW": "Republic of China (Taiwan)",
+  "TJ": "Tajikistan",
+  "TZ": "Tanzania",
+  "TH": "Thailand",
+  "TG": "Togo",
+  "TK": "Tokelau",
+  "TO": "Tonga",
+  "TT": "Trinidad and Tobago",
+  "TN": "Tunisia",
+  "TR": "Turkey",
+  "TM": "Turkmenistan",
+  "TC": "Turks And Caicos Islands",
+  "TV": "Tuvalu",
+  "UG": "Uganda",
+  "UA": "Ukraine",
+  "AE": "United Arab Emirates",
+  "GB": "United Kingdom",
+  "UM": "United States Minor Outlying Islands",
+  "UY": "Uruguay",
+  "UZ": "Uzbekistan",
+  "VU": "Vanuatu",
+  "VA": "Vatican City",
+  "VE": "Venezuela",
+  "VN": "Vietnam",
+  "VG": "Virgin Islands (British)",
+  "VI": "Virgin Islands (US)",
+  "WF": "Wallis And Futuna Islands",
+  "EH": "Western Sahara",
+  "YE": "Yemen",
+  "ZM": "Zambia",
+  "ZW": "Zimbabwe",
+  "XK": "Kosovo",
+  "CW": "Curaçao",
+  "SX": "Sint Maarten (Dutch part)"
+}
+
 
 def check_event(slug):
     query = '''
@@ -443,7 +709,7 @@ def sgg_char_freq(sets, gameId):
                     else :
                         freq[player] = {char : 1}
     return {
-      key:sorted([(v, char_dict.get(gameId, {}).get(k, k)) for k,v in value.items()], reverse=True)
+      key:sorted([(v, char_dict.get(k, k)) for k,v in value.items()], reverse=True)
       for key, value in freq.items()
     }
 
@@ -541,3 +807,69 @@ def sgg_data(slug, game=None):
         "gameId": gameId
         }
     return datos
+
+def parrygg_data(slug):
+    # Tournament
+    tournament_request = GetTournamentRequest(tournament_slug=slug["tournament_slug"])
+    tournament_response = parrygg_tournament_service.GetTournament(tournament_request, metadata=parrygg_metadata)
+    tournament = tournament_response.tournament
+
+    #print(tournament)
+
+    event_name = ""
+    for event in tournament.events:
+        if hasattr(event, "slug") and event.slug == slug:
+            event_name = event.name
+            break
+    if not event_name and tournament.events:
+        event_name = tournament.events[0].name
+
+    date_str = ""
+    if hasattr(tournament.start_date, "seconds"):
+        date_str = datetime.fromtimestamp(tournament.start_date.seconds).strftime("%Y/%m/%d")
+
+    # Get entrant count from event if possible
+    num_attendees = None
+    for event in tournament.events:
+        if hasattr(event, "slug") and event.slug == slug:
+            num_attendees = getattr(event, "entrant_count", None)
+            break
+    if num_attendees is None:
+        num_attendees = getattr(tournament, "num_attendees", None)
+
+    top_text = f"{tournament.name} - {event_name} - Top 8"
+    bottom_text = f"{date_str}"
+    if num_attendees is not None:
+        bottom_text += f" - {num_attendees} Participants"
+
+    # Placements
+    event_request = GetEventPlacementsRequest(event_slug_path=slug)
+    event_response = parrygg_event_service.GetEventPlacements(event_request, metadata=parrygg_metadata)
+    players = []
+    for placement in event_response.placements:
+        entrant = placement.event_entrant.entrant
+        user = entrant.users[0] if entrant.users else None
+        tag = user.gamer_tag if user else ""
+        position = placement.placement
+        country_code = user.location_country if user and user.location_country else None
+        print(country_code, parrygg_countries_dict.get(country_code))
+
+        players.append({
+            "tag": tag,
+            "position": position,
+            "flag": parrygg_countries_dict.get(country_code)
+        })
+    
+    players.sort(key=lambda x: x["position"])
+
+    datos = {
+        "players": players,
+        "toptext": top_text,
+        "bottomtext": bottom_text,
+        "url": f"https://parry.gg/{slug['tournament_slug']}"
+    }
+    return datos
+
+def check_parrygg(slug):
+    response = parrygg_data(slug)
+    return response

@@ -180,6 +180,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 START_GG_API_KEY = os.getenv('START_GG_API_KEY')
 CHALLONGE_API_KEY = os.getenv('CHALLONGE_API_KEY')
 TONAMEL_API_KEY = os.getenv('TONAMEL_API_KEY')
+PARRYGG_API_KEY = os.getenv('PARRYGG_API_KEY')
 
 # Load data from stuff.json
 with open(os.path.join(BASE_DIR, 'stuff.json'), 'r') as f:

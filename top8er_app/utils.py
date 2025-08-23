@@ -9,7 +9,7 @@ from django.shortcuts import render
 from top8er_app.cached_functions import game_data_from_json, read_home_data
 
 from .forms import identify_slug, makeform, SmashggForm
-from .generar.getsets import event_data, challonge_data, sgg_data, tonamel_data
+from .generar.getsets import event_data, challonge_data, parrygg_data, sgg_data, tonamel_data
 from .generar.perro import generate_banner
 
 def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), default_bg="bg"):
@@ -149,7 +149,8 @@ def hestia(request, game, FormClass,
             data_functions = {
                 "startgg": lambda x: sgg_data(x, game),
                 "challonge": challonge_data,
-                "tonamel": tonamel_data
+                "tonamel": tonamel_data,
+                "parrygg": parrygg_data
             }
 
             slug_type, slug = identify_slug(url)
@@ -165,10 +166,13 @@ def hestia(request, game, FormClass,
                 try :
                     init_data["player"+str(i+1)] = {}
                     init_data["player"+str(i+1)]["name"] = datos["players"][i]["tag"]
-                    init_data["player"+str(i+1)]["twitter"] = datos["players"][i]["twitter"]
-                    init_data["player"+str(i+1)]["char"] = datos["players"][i]["char"][0]
+                    init_data["player"+str(i+1)]["twitter"] = datos["players"][i].get("twitter", "")
+                    init_data["player"+str(i+1)]["char"] = datos["players"][i].get("char", [None])[0]
+                    init_data["player"+str(i+1)]["flag"] = datos["players"][i].get("flag", "None")
                 except :
                     pass
+            print(datos)
+            print(init_data)
             
             context = { "hasextra" : has_extra,
                         "form" : FormClass(initial=init_data),

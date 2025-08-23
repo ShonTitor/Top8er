@@ -3,12 +3,13 @@ from django import forms
 from collections.abc import Mapping
 from typing import Type
 from colorful.forms import RGBColorField
-from .generar.getsets import check_event, check_challonge, check_tonamel
+from .generar.getsets import check_event, check_challonge, check_parrygg, check_tonamel
 from django.core.exceptions import ValidationError
 
 startgg_re = r"https://(www\.)?(smash|start)\.gg/(tournament/[^/]+/event/[^/]+)"
 challonge_re = r"https://([^\.]*)\.?challonge\.com/(.+)"
 tonamel_re = r"https://tonamel\.com/competition/([^/]+)"
+parrygg_re = r"https://parry\.gg/([^/]+)/([^/]+).*"
 
 def identify_slug(url):
     startgg_match = re.match(startgg_re, url)
@@ -33,6 +34,19 @@ def identify_slug(url):
         slug = tonamel_match.group(1)
         return "tonamel", slug
 
+    print("parrygg", url)
+    parrygg_match = re.match(parrygg_re, url)
+    print("parrygg", parrygg_match)
+    if parrygg_match:
+        print("parrygg", parrygg_match.groups())
+        tournament, event = parrygg_match.groups()
+        slug = {
+            "tournament_slug": tournament,
+            "event_slug": event
+        }
+        print("parrygg", slug)
+        return "parrygg", slug
+
     return None
 
 class AncestorForm(forms.Form) :
@@ -51,12 +65,9 @@ class AncestorForm(forms.Form) :
     fscolor2 = RGBColorField(label="Font Shadow Color", initial="#000000")
 
 class SmashggForm(forms.Form) :
-    startgg_re = r"https://(www\.)?(smash|start)\.gg/(tournament/[^/]+/event/[^/]+)"
-    challonge_re = r"https://([^\.]*)\.?challonge\.com/(.+)"
-    tonamel_re = r"https://tonamel\.com/competition/([^/]+)"
 
     event = forms.RegexField(label="External link",
-                             regex = "|".join([startgg_re, challonge_re, tonamel_re]),
+                             regex = "|".join([startgg_re, challonge_re, tonamel_re, parrygg_re]),
                              max_length=200)
     def clean(self):
         cleaned_data = super().clean()
@@ -66,7 +77,8 @@ class SmashggForm(forms.Form) :
             check_functions = {
                 "startgg": check_event,
                 "challonge": check_challonge,
-                "tonamel": check_tonamel
+                "tonamel": check_tonamel,
+                "parrygg": check_parrygg
             }
 
             slug_type, slug = identify_slug(url)
