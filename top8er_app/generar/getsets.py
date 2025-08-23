@@ -2,6 +2,7 @@ import requests
 import json
 import time
 import grpc
+import pytz
 
 from datetime import datetime
 from django.conf import settings
@@ -500,9 +501,6 @@ def event_data(slug) :
                     if P[0]["user"] and P[0]["user"]["authorizations"] :
                         twi = "@"+P[0]["user"]["authorizations"][0]["externalUsername"]
                 char = vaina[name].replace(".", "")
-                if char == "Pokemon Trainer" : char = "Pokémon Trainer"
-                if char == "Ori" : char = "Ori and Sein"
-                if char == "Erika Wagner" : char = "Wagner"
                 players.append({"tag" : name,
                                "char" : (char, 0),
                                 "twitter" : twi,
@@ -814,8 +812,6 @@ def parrygg_data(slug):
     tournament_response = parrygg_tournament_service.GetTournament(tournament_request, metadata=parrygg_metadata)
     tournament = tournament_response.tournament
 
-    #print(tournament)
-
     event_name = ""
     for event in tournament.events:
         if hasattr(event, "slug") and event.slug == slug:
@@ -824,9 +820,18 @@ def parrygg_data(slug):
     if not event_name and tournament.events:
         event_name = tournament.events[0].name
 
+    timezone = getattr(tournament, "time_zone", None) if hasattr(tournament, "time_zone") else getattr(tournament, "timezone", None)
     date_str = ""
     if hasattr(tournament.start_date, "seconds"):
-        date_str = datetime.fromtimestamp(tournament.start_date.seconds).strftime("%Y/%m/%d")
+        try:
+            tz = pytz.timezone(timezone) if timezone else None
+            dt = datetime.fromtimestamp(tournament.start_date.seconds)
+            if tz:
+                dt = dt.astimezone(tz)
+            date_str = dt.strftime("%Y/%m/%d")
+        except Exception:
+            date_str = datetime.fromtimestamp(tournament.start_date.seconds).strftime("%Y/%m/%d")
+    
 
     # Get entrant count from event if possible
     num_attendees = None
@@ -852,7 +857,6 @@ def parrygg_data(slug):
         tag = user.gamer_tag if user else ""
         position = placement.placement
         country_code = user.location_country if user and user.location_country else None
-        print(country_code, parrygg_countries_dict.get(country_code))
 
         players.append({
             "tag": tag,
