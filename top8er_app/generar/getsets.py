@@ -814,7 +814,7 @@ def parrygg_data(slug):
 
     event_name = ""
     for event in tournament.events:
-        if hasattr(event, "slug") and event.slug == slug:
+        if hasattr(event, "slug") and event.slug == slug["event_slug"]:
             event_name = event.name
             break
     if not event_name and tournament.events:
@@ -836,11 +836,14 @@ def parrygg_data(slug):
     # Get entrant count from event if possible
     num_attendees = None
     for event in tournament.events:
-        if hasattr(event, "slug") and event.slug == slug:
-            num_attendees = getattr(event, "entrant_count", None)
+        if hasattr(event, "slug") and event.slug == slug["event_slug"]:
+            print(event)
+            num_attendees = event.entrant_count
             break
+    print(num_attendees)
     if num_attendees is None:
-        num_attendees = getattr(tournament, "num_attendees", None)
+        num_attendees = tournament.num_attendees
+    print(num_attendees)
 
     top_text = f"{tournament.name} - {event_name} - Top 8"
     bottom_text = f"{date_str}"
