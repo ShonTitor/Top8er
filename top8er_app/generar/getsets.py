@@ -853,10 +853,15 @@ def parrygg_data(slug):
     players = []
     for placement in event_response.placements:
         entrant = placement.event_entrant.entrant
-        user = entrant.users[0] if entrant.users else None
-        tag = user.gamer_tag if user else ""
+        users = entrant.users if entrant.users else []
+        if placement.event_entrant.name:
+            tag = placement.event_entrant.name
+        else:
+            tag = " / ".join([user.gamer_tag for user in users])
         position = placement.placement
-        country_code = user.location_country if user and user.location_country else None
+        country_code = None
+        if len(users) == 1:
+            country_code = users[0].location_country if users and users[0].location_country else None
 
         players.append({
             "tag": tag,

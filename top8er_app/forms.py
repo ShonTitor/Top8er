@@ -34,17 +34,13 @@ def identify_slug(url):
         slug = tonamel_match.group(1)
         return "tonamel", slug
 
-    print("parrygg", url)
     parrygg_match = re.match(parrygg_re, url)
-    print("parrygg", parrygg_match)
     if parrygg_match:
-        print("parrygg", parrygg_match.groups())
         tournament, event = parrygg_match.groups()
         slug = {
             "tournament_slug": tournament,
             "event_slug": event
         }
-        print("parrygg", slug)
         return "parrygg", slug
 
     return None

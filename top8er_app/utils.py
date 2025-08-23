@@ -171,8 +171,6 @@ def hestia(request, game, FormClass,
                     init_data["player"+str(i+1)]["flag"] = datos["players"][i].get("flag", "None")
                 except :
                     pass
-            print(datos)
-            print(init_data)
             
             context = { "hasextra" : has_extra,
                         "form" : FormClass(initial=init_data),
