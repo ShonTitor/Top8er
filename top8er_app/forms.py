@@ -3,8 +3,50 @@ from django import forms
 from collections.abc import Mapping
 from typing import Type
 from colorful.forms import RGBColorField
-from .generar.getsets import check_event, check_challonge, check_tonamel
+from .generar.getsets import check_event, check_challonge, check_parrygg, check_tonamel
 from django.core.exceptions import ValidationError
+
+startgg_re = r"https://(www\.)?(smash|start)\.gg/(tournament/[^/]+/event/[^/]+)"
+challonge_re = r"https://([^\.]*)\.?challonge\.com/(.+)"
+tonamel_re = r"https://tonamel\.com/competition/([^/]+)"
+parrygg_re = r"https://parry\.gg/([^/]+)/([^/]+).*"
+
+def identify_slug(url):
+    if not url: 
+        return None, None
+
+    startgg_match = re.match(startgg_re, url)
+    if startgg_match:
+        return "startgg", startgg_match.groups()[-1]
+    
+    challonge_match = re.match(challonge_re, url)
+    if challonge_match:
+        org, slug = challonge_match.groups()
+        slug_parts = slug.split("/")
+        if len(slug_parts) > 1 and len(slug_parts[0]) == 2:
+            slug = slug_parts[1]
+        else:
+            slug = slug_parts[0]
+        if org:
+            slug = org+"-"+slug
+    
+        return "challonge", slug
+
+    tonamel_match = re.match(tonamel_re, url)
+    if tonamel_match:
+        slug = tonamel_match.group(1)
+        return "tonamel", slug
+
+    parrygg_match = re.match(parrygg_re, url)
+    if parrygg_match:
+        tournament, event = parrygg_match.groups()
+        slug = {
+            "tournament_slug": tournament,
+            "event_slug": event
+        }
+        return "parrygg", slug
+
+    return None, None
 
 class AncestorForm(forms.Form) :
     background = forms.ImageField(label="Background Image", required=False)
@@ -22,47 +64,31 @@ class AncestorForm(forms.Form) :
     fscolor2 = RGBColorField(label="Font Shadow Color", initial="#000000")
 
 class SmashggForm(forms.Form) :
-    startgg_re = r"https://(www\.)?(smash|start)\.gg/(tournament/[^/]+/event/[^/]+)"
-    challonge_re = r"https://([^\.]*)\.?challonge\.com/(.+)"
-    tonamel_re = r"https://tonamel\.com/competition/([^/]+)"
 
     event = forms.RegexField(label="External link",
-                             regex = "|".join([startgg_re, challonge_re, tonamel_re]),
+                             regex = "|".join([startgg_re, challonge_re, tonamel_re, parrygg_re]),
                              max_length=200)
     def clean(self):
         cleaned_data = super().clean()
         try:
-            event = cleaned_data.get("event")
-            
-            startgg_match = re.match(self.startgg_re, event)
-            challonge_match = re.match(self.challonge_re, event)
-            tonamel_match = re.match(self.tonamel_re, event)
+            url = cleaned_data.get("event")
 
-            if startgg_match is not None:
-                slug = startgg_match.groups()[-1]
-                check = check_event(slug)
-            elif challonge_match is not None:
-                org, slug = challonge_match.groups()
+            check_functions = {
+                "startgg": check_event,
+                "challonge": check_challonge,
+                "tonamel": check_tonamel,
+                "parrygg": check_parrygg
+            }
 
-                slug_parts = slug.split("/")
-                if len(slug_parts) > 1 and len(slug_parts[0]) == 2:
-                    slug = slug_parts[1]
-                else:
-                    slug = slug_parts[0]
-
-                if org:
-                    check = check_challonge(slug, org=org)
-                else:
-                    check = check_challonge(slug)
-            elif tonamel_match is not None:
-                slug = tonamel_match.group(1)
-                check = check_tonamel(slug)
+            slug_type, slug = identify_slug(url)
+            check = check_functions.get(slug_type, lambda x: False)(slug)
 
             if not check:
                 raise Exception("check function returned False")
 
         except Exception as ex:
-            #print(ex, "forms")
+            import traceback
+            traceback.print_exc()
             msg = "Event not found, has too few players or an iguana bit a cable."
             self.add_error('event', msg)
         return cleaned_data

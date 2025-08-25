@@ -162,7 +162,6 @@ class Top8erAPITests(TestCase):
                 "character": [("Meta Knight", 0), None, None]
             }],
             "options": {
-                "background": "https://i.imgur.com/xJmSRnf.png"
             }
         }
         c = Client()
