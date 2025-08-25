@@ -12,6 +12,9 @@ tonamel_re = r"https://tonamel\.com/competition/([^/]+)"
 parrygg_re = r"https://parry\.gg/([^/]+)/([^/]+).*"
 
 def identify_slug(url):
+    if not url: 
+        return None, None
+
     startgg_match = re.match(startgg_re, url)
     if startgg_match:
         return "startgg", startgg_match.groups()[-1]
@@ -43,7 +46,7 @@ def identify_slug(url):
         }
         return "parrygg", slug
 
-    return None
+    return None, None
 
 class AncestorForm(forms.Form) :
     background = forms.ImageField(label="Background Image", required=False)
@@ -84,7 +87,8 @@ class SmashggForm(forms.Form) :
                 raise Exception("check function returned False")
 
         except Exception as ex:
-            print(ex)
+            import traceback
+            traceback.print_exc()
             msg = "Event not found, has too few players or an iguana bit a cable."
             self.add_error('event', msg)
         return cleaned_data

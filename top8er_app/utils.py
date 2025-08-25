@@ -138,10 +138,14 @@ def hestia(request, game, FormClass,
     else : has_extra = "false"
     
     if request.method == 'POST':
-        form = FormClass(request.POST, request.FILES)
-        form2 = SmashggForm(request.POST, request.FILES)
-        v1 = form.is_valid()
-        v2 = form2.is_valid()
+        if "event" in request.POST:
+            form2 = SmashggForm(request.POST, request.FILES)
+            v1 = False
+            v2 = form2.is_valid()
+        else:
+            form = FormClass(request.POST, request.FILES)
+            v1 = form.is_valid()
+            v2 = False
 
         if v2 :
             url = request.POST["event"]
