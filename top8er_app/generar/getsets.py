@@ -742,8 +742,7 @@ def sgg_data(slug, game=None):
       if not twi:
           twi = ""
       
-      char_id = char_freq.get(name, [(0, None)])[0][1]
-      char = character_data.get(gameId, {}).get(char_id)
+      char = char_freq.get(name, [(0, None)])[0][1]
 
       possible_chars = list(game_data["characters"]) if game else []
       if game and char is not None and char not in possible_chars and len(possible_chars) > 0:
@@ -837,13 +836,10 @@ def parrygg_data(slug):
     num_attendees = None
     for event in tournament.events:
         if hasattr(event, "slug") and event.slug == slug["event_slug"]:
-            print(event)
             num_attendees = event.entrant_count
             break
-    print(num_attendees)
     if num_attendees is None:
         num_attendees = tournament.num_attendees
-    print(num_attendees)
 
     top_text = f"{tournament.name} - {event_name} - Top 8"
     bottom_text = f"{date_str}"

@@ -84,6 +84,7 @@ class SmashggForm(forms.Form) :
                 raise Exception("check function returned False")
 
         except Exception as ex:
+            print(ex)
             msg = "Event not found, has too few players or an iguana bit a cable."
             self.add_error('event', msg)
         return cleaned_data
