@@ -96,7 +96,7 @@ def get_sgg_videogame_data():
     if sgg_videogame_data:
         return sgg_videogame_data
     
-    videogame_data = json.loads(requests.get(url="https://api.smash.gg/videogames").content)
+    videogame_data = json.loads(requests.get(url="https://api.start.gg/videogames").content)
     videogame_data = videogame_data["entities"]["videogame"]
 
     game_dict = {
@@ -109,14 +109,13 @@ def get_sgg_videogame_data():
     return game_dict
 
 def get_sgg_char_data():
-    game_ids_dict = get_sgg_videogame_data()
-
     sgg_char_data = cache.get("sgg_char_data")
     if sgg_char_data:
         return sgg_char_data
 
-    char_data = json.loads(requests.get(url="https://api.smash.gg/characters").content)
+    char_data = json.loads(requests.get(url="https://api.start.gg/characters").content)
     char_data = char_data["entities"]["character"]
+    game_ids = set(c["videogameId"] for c in char_data)
 
     char_dict = {
         key:{
@@ -124,7 +123,7 @@ def get_sgg_char_data():
             for c in char_data
             if c["videogameId"] == key
         }
-        for key in game_ids_dict
+        for key in game_ids
     }
 
     cache.set("sgg_char_data", char_dict, 60*60*24)

@@ -715,8 +715,6 @@ def sgg_data(slug, game=None):
     if game:
         game_data = game_data_from_json(game)
 
-    character_data = get_sgg_char_data()
-
     data = sgg_query(slug)
     data = data["data"]
     sets = sgg_sets_query(slug)
@@ -745,7 +743,7 @@ def sgg_data(slug, game=None):
       char = char_freq.get(name, [(0, None)])[0][1]
 
       possible_chars = list(game_data["characters"]) if game else []
-      if game and char is not None and char not in possible_chars and len(possible_chars) > 0:
+      if game and char is not None and char not in possible_chars and len(possible_chars) > 0 and type(char) is str:
           print("toca fuzzy con el personaje", char)
           p = process.extract(char, possible_chars, limit=1)
           print(f"{char} => {p[0][0]}")
@@ -757,7 +755,7 @@ def sgg_data(slug, game=None):
       if char is not None:
           char = (char, 0)
               
-      if game and type(char) is tuple and char[0] not in possible_chars and len(possible_chars) > 0:
+      if game and type(char) is tuple and char[0] not in possible_chars and len(possible_chars) > 0 and type(char) is str:
           print("toca fuzzy con el personaje parte 2", char[0])
           p = process.extract(char[0], possible_chars, limit=1)
           print(f"{char[0]} => {p[0][0]}")
