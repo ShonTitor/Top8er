@@ -286,9 +286,9 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
                                           initial=default_black_squares, required=False)
         charshadow = forms.BooleanField(label="Character Shadow", widget=forms.CheckboxInput,
                                           initial=default_character_shadows, required=False)
-        ttext = forms.CharField(label='Top Left Text', max_length=50, required=False)
-        btext = forms.CharField(label='Bottom Text', max_length=70, required=False)
-        url = forms.CharField(label='Top Right', max_length=55, required=False, initial="https://top8er.com/")
+        ttext = forms.CharField(label='Top Left Text', max_length=256, required=False)
+        btext = forms.CharField(label='Bottom Text', max_length=256, required=False)
+        url = forms.CharField(label='Top Right', max_length=256, required=False, initial="https://top8er.com/")
 
     return GenForm
     
