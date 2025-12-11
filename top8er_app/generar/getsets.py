@@ -302,11 +302,18 @@ def check_event(slug):
     '''
     payload = {"query" : query, "variables" : {"slug" : slug}}
     response = requests.post(url=url, headers=headers, json=payload)
-    event = json.loads(response.content)["data"]["event"]
-    if event :
+    try:
+        event = json.loads(response.content)["data"]["event"]
+    except Exception as e:
+        print("Headers:", headers)
+        print("Error checking event:", response.content)
+        raise e
+    if event:
         if event["numEntrants"] >= 8 :
             return True
-    else :
+    else:
+        print("Event not found:", slug)
+        print("Response content:", response.content)
         return False
 
 def check_challonge(slug, org=None) :
