@@ -14,6 +14,7 @@ frontend/node_modules/*
 frontend/dist/*
 *.log
 *.sqlite3
+.vscode
 
 /venv/*
 /.env

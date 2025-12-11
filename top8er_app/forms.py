@@ -1,4 +1,5 @@
 import re
+import requests
 from django import forms
 from collections.abc import Mapping
 from typing import Type
@@ -6,18 +7,29 @@ from colorful.forms import RGBColorField
 from .generar.getsets import check_event, check_challonge, check_parrygg, check_tonamel
 from django.core.exceptions import ValidationError
 
-startgg_re = r"https://(www\.)?(smash|start)\.gg/(tournament/[^/]+/event/[^/]+)"
+# The tournament url could be missing the `tournament` subpath
+# when using a "short slug" from start.gg.
+startgg_re = r"https://(www\.)?(smash|start)\.gg/(?P<event_slug>(tournament/)?[^/]+/event/[^/]+)"
 challonge_re = r"https://([^\.]*)\.?challonge\.com/(.+)"
 tonamel_re = r"https://tonamel\.com/competition/([^/]+)"
 parrygg_re = r"https://parry\.gg/([^/]+)/([^/]+).*"
 
 def identify_slug(url):
-    if not url: 
+    if not url:
         return None, None
+
+    # resolve redirects in url
+    # needed when user gives a "short slug" from start.gg
+    requests.session().max_redirects = 5
+    try:
+        response = requests.head(url, allow_redirects=True, timeout=5)
+        url = response.url
+    except requests.RequestException:
+        pass
 
     startgg_match = re.match(startgg_re, url)
     if startgg_match:
-        return "startgg", startgg_match.groups()[-1]
+        return "startgg", startgg_match.group('event_slug')
     
     challonge_match = re.match(challonge_re, url)
     if challonge_match:
