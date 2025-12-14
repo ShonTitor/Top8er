@@ -22,7 +22,6 @@ def identify_slug(url):
 
     startgg_match = re.match(startgg_re, url)
 
-    print(url)
     if startgg_match:
         event_slug = startgg_match.group('event_slug')
         if not event_slug.startswith("tournament/"):

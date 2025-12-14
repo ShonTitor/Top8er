@@ -569,10 +569,8 @@ def event_data(slug) :
     for t in ttexts  :
         if len(ttext) + len(t) < 50 :
             ttext += t
-    if event["tournament"]["shortSlug"] :
-        link = "https://start.gg/"+event["tournament"]["shortSlug"]
-    else :
-        link = "start.gg/"+event["tournament"]["slug"]
+
+    link = "start.gg/"+event["tournament"]["slug"]
 
     datos = {
         "players" : players,
@@ -816,10 +814,7 @@ def sgg_data(slug, game=None):
     else : country = None
     name = event["tournament"]["name"] + " - " + event["name"]
 
-    if event["tournament"]["shortSlug"] :
-        link = "https://www.start.gg/"+event["tournament"]["shortSlug"]
-    else :
-        link = "https://www.start.gg/"+event["tournament"]["slug"]
+    link = "start.gg/"+event["tournament"]["slug"]
 
     ttext = f"{event['tournament']['name']} - {event['name']}"
     btext = []
