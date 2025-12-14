@@ -476,6 +476,7 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
                  align="center", alignv="bottom",
                  fill=font_color1, shadow=font_shadow1)
 
+    final_height = SIZE[1]
     # Side event rendering
     if "side_event" in data and data["side_event"]:
         side_event = data["side_event"]
@@ -505,7 +506,7 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
             # Draw players in three columns
             player_y_start = side_event_y_start + 90
             column_width = SIZE[0] // columns - 15
-            icon_size_side = 60
+            icon_size_side = 70
             
             # Load twitter icon
             twitter_icon_path = os.path.join(path, "assets", "social_icons", "twitter.png")
@@ -567,7 +568,7 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
                 
                 # Draw player name
                 name_box = (text_x, y_start, 
-                           x_start + column_width - 20, y_start + 30)
+                           x_start + column_width - 20, y_start + 45)
                 player_name = player["tag"]
                 
                 fit_text(draw, name_box, player_name, the_font, guess=24,
@@ -576,27 +577,26 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
                 
                 # Draw twitter handle underneath if available
                 if player.get("twitter"):
-                    twitter_y = y_start + 32
+                    twitter_y = y_start + 40
                     twitter_x = text_x
                     
                     # Draw twitter icon
                     if twitter_icon:
-                        twitter_icon_small = twitter_icon.resize((20, 20), resample=Image.LANCZOS)
+                        twitter_icon_size = (25, 25)
+                        twitter_icon_small = twitter_icon.resize(twitter_icon_size, resample=Image.LANCZOS)
                         canvas.paste(twitter_icon_small, (twitter_x, twitter_y), mask=twitter_icon_small)
-                        twitter_x += 25
+                        twitter_x += 30
                     
                     # Draw twitter handle with @ sign
                     twitter_handle = "@" + player["twitter"] if not player["twitter"].startswith("@") else player["twitter"]
-                    twitter_box = (twitter_x, twitter_y, 
-                                  x_start + column_width - 100, twitter_y + 25)
+                    twitter_box = (twitter_x, twitter_y - 10, 
+                                  x_start + column_width - 50, twitter_y + 40)
                     fit_text(draw, twitter_box, twitter_handle, the_font, guess=18,
                             align="left", alignv="middle",
                             fill=(200, 200, 200), shadow=(0, 0, 0))
             
             # Update canvas size for bottom text positioning
             final_height = canvas.size[1]
-    else:
-        final_height = SIZE[1]
     
     # Draw bottom text and credits at the bottom of the (possibly extended) canvas
     bottom_text_y = final_height - 70

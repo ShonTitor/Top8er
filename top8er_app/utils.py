@@ -3,6 +3,7 @@ import json
 import os
 import re
 from io import BytesIO
+import traceback
 
 from django.shortcuts import render
 
@@ -213,6 +214,30 @@ def hestia(request, game, FormClass,
                     init_data["player"+str(i+1)]["char"] = datos["players"][i].get("char", [None])[0]
                     init_data["player"+str(i+1)]["flag"] = datos["players"][i].get("flag", "None")
                 except :
+                    pass
+            
+            # Process side event link if provided
+            side_event_url = request.POST.get("side_event_link", "").strip()
+            if side_event_url:
+                try:
+                    side_slug_type, side_slug = identify_slug(side_event_url)
+                    side_datos = data_functions.get(side_slug_type, lambda x: None)(side_slug)
+                    
+                    if side_datos and side_datos.get("players"):
+                        init_data["side_event_title"] = side_datos.get("toptext", "Side Event")
+                        
+                        for i in range(min(8, len(side_datos["players"]))):
+                            init_data["side_player"+str(i+1)] = {
+                                "name": side_datos["players"][i]["tag"],
+                                "twitter": side_datos["players"][i].get("twitter", ""),
+                                "char": side_datos["players"][i].get("char", [None]),
+                                "flag": side_datos["players"][i].get("flag", "None"),
+                            }
+                            if init_data["side_player"+str(i+1)]["char"] is not None:
+                                init_data["side_player"+str(i+1)]["char"] = init_data["side_player"+str(i+1)]["char"][0]
+                except Exception as ex:
+                    print(f"Error loading side event data: {ex}")
+                    traceback.print_exc()
                     pass
             
             context = { "hasextra" : has_extra,
