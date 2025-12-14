@@ -149,7 +149,7 @@
 			display: none;
 		 }
 
-		 .layopt, .fontopt { display : none; }
+		 .layopt, .fontopt, .sideevent { display : none; }
 
 		 .moreopt {
 		 	background-color: darkred;
@@ -297,6 +297,25 @@
 					$(this).html("+ Font Options");
 				}
 			});
+
+			$(".togglesideevent").click(function() {
+				if ($(".sideevent").is(":hidden")) {
+					$(".sideevent").css('display', 'flex');
+					$(this).html("- Side Event");
+				}
+				else {
+					$(".sideevent").hide();
+					$(this).html("+ Side Event");
+				}
+			});
+
+			// Remove required attribute from all side event player fields
+			for (i=1; i<=12; i++) {
+				$('input[name="side_player'+i+'_name"]').removeAttr('required');
+				$('select[name="side_player'+i+'_char"]').removeAttr('required');
+				$('select[name="side_player'+i+'_color"]').removeAttr('required');
+				$('select[name="side_player'+i+'_flag"]').removeAttr('required');
+			}
 
 		});
 
@@ -558,6 +577,87 @@
         	</div>
 
     	</div>
+
+        <!-- Side Event -->
+
+        <span class="moreopt togglesideevent col-md-12">+ Side Event</span>
+
+        <div class="row col-md-12">
+
+        <div class="sideevent col-xs-12 col-sm-12 col-md-12 col-lg-12 row">
+
+	        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	                {{ form.side_event_title.label_tag }}
+	                {{ form.side_event_title.errors }}
+	                {{ form.side_event_title }}
+	        </div>
+
+	        <div class="row" style="width: 100%; margin: 0">
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
+		            <p>Side Event Player 1</p>
+		            {{ form.side_player1.errors }}
+		            {{ form.side_player1 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
+		            <p>Side Event Player 2</p>
+		            {{ form.side_player2.errors }}
+		            {{ form.side_player2 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
+		            <p>Side Event Player 3</p>
+		            {{ form.side_player3.errors }}
+		            {{ form.side_player3 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
+		            <p>Side Event Player 4</p>
+		            {{ form.side_player4.errors }}
+		            {{ form.side_player4 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
+		            <p>Side Event Player 5</p>
+		            {{ form.side_player5.errors }}
+		            {{ form.side_player5 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
+		            <p>Side Event Player 6</p>
+		            {{ form.side_player6.errors }}
+		            {{ form.side_player6 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
+		            <p>Side Event Player 7</p>
+		            {{ form.side_player7.errors }}
+		            {{ form.side_player7 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
+		            <p>Side Event Player 8</p>
+		            {{ form.side_player8.errors }}
+		            {{ form.side_player8 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
+		            <p>Side Event Player 9</p>
+		            {{ form.side_player9.errors }}
+		            {{ form.side_player9 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
+		            <p>Side Event Player 10</p>
+		            {{ form.side_player10.errors }}
+		            {{ form.side_player10 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
+		            <p>Side Event Player 11</p>
+		            {{ form.side_player11.errors }}
+		            {{ form.side_player11 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
+		            <p>Side Event Player 12</p>
+		            {{ form.side_player12.errors }}
+		            {{ form.side_player12 }}
+		        </div>
+	        </div>
+
+        </div>
+
+        </div>
 
         <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-left: 5%; padding-right: 5%
 		                                                 padding-top: 10px;
