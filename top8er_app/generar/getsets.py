@@ -292,6 +292,41 @@ parrygg_countries_dict = {
 }
 
 
+def resolve_startgg_slug(short_slug):
+    """
+    Resolve a start.gg short slug to the full event slug using the API.
+    """
+    
+    # GraphQL query to get tournament info by slug
+    query = """
+    query TournamentQuery($slug: String) {
+      tournament(slug: $slug) {
+        id
+        name
+        slug
+      }
+    }
+    """
+    
+    try:
+        response = requests.post(
+            'https://api.start.gg/gql/alpha',
+            json={'query': query, 'variables': {'slug': short_slug}},
+            headers=headers,
+            timeout=10
+        )
+        response.raise_for_status()
+        data = response.json()
+        
+        if 'data' in data and data['data'].get('tournament'):
+            tournament = data['data']['tournament']
+            return tournament['slug']
+        
+        return None
+    except Exception as e:
+        print(f"Error resolving slug via API: {e}")
+        return None
+
 def check_event(slug):
     query = '''
     query SetsQuery($slug: String) {
