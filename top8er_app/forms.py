@@ -68,6 +68,10 @@ class SmashggForm(forms.Form) :
     event = forms.RegexField(label="External link",
                              regex = "|".join([startgg_re, challonge_re, tonamel_re, parrygg_re]),
                              max_length=200)
+    side_event_link = forms.RegexField(label="Side Event External link (optional)",
+                             regex = "|".join([startgg_re, challonge_re, tonamel_re, parrygg_re]),
+                             max_length=200,
+                             required=False)
     def clean(self):
         cleaned_data = super().clean()
         try:
@@ -338,10 +342,6 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
         side_player6 = SidePlayerField()
         side_player7 = SidePlayerField()
         side_player8 = SidePlayerField()
-        side_player9 = SidePlayerField()
-        side_player10 = SidePlayerField()
-        side_player11 = SidePlayerField()
-        side_player12 = SidePlayerField()
 
     return GenForm
     

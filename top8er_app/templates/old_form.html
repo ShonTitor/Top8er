@@ -310,7 +310,7 @@
 			});
 
 			// Remove required attribute from all side event player fields
-			for (i=1; i<=12; i++) {
+			for (i=1; i<=8; i++) {
 				$('input[name="side_player'+i+'_name"]').removeAttr('required');
 				$('select[name="side_player'+i+'_char"]').removeAttr('required');
 				$('select[name="side_player'+i+'_color"]').removeAttr('required');
@@ -377,6 +377,15 @@
 			   parry.gg links <strong>MUST have this format:</strong> https://parry.gg/{tournament}/{event}/...<br>
 			   <br>
 			   Top8er will try its best to guess the characters used by each player, but if it fails you can always select them manually in the next screen.<br>
+			</p>
+        </div>
+
+        <div class="form2box col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            {{ form2.side_event_link.label_tag }}
+            {{ form2.side_event_link.errors }}
+            {{ form2.side_event_link }}
+            <p>
+			   <i>Optional:</i> Provide a link to a side event using the same format as above. Side event results will be displayed below the main event.<br>
 			</p>
         </div>
 
@@ -632,26 +641,6 @@
 		            <p>Side Event Player 8</p>
 		            {{ form.side_player8.errors }}
 		            {{ form.side_player8 }}
-		        </div>
-		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
-		            <p>Side Event Player 9</p>
-		            {{ form.side_player9.errors }}
-		            {{ form.side_player9 }}
-		        </div>
-		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
-		            <p>Side Event Player 10</p>
-		            {{ form.side_player10.errors }}
-		            {{ form.side_player10 }}
-		        </div>
-		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
-		            <p>Side Event Player 11</p>
-		            {{ form.side_player11.errors }}
-		            {{ form.side_player11 }}
-		        </div>
-		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-4">
-		            <p>Side Event Player 12</p>
-		            {{ form.side_player12.errors }}
-		            {{ form.side_player12 }}
 		        </div>
 	        </div>
 

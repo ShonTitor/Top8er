@@ -92,7 +92,7 @@ def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), defa
     side_event_players = []
     
     if side_event_title:
-        for i in range(1, 13):
+        for i in range(1, 9):
             side_player_name = request.POST.get(f"side_player{i}_name", "").strip()
             if side_player_name:
                 side_player_char = request.POST.get(f"side_player{i}_char")
@@ -255,7 +255,7 @@ def hestia(request, game, FormClass,
                     pass
 
             # Preserve side event data
-            for i in range(1, 13):
+            for i in range(1, 9):
                 try:
                     init_data["side_player{}".format(i)] = {
                         "name": request.POST.get("side_player{}_name".format(i), ""),
