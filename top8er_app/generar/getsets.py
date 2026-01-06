@@ -1,3 +1,4 @@
+import math
 import requests
 import json
 import time
@@ -656,7 +657,15 @@ def sgg_sets_query(slug) :
       event(slug: $slug) {
         sets(page: $page, perPage: 50, sortType: MAGIC) {
           nodes {
+            slots {
+              slotIndex
+              entrant {
+                name
+              }
+            }
             games {
+              entrant1Score
+              entrant2Score
               selections {
                 entrant {
                   name
@@ -694,20 +703,31 @@ def sgg_char_freq(sets, gameId):
 
     for node in sets:
         if node["games"] is None : continue
+        entrant_1_player = None
+        for slot in node["slots"] :
+            if slot["slotIndex"] is 0 :
+                entrant_1_player = slot["entrant"]["name"]
+        if entrant_1_player is None : continue
         for game in node["games"] :
             if game["selections"] :
                 for selection in game["selections"] :
                     player = selection["entrant"]["name"]
                     char = selection["selectionValue"]
+                    score = game["entrant1Score"] if player == entrant_1_player else game["entrant2Score"]
+                    color = math.floor(score / 100) - 1 if gameId is 1 and type(score) is int and score >= 100 else 0
                     if player in freq :
                         if char in freq[player] :
-                            freq[player][char] += 1
+                            freq[player][char][0] += 1
+                            if color in freq[player][char][1] :
+                                freq[player][char][1][color] += 1
+                            else :
+                                freq[player][char][1][color] = 1
                         else :
-                            freq[player][char] = 1
+                            freq[player][char] = [1, {color : 1}]
                     else :
-                        freq[player] = {char : 1}
+                        freq[player] = {char : [1, {color: 1}]}
     return {
-      key:sorted([(v, char_dict.get(k, k)) for k,v in value.items()], reverse=True)
+      key:sorted([(num_and_colors[0], char_dict.get(char, char), sorted([(num, color) for color, num in num_and_colors[1].items()], reverse=True)[0][1]) for char, num_and_colors in value.items()], reverse=True)
       for key, value in freq.items()
     }
 
@@ -740,7 +760,8 @@ def sgg_data(slug, game=None):
       if not twi:
           twi = ""
       
-      char = char_freq.get(name, [(0, None)])[0][1]
+      char = char_freq.get(name, [(0, None, 0)])[0][1]
+      color = char_freq.get(name, [(0, None, 0)])[0][2]
 
       possible_chars = list(game_data["characters"]) if game else []
       if game and char is not None and char not in possible_chars and len(possible_chars) > 0 and type(char) is str:
@@ -765,7 +786,8 @@ def sgg_data(slug, game=None):
         "tag" : name,
         "twitter" : twi,
         "position": position,
-        "char": char
+        "char": char,
+        "color": color,
       })
 
     event = data["event"]

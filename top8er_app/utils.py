@@ -172,6 +172,7 @@ def hestia(request, game, FormClass,
                     init_data["player"+str(i+1)]["name"] = datos["players"][i]["tag"]
                     init_data["player"+str(i+1)]["twitter"] = datos["players"][i].get("twitter", "")
                     init_data["player"+str(i+1)]["char"] = datos["players"][i].get("char", [None])[0]
+                    init_data["player"+str(i+1)]["color"] = datos["players"][i].get("color", 0)
                     init_data["player"+str(i+1)]["flag"] = datos["players"][i].get("flag", "None")
                 except :
                     pass
