@@ -3,6 +3,7 @@ import json
 import os
 import re
 from io import BytesIO
+import traceback
 
 from django.shortcuts import render
 
@@ -86,12 +87,51 @@ def graphic_from_request(request, game, hasextra=True, icon_sizes=(64, 32), defa
                 "portrait": portraits[j]
                 }
                 for j in range(8)]
+    
+    # Process side event data
+    side_event_title = request.POST.get("side_event_title", "").strip()
+    side_event_players = []
+    
+    if side_event_title:
+        for i in range(1, 9):
+            side_player_name = request.POST.get(f"side_player{i}_name", "").strip()
+            if side_player_name:
+                side_player_char = request.POST.get(f"side_player{i}_char")
+                side_player_color = request.POST.get(f"side_player{i}_color")
+                side_player_twitter = request.POST.get(f"side_player{i}_twitter", "").strip()
+                side_player_flag = request.POST.get(f"side_player{i}_flag")
+                
+                side_player_data = {
+                    "tag": side_player_name,
+                    "char": (side_player_char, side_player_color) if side_player_char else None,
+                    "twitter": side_player_twitter if side_player_twitter else None,
+                    "flag": side_player_flag if side_player_flag != "None" else None
+                }
+                
+                # Handle custom flag
+                if f"side_player{i}_custom_flag" in request.FILES:
+                    side_player_data["custom_flag"] = request.FILES[f"side_player{i}_custom_flag"]
+                else:
+                    side_player_data["custom_flag"] = None
+                
+                # Handle portrait
+                if f"side_player{i}_portrait" in request.FILES:
+                    side_player_data["portrait"] = request.FILES[f"side_player{i}_portrait"]
+                else:
+                    side_player_data["portrait"] = None
+                
+                side_event_players.append(side_player_data)
+    
     datos = { "players" : players,
                 "toptext" : request.POST["ttext"],
                 "bottomtext" : request.POST["btext"],
                 "url" : request.POST["url"],
                 "game" : game,
-                "logo": logo
+                "logo": logo,
+                "side_event": {
+                    "title": side_event_title,
+                    "players": side_event_players
+                } if side_event_title else None
             }
 
     fuente = request.POST["fontt"]
@@ -177,6 +217,30 @@ def hestia(request, game, FormClass,
                 except :
                     pass
             
+            # Process side event link if provided
+            side_event_url = request.POST.get("side_event_link", "").strip()
+            if side_event_url:
+                try:
+                    side_slug_type, side_slug = identify_slug(side_event_url)
+                    side_datos = data_functions.get(side_slug_type, lambda x: None)(side_slug)
+                    
+                    if side_datos and side_datos.get("players"):
+                        init_data["side_event_title"] = side_datos.get("toptext", "Side Event")
+                        
+                        for i in range(min(8, len(side_datos["players"]))):
+                            init_data["side_player"+str(i+1)] = {
+                                "name": side_datos["players"][i]["tag"],
+                                "twitter": side_datos["players"][i].get("twitter", ""),
+                                "char": side_datos["players"][i].get("char", [None]),
+                                "flag": side_datos["players"][i].get("flag", "None"),
+                            }
+                            if init_data["side_player"+str(i+1)]["char"] is not None:
+                                init_data["side_player"+str(i+1)]["char"] = init_data["side_player"+str(i+1)]["char"][0]
+                except Exception as ex:
+                    print(f"Error loading side event data: {ex}")
+                    traceback.print_exc()
+                    pass
+            
             context = { "hasextra" : has_extra,
                         "form" : FormClass(initial=init_data),
                         "form2" : SmashggForm(),
@@ -214,6 +278,23 @@ def hestia(request, game, FormClass,
                             init_data["player{}".format(i)][field] = request.POST[f]
                             
                 except :
+                    pass
+
+            # Preserve side event data
+            for i in range(1, 9):
+                try:
+                    init_data["side_player{}".format(i)] = {
+                        "name": request.POST.get("side_player{}_name".format(i), ""),
+                        "twitter": request.POST.get("side_player{}_twitter".format(i), ""),
+                        "char": request.POST.get("side_player{}_char".format(i), ""),
+                        "color": request.POST.get("side_player{}_color".format(i), ""),
+                        "flag": request.POST.get("side_player{}_flag".format(i), ""),
+                    }
+                    for field in ["extra1", "extra_color1", "extra2", "extra_color2"]:
+                        f = "side_player{}_{}".format(i, field)
+                        if f in request.POST:
+                            init_data["side_player{}".format(i)][field] = request.POST[f]
+                except:
                     pass
 
             context = { "hasextra" : has_extra,

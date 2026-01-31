@@ -149,7 +149,7 @@
 			display: none;
 		 }
 
-		 .layopt, .fontopt { display : none; }
+		 .layopt, .fontopt, .sideevent { display : none; }
 
 		 .moreopt {
 		 	background-color: darkred;
@@ -298,6 +298,25 @@
 				}
 			});
 
+			$(".togglesideevent").click(function() {
+				if ($(".sideevent").is(":hidden")) {
+					$(".sideevent").css('display', 'flex');
+					$(this).html("- Side Event");
+				}
+				else {
+					$(".sideevent").hide();
+					$(this).html("+ Side Event");
+				}
+			});
+
+			// Remove required attribute from all side event player fields
+			for (i=1; i<=8; i++) {
+				$('input[name="side_player'+i+'_name"]').removeAttr('required');
+				$('select[name="side_player'+i+'_char"]').removeAttr('required');
+				$('select[name="side_player'+i+'_color"]').removeAttr('required');
+				$('select[name="side_player'+i+'_flag"]').removeAttr('required');
+			}
+
 		});
 
 		function colorcito(desu) {
@@ -358,6 +377,15 @@
 			   parry.gg links <strong>MUST have this format:</strong> https://parry.gg/{tournament}/{event}/...<br>
 			   <br>
 			   Top8er will try its best to guess the characters used by each player, but if it fails you can always select them manually in the next screen.<br>
+			</p>
+        </div>
+
+        <div class="form2box col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            {{ form2.side_event_link.label_tag }}
+            {{ form2.side_event_link.errors }}
+            {{ form2.side_event_link }}
+            <p>
+			   <i>Optional:</i> Provide a link to a side event using the same format as above. Side event results will be displayed below the main event.<br>
 			</p>
         </div>
 
@@ -558,6 +586,67 @@
         	</div>
 
     	</div>
+
+        <!-- Side Event -->
+
+        <span class="moreopt togglesideevent col-md-12">+ Side Event</span>
+
+        <div class="row col-md-12">
+
+        <div class="sideevent col-xs-12 col-sm-12 col-md-12 col-lg-12 row">
+
+	        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	                {{ form.side_event_title.label_tag }}
+	                {{ form.side_event_title.errors }}
+	                {{ form.side_event_title }}
+	        </div>
+
+	        <div class="row" style="width: 100%; margin: 0">
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		            <p>Side Event Player 1</p>
+		            {{ form.side_player1.errors }}
+		            {{ form.side_player1 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		            <p>Side Event Player 2</p>
+		            {{ form.side_player2.errors }}
+		            {{ form.side_player2 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		            <p>Side Event Player 3</p>
+		            {{ form.side_player3.errors }}
+		            {{ form.side_player3 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		            <p>Side Event Player 4</p>
+		            {{ form.side_player4.errors }}
+		            {{ form.side_player4 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		            <p>Side Event Player 5</p>
+		            {{ form.side_player5.errors }}
+		            {{ form.side_player5 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		            <p>Side Event Player 6</p>
+		            {{ form.side_player6.errors }}
+		            {{ form.side_player6 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		            <p>Side Event Player 7</p>
+		            {{ form.side_player7.errors }}
+		            {{ form.side_player7 }}
+		        </div>
+		        <div class="cajita col-xs-12 col-sm-12 col-md-6 col-lg-3">
+		            <p>Side Event Player 8</p>
+		            {{ form.side_player8.errors }}
+		            {{ form.side_player8 }}
+		        </div>
+	        </div>
+
+        </div>
+
+        </div>
 
         <div class="cajilla col-xs-12 col-sm-12 col-md-3 col-lg-3" style="padding-left: 5%; padding-right: 5%
 		                                                 padding-top: 10px;

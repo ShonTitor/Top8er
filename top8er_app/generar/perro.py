@@ -13,6 +13,13 @@ class RereadableFile(io.BytesIO) :
         self.seek(0)
         return content
 
+def convert_color_string_to_tuple(color_string):
+    """Convert a hex color string to an RGB tuple."""
+    return tuple(
+        int(color_string.lstrip('#')[i:i+2], 16)
+        for i in (0, 2, 4)
+    )
+
 def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True,
                     custombg=None, darkenbg=True,
                     customcolor=None, customcolor2=None,
@@ -106,8 +113,29 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
               ]
     POSLOGO = (53, 15) # (53, 15, 803, 125)
     SIZELOGO = (750, 110)
+
+    # Convert customcolors to tuples if they are strings
+    if type(customcolor) is str:
+        customcolor = convert_color_string_to_tuple(customcolor)
+    if type(customcolor2) is str:
+        customcolor2 = convert_color_string_to_tuple(customcolor2)
+    
+    # Calculate final canvas size (including side event if present)
+    final_canvas_height = SIZE[1]
+    row_height = 100
+    columns = 4
+    if "side_event" in data and data["side_event"]:
+        side_event = data["side_event"]
+        if side_event["title"] and side_event["players"]:
+            num_players = len(side_event["players"])
+            rows = (num_players + columns - 1) // columns
+            side_event_height = 60 + (rows * row_height) + 40
+            final_canvas_height = SIZE[1] + side_event_height
+    
+    FINAL_SIZE = (SIZE[0], final_canvas_height)
+    
     # The final image will be stored in this image
-    canvas = Image.new('RGBA', SIZE, (0, 0, 0))
+    canvas = Image.new('RGBA', FINAL_SIZE, (0, 0, 0))
     # Flag parametes
     FLAG_SIZE = [100, 50, 50, 50, 40, 40, 40, 40]
     FLAG_POS = [(POS[i][0]+int(SIZE_SQUARE[i]*0.95)-FLAG_SIZE[i], 
@@ -117,21 +145,35 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
     # Background
     if custombg :
         background = Image.open(custombg, mode="r")
-        width, height = background.size
-        w, h = int(width*SIZE[1]/height), int(height*SIZE[0]/width)
-        if w < SIZE[0] :
-            width, height = SIZE[0], h
-        else :
-            width, height = w, SIZE[1]
-        # Resizing the background to fit the canvas
-        background = background.resize((width, height), resample=Image.LANCZOS)
-        canvas.paste(background, (int((SIZE[0]-width)/2), int((SIZE[1]-height)/2)) )
-        if darkenbg :
-            background = Image.new('RGBA', SIZE, (0, 0, 0, 0))
-            canvas = Image.blend(canvas, background, 0.30)
     else :
         background  = Image.open(os.path.join(path, "assets", game, "{}.png".format(default_bg))).convert("RGBA")
-        canvas.paste(background, (0,0), mask=background)
+    
+    # Resize and crop background to fit canvas while preserving aspect ratio
+    bg_width, bg_height = background.size
+    scale_w = FINAL_SIZE[0] / bg_width
+    scale_h = FINAL_SIZE[1] / bg_height
+    scale = max(scale_w, scale_h)  # Use max to ensure full coverage
+    
+    new_width = int(bg_width * scale)
+    new_height = int(bg_height * scale)
+    
+    # Resize background preserving aspect ratio
+    background = background.resize((new_width, new_height), resample=Image.LANCZOS)
+    
+    # Crop to canvas size (center crop)
+    left = (new_width - FINAL_SIZE[0]) // 2
+    top = (new_height - FINAL_SIZE[1]) // 2
+    background = background.crop((left, top, left + FINAL_SIZE[0], top + FINAL_SIZE[1]))
+    
+    # Paste background and apply effects
+    if custombg and not background.mode == 'RGBA':
+        background = background.convert('RGBA')
+    
+    canvas.paste(background, (0, 0), mask=background if background.mode == 'RGBA' else None)
+    
+    if custombg and darkenbg :
+        darken_layer = Image.new('RGBA', FINAL_SIZE, (0, 0, 0, 0))
+        canvas = Image.blend(canvas, darken_layer, 0.30)
 
     canvas = canvas.convert('RGB')
     # Draw object, to draw text on the image
@@ -273,20 +315,55 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
                     pass
                     #print(e, str(route), "perro")
 
-    # Layout parts
-    part  = Image.open(os.path.join(template,"marco.png"))
-    if customcolor :
+    # Layout parts consisting of the portrait borders and swash.
+    # The swash is the decorative border
+    #   at the top-left and bottom-right of the graphic.
+    # Marco contains the portrait borders and swash fill.
+    part = Image.open(os.path.join(template,"marco.png"))
+    if customcolor:
         solid = Image.new('RGB', SIZE, customcolor)
         canvas.paste(solid, (0,0), mask=part)
-    else :
+    else:
         canvas.paste(part, (0,0), mask=part)
 
+    # polo contains the swash border only
+    # This is so it can be colored differently if desired
     part = Image.open(os.path.join(template,"polo.png"))
-    if customcolor2 :
-        solid = Image.new('RGB', SIZE, customcolor2)
-        canvas.paste(solid, (0,0), mask=part)
-    else :
-        canvas.paste(part, (0,0), mask=part)
+    
+    # Cut swash border image in half and place top half at top, bottom half at bottom
+    polo_width, polo_height = part.size
+    half_height = polo_height // 2
+    
+    # Top half of swash border
+    top_half = part.crop((0, 0, polo_width, half_height))
+    if customcolor2:
+        solid_top = Image.new('RGB', (SIZE[0], half_height), customcolor2)
+        canvas.paste(solid_top, (0, 0), mask=top_half)
+    else:
+        canvas.paste(top_half, (0, 0), mask=top_half)
+    
+    # Bottom half of swash border
+    bottom_half = part.crop((0, half_height, polo_width, polo_height))
+    bottom_y = FINAL_SIZE[1] - half_height
+    
+    # Flood fill the bottom-right area with customcolor
+    if customcolor:
+        # Convert bottom_half to RGBA to work with it
+        bottom_half_filled = bottom_half.convert('RGBA')
+        # Flood fill from bottom-right corner
+        seed_x = bottom_half_filled.width - 5
+        seed_y = bottom_half_filled.height - 5
+        ImageDraw.floodfill(bottom_half_filled, (seed_x, seed_y), customcolor + (255,), thresh=400)
+        
+        # Paste the filled version
+        canvas.paste(bottom_half_filled, (0, bottom_y), mask=bottom_half_filled)
+    
+    # Then overlay with customcolor2 (highlight color) for the border
+    if customcolor2:
+        solid_bottom = Image.new('RGB', (SIZE[0], half_height), customcolor2)
+        canvas.paste(solid_bottom, (0, bottom_y), mask=bottom_half)
+    else:
+        canvas.paste(bottom_half, (0, bottom_y), mask=bottom_half)
 
     # Placing numbers
     if old_number_style:
@@ -314,9 +391,9 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
                     align="left", alignv="top", guess=150,
                     fill=font_color1, shadow=font_shadow1)
 
-    # Corner texts
+    # Corner texts - will be adjusted if side event exists
 
-    # Top and bottom texts
+    # Top text (stays at top)
     if data["logo"]:
         logo = Image.open(data["logo"]).convert("RGBA")
         logo_width, logo_height = logo.size
@@ -331,15 +408,8 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
     else:
         fit_text(draw, POSTXT[0], data["toptext"], the_font,
                 align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
-    fit_text(draw, POSTXT[1], data["bottomtext"], the_font,
-             align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
-
-    # Credits
-    fit_text(draw, POSTXT[2], "Design by:  @Elenriqu3\nGenerator by: @Riokaru", the_font,
-             align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
-    fit_text(draw, POSTXT[3], "made in www.top8er.com", the_font,
-            align="right", alignv="middle", fill=font_color2, shadow=False)
-    # URL
+    
+    # URL (stays at top right)
     fit_text(draw, POSTXT[4], data["url"], the_font,
              align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
              
@@ -405,5 +475,147 @@ def generate_banner(data, prmode=False, old_number_style=True, blacksquares=True
         fit_text(draw, cajita_nombre, name, the_font, guess=int(size[0]*0.26),
                  align="center", alignv="bottom",
                  fill=font_color1, shadow=font_shadow1)
+
+    final_height = SIZE[1]
+    # Side event rendering
+    if "side_event" in data and data["side_event"]:
+        side_event = data["side_event"]
+        if side_event["title"] and side_event["players"]:
+            # Calculate side event dimensions
+            side_players = side_event["players"]
+            num_players = len(side_players)
+            
+            # Three columns layout
+            rows = (num_players + columns - 1) // columns  # Ceiling division
+            
+            # Dimensions
+            side_event_height = 100 + (rows * row_height) + 40  # Title + rows + padding
+            
+            # Canvas was already created with the right size, just update draw object
+            draw = ImageDraw.Draw(canvas)
+            
+            # Position side event right after main content (twitter boxes end at ~663)
+            side_event_y_start = 700
+
+            # Draw side event title
+            title_box = (50, side_event_y_start + 10, SIZE[0] - 50, side_event_y_start + 70)
+            fit_text(draw, title_box, side_event["title"], the_font, guess=48,
+                    align="center", alignv="middle",
+                    fill=font_color1, shadow=font_shadow1)
+            
+            # Draw players in three columns
+            player_y_start = side_event_y_start + 90
+            column_width = SIZE[0] // columns - 15
+            icon_size_side = 70
+            
+            # Load twitter icon
+            twitter_icon_path = os.path.join(path, "assets", "social_icons", "twitter.png")
+            try:
+                twitter_icon = Image.open(twitter_icon_path).convert("RGBA")
+            except:
+                twitter_icon = None
+            
+            for idx, player in enumerate(side_players):
+                col = idx % columns
+                row = idx // columns
+                placement_number = idx + 1
+                
+                x_start = col * column_width + 40
+                y_start = player_y_start + (row * row_height)
+                
+                # Draw box around player entry
+                box_padding = 5
+                box_width = column_width - 20
+                box_height = row_height - 20
+                
+                draw.rectangle([(x_start - box_padding, y_start - box_padding),
+                               (x_start + box_width, y_start + box_height)],
+                              outline=customcolor2, fill=customcolor, width=3)
+                
+                # Draw placement number
+                number_box = (x_start, y_start, x_start + 30, y_start + 30)
+                fit_text(draw, number_box, str(placement_number), the_font, guess=24,
+                        align="center", alignv="middle",
+                        fill=font_color1, shadow=font_shadow1)
+                
+                # Draw character icon if available
+                icon_x = x_start + 35
+                if player.get("char") and player["char"][0]:
+                    try:
+                        char_icon_path = os.path.join(icons, player["char"][0], 
+                                                     str(player["char"][1]) + ".png")
+                        char_icon = Image.open(char_icon_path).convert("RGBA")
+                        char_icon = char_icon.resize((icon_size_side, icon_size_side), 
+                                                    resample=Image.LANCZOS)
+                        canvas.paste(char_icon, (icon_x, y_start), mask=char_icon)
+                    except:
+                        pass
+                
+                # Draw flag if available
+                text_x = icon_x + icon_size_side + 10
+                if player.get("flag") or player.get("custom_flag"):
+                    try:
+                        if player.get("custom_flag"):
+                            flag = Image.open(player["custom_flag"]).convert("RGBA")
+                        else:
+                            flag = Image.open(os.path.join(flags_path, 
+                                            player["flag"] + ".png")).convert("RGBA")
+                        flag = flag.resize((40, 30), resample=Image.LANCZOS)
+                        canvas.paste(flag, (text_x, y_start + 5), mask=flag)
+                        text_x += 50
+                    except:
+                        pass
+                
+                # Draw player name
+                name_box = (text_x, y_start, 
+                           x_start + column_width - 20, y_start + 45)
+                player_name = player["tag"]
+                
+                fit_text(draw, name_box, player_name, the_font, guess=24,
+                        align="left", alignv="middle",
+                        fill=(255, 255, 255), shadow=(0, 0, 0))
+                
+                # Draw twitter handle underneath if available
+                if player.get("twitter"):
+                    twitter_y = y_start + 40
+                    twitter_x = text_x
+                    
+                    # Draw twitter icon
+                    if twitter_icon:
+                        twitter_icon_size = (25, 25)
+                        twitter_icon_small = twitter_icon.resize(twitter_icon_size, resample=Image.LANCZOS)
+                        canvas.paste(twitter_icon_small, (twitter_x, twitter_y), mask=twitter_icon_small)
+                        twitter_x += 30
+                    
+                    # Draw twitter handle with @ sign
+                    twitter_handle = "@" + player["twitter"] if not player["twitter"].startswith("@") else player["twitter"]
+                    twitter_box = (twitter_x, twitter_y - 10, 
+                                  x_start + column_width - 50, twitter_y + 40)
+                    fit_text(draw, twitter_box, twitter_handle, the_font, guess=18,
+                            align="left", alignv="middle",
+                            fill=(200, 200, 200), shadow=(0, 0, 0))
+            
+            # Update canvas size for bottom text positioning
+            final_height = canvas.size[1]
+    
+    # Draw bottom text and credits at the bottom of the (possibly extended) canvas
+    bottom_text_y = final_height - 70
+    credits_y = final_height - 74
+    credits_url_y = final_height - 20
+    
+    # Bottom text
+    bottom_text_box = (53, bottom_text_y, 997, bottom_text_y + 35)
+    fit_text(draw, bottom_text_box, data["bottomtext"], the_font,
+             align="left", alignv="middle", fill=font_color2, shadow=font_shadow2)
+    
+    # Credits
+    credits_box = (1075, credits_y, 1361, credits_y + 52)
+    fit_text(draw, credits_box, "Design by:  @Elenriqu3\nGenerator by: @Riokaru", the_font,
+             align="right", alignv="middle", fill=font_color2, shadow=font_shadow2)
+    
+    # Credits URL
+    credits_url_box = (1170, credits_url_y, 1361, credits_url_y + 15)
+    fit_text(draw, credits_url_box, "made in www.top8er.com", the_font,
+            align="right", alignv="middle", fill=font_color2, shadow=False)
 
     return canvas
