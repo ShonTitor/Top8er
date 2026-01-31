@@ -1,23 +1,35 @@
 import re
+import requests
+import os
 from django import forms
 from collections.abc import Mapping
 from typing import Type
 from colorful.forms import RGBColorField
-from .generar.getsets import check_event, check_challonge, check_parrygg, check_tonamel
+from .generar.getsets import resolve_startgg_slug, check_event, check_challonge, check_parrygg, check_tonamel
 from django.core.exceptions import ValidationError
 
-startgg_re = r"https://(www\.)?(smash|start)\.gg/(tournament/[^/]+/event/[^/]+)"
+# The tournament url could be missing the `tournament` subpath
+# when using a "short slug" from start.gg.
+startgg_re = r"https://(www\.)?(smash|start)\.gg/(?P<event_slug>(tournament/)?[^/]+/event/[^/]+)"
 challonge_re = r"https://([^\.]*)\.?challonge\.com/(.+)"
 tonamel_re = r"https://tonamel\.com/competition/([^/]+)"
 parrygg_re = r"https://parry\.gg/([^/]+)/([^/]+).*"
 
+
 def identify_slug(url):
-    if not url: 
+    if not url:
         return None, None
 
     startgg_match = re.match(startgg_re, url)
+
     if startgg_match:
-        return "startgg", startgg_match.groups()[-1]
+        event_slug = startgg_match.group('event_slug')
+        if not event_slug.startswith("tournament/"):
+            slug_parts = event_slug.split("/event/")
+            short_slug = slug_parts[0]
+            tournament_slug = resolve_startgg_slug(short_slug)
+            event_slug = f"{tournament_slug}/event/{slug_parts[1]}"
+        return "startgg", event_slug
     
     challonge_match = re.match(challonge_re, url)
     if challonge_match:
@@ -291,4 +303,4 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
         url = forms.CharField(label='Top Right', max_length=256, required=False, initial="https://top8er.com/")
 
     return GenForm
-    
+

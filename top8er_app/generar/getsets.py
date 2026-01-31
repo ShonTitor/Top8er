@@ -292,6 +292,41 @@ parrygg_countries_dict = {
 }
 
 
+def resolve_startgg_slug(short_slug):
+    """
+    Resolve a start.gg short slug to the full event slug using the API.
+    """
+    
+    # GraphQL query to get tournament info by slug
+    query = """
+    query TournamentQuery($slug: String) {
+      tournament(slug: $slug) {
+        id
+        name
+        slug
+      }
+    }
+    """
+    
+    try:
+        response = requests.post(
+            'https://api.start.gg/gql/alpha',
+            json={'query': query, 'variables': {'slug': short_slug}},
+            headers=headers,
+            timeout=10
+        )
+        response.raise_for_status()
+        data = response.json()
+        
+        if 'data' in data and data['data'].get('tournament'):
+            tournament = data['data']['tournament']
+            return tournament['slug']
+        
+        return None
+    except Exception as e:
+        print(f"Error resolving slug via API: {e}")
+        return None
+
 def check_event(slug):
     query = '''
     query SetsQuery($slug: String) {
@@ -302,11 +337,18 @@ def check_event(slug):
     '''
     payload = {"query" : query, "variables" : {"slug" : slug}}
     response = requests.post(url=url, headers=headers, json=payload)
-    event = json.loads(response.content)["data"]["event"]
-    if event :
+    try:
+        event = json.loads(response.content)["data"]["event"]
+    except Exception as e:
+        print("Headers:", headers)
+        print("Error checking event:", response.content)
+        raise e
+    if event:
         if event["numEntrants"] >= 8 :
             return True
-    else :
+    else:
+        print("Event not found:", slug)
+        print("Response content:", response.content)
         return False
 
 def check_challonge(slug, org=None) :
@@ -527,10 +569,8 @@ def event_data(slug) :
     for t in ttexts  :
         if len(ttext) + len(t) < 50 :
             ttext += t
-    if event["tournament"]["shortSlug"] :
-        link = "https://start.gg/"+event["tournament"]["shortSlug"]
-    else :
-        link = "start.gg/"+event["tournament"]["slug"]
+
+    link = "start.gg/"+event["tournament"]["slug"]
 
     datos = {
         "players" : players,
@@ -774,10 +814,7 @@ def sgg_data(slug, game=None):
     else : country = None
     name = event["tournament"]["name"] + " - " + event["name"]
 
-    if event["tournament"]["shortSlug"] :
-        link = "https://www.start.gg/"+event["tournament"]["shortSlug"]
-    else :
-        link = "https://www.start.gg/"+event["tournament"]["slug"]
+    link = "start.gg/"+event["tournament"]["slug"]
 
     ttext = f"{event['tournament']['name']} - {event['name']}"
     btext = []
