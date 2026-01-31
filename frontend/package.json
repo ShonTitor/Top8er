@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "watch": "npm-watch"
+    "watch": "npm-watch",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -26,14 +27,15 @@
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^5.1.1",
     "react-router-dom": "^6.9.0",
-    "vite": "^7.2.6"
+    "vite": "^7.2.6",
+    "typescript": "^5.3.3"
   },
   "watch": {
     "build": {
       "patterns": [
         "src"
       ],
-      "extensions": "js,jsx,css"
+      "extensions": "js,jsx,ts,tsx,css"
     }
   }
 }

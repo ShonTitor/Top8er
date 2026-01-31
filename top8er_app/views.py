@@ -5,6 +5,7 @@ from .generar.perro2 import generate_graphic
 
 from django.conf import settings
 from django.shortcuts import render
+from django.core.files.base import ContentFile
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
@@ -145,6 +146,17 @@ class api_generate(APIView):
                 is_image = True
             elif hasattr(value, "read"):
                 is_image = True
+            elif value and isinstance(value, dict) and 'base64' in value:
+                try:
+                    value = ContentFile(base64.b64decode(value['base64']), name=value.get('name', f"option_{name}.png"))
+                    is_image = True
+                except Exception as e:
+                    print(f"Error decoding base64 for option {name}: {e}")
+                    errors.append({
+                        "scope": "options",
+                        "field": name,
+                        "message": f"Error decoding base64: {str(e)}"
+                    })
 
             if is_image and not enable_image_uploading:
                 errors.append({
@@ -211,10 +223,30 @@ class api_generate(APIView):
                             if len(value) < j+1:
                                 value += [None for _ in range(j+1-len(value))]
                             value[j] = request.FILES[file_key]
+                        elif value[j] and isinstance(value[j], dict) and 'base64' in value[j]:
+                            try:
+                                value[j] = ContentFile(base64.b64decode(value[j]['base64']), name=value[j].get('name', f"player_{i}_{name}_{j}.png"))
+                            except Exception as e:
+                                print(f"Error decoding base64 for player {i} field {name} index {j}: {e}")
+                                errors.append({
+                                    "scope": "player_fields",
+                                    "field": name,
+                                    "message": f"Error decoding base64: {str(e)}"
+                                })
                 else:
                     file_key = f"player_{i}_{name}"
                     if file_key in request.FILES:
                         value = [request.FILES[file_key]]
+                    elif value[0] and isinstance(value[0], dict) and 'base64' in value[0]:
+                        try:
+                            value = [ContentFile(base64.b64decode(value[0]['base64']), name=value[0].get('name', f"player_{i}_{name}.png"))]
+                        except Exception as e:
+                            print(f"Error decoding base64 for player {i} field {name}: {e}")
+                            errors.append({
+                                "scope": "player_fields",
+                                "field": name,
+                                "message": f"Error decoding base64: {str(e)}"
+                            })
 
             for v in value:
                 is_image = False
