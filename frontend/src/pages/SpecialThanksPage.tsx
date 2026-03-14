@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Box, Typography, Divider, Paper, Chip, Link } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
@@ -30,6 +31,7 @@ const COMMUNITIES = [
 const USBESTIES = ['3rdStrike', 'Avend', 'CartezSoul', 'Luigic7'];
 
 function SpecialThanksPage() {
+  useEffect(() => { document.title = 'Top8er | Special Thanks'; }, []);
   return (
     <Box sx={{ py: 4, maxWidth: 780, mx: 'auto' }}>
 

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Box, Typography, Paper, Divider, Link, Avatar } from '@mui/material';
 import CodeIcon from '@mui/icons-material/Code';
 import BrushIcon from '@mui/icons-material/Brush';
@@ -64,6 +65,7 @@ function PersonCard({ person }: { person: Person }) {
 }
 
 function AboutPage() {
+  useEffect(() => { document.title = 'Top8er | About'; }, []);
   return (
     <Box sx={{ py: 4, maxWidth: 780, mx: 'auto' }}>
 

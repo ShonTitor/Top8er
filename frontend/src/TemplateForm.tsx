@@ -64,6 +64,10 @@ function TemplateForm() {
   });
   const { template, gameName } = useParams();
   const templateName = template as string;
+
+  useEffect(() => {
+    document.title = gameName ? `Top8er | ${gameName.toUpperCase()}` : 'Top8er | Graphic Generator';
+  }, [gameName]);
   const [templateData, setTemplateData] = useState<TemplateData | null>(null);
   const [gameData, setGameData] = useState<GameData | null>(null);
   const theme = useTheme();

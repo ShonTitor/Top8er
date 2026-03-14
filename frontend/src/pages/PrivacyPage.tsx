@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Box, Typography, Divider, Paper } from '@mui/material';
 
 interface Section {
@@ -46,6 +47,7 @@ const SECTIONS: Section[] = [
 ];
 
 function PrivacyPage() {
+  useEffect(() => { document.title = 'Top8er | Privacy Policy'; }, []);
   return (
     <Box sx={{ py: 4, maxWidth: 780, mx: 'auto' }}>
 

@@ -84,6 +84,8 @@ function GameCard({ game, onClick }: { game: Game; onClick: () => void }) {
 
 function HomePage() {
   const apiURL = import.meta.env.VITE_TOP8ER_API_URL as string;
+
+  useEffect(() => { document.title = 'Top8er | Tournament Graphic Generator'; }, []);
   const staticRoot = apiURL.replace(/\/api$/, '');
   const navigate = useNavigate();
 
