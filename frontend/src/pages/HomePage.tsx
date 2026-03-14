@@ -39,7 +39,7 @@ function GameCard({ game, onClick }: { game: Game; onClick: () => void }) {
         variant="outlined"
         onClick={onClick}
         sx={{
-          width: 88,
+          width: '100%',
           cursor: 'pointer',
           display: 'flex',
           flexDirection: 'column',
@@ -57,7 +57,7 @@ function GameCard({ game, onClick }: { game: Game; onClick: () => void }) {
           component="img"
           src={logoSrc}
           alt={game.full_name}
-          sx={{ width: 64, height: 64, objectFit: 'contain', display: 'block' }}
+          sx={{ width: '100%', maxWidth: 64, height: 64, objectFit: 'contain', display: 'block' }}
           onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
             e.currentTarget.style.display = 'none';
           }}
@@ -134,60 +134,67 @@ function HomePage() {
     : filterGames(categories[activeCategory]?.games ?? []);
 
   return (
-    <Box sx={{ py: 4, maxWidth: 1000, mx: 'auto' }}>
+    <Box sx={{ py: { xs: 2, sm: 4 }, px: { xs: 1, sm: 0 }, maxWidth: 1000, mx: 'auto' }}>
 
       {/* Hero */}
-      <Box sx={{ textAlign: 'center', mb: 5 }}>
+      <Box sx={{ textAlign: 'center', mb: { xs: 3, sm: 5 } }}>
         <Box
           component="img"
           src={logo}
           alt="Top8er logo"
-          sx={{ width: 80, height: 80, mb: 2, opacity: 0.9 }}
+          sx={{ width: { xs: 60, sm: 80 }, height: { xs: 60, sm: 80 }, mb: 2, opacity: 0.9 }}
         />
-        <Typography variant="h3" fontWeight={800} letterSpacing={2} gutterBottom>
+        <Typography variant="h3" fontWeight={800} letterSpacing={2} gutterBottom
+          sx={{ fontSize: { xs: '1.8rem', sm: '3rem' } }}
+        >
           Top8er.com
         </Typography>
-        <Typography variant="h6" color="text.secondary" fontWeight={300}>
+        <Typography variant="h6" color="text.secondary" fontWeight={300}
+          sx={{ fontSize: { xs: '0.95rem', sm: '1.25rem' } }}
+        >
           Tournament graphic generator for the competitive gaming community
         </Typography>
       </Box>
 
       {/* Template selector */}
-      <Paper variant="outlined" sx={{ p: 2, mb: 3 }}>
+      <Paper variant="outlined" sx={{ p: { xs: 1.5, sm: 2 }, mb: 3 }}>
         <Typography variant="overline" color="text.secondary" display="block" mb={1.5} letterSpacing={1}>
           Template
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
-          <AutoFixHighIcon color="secondary" />
-          <ToggleButtonGroup
-            value={selectedTemplate}
-            exclusive
-            onChange={handleTemplateChange}
-            size="small"
-          >
-            {templates.map(t => (
-              <ToggleButton key={t.name} value={t.name} sx={{ px: 1.5, py: 0.75, flexDirection: 'column', gap: 0.5 }}>
-                <Box
-                  component="img"
-                  src={`${staticRoot}/static/template_samples/${t.name}.png`}
-                  alt={t.label}
-                  sx={{ width: 120, height: 'auto', display: 'block', borderRadius: 0.5 }}
-                  onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-                <Typography variant="caption" sx={{ fontSize: 11, lineHeight: 1 }}>
-                  {t.label}
-                </Typography>
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
-          {requiresIcons && (
-            <Typography variant="caption" color="text.disabled" sx={{ fontStyle: 'italic' }}>
-              Only games with icon support are shown
-            </Typography>
-          )}
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, flexWrap: 'wrap' }}>
+          <AutoFixHighIcon color="secondary" sx={{ mt: 0.5 }} />
+          <Box sx={{ overflowX: 'auto', flex: 1 }}>
+            <ToggleButtonGroup
+              value={selectedTemplate}
+              exclusive
+              onChange={handleTemplateChange}
+              size="small"
+              sx={{ flexWrap: 'nowrap' }}
+            >
+              {templates.map(t => (
+                <ToggleButton key={t.name} value={t.name} sx={{ px: 1, py: 0.75, flexDirection: 'column', gap: 0.5 }}>
+                  <Box
+                    component="img"
+                    src={`${staticRoot}/static/template_samples/${t.name}.png`}
+                    alt={t.label}
+                    sx={{ width: { xs: 80, sm: 120 }, height: 'auto', display: 'block', borderRadius: 0.5 }}
+                    onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                  <Typography variant="caption" sx={{ fontSize: 11, lineHeight: 1 }}>
+                    {t.label}
+                  </Typography>
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          </Box>
         </Box>
+        {requiresIcons && (
+          <Typography variant="caption" color="text.disabled" sx={{ fontStyle: 'italic', display: 'block', mt: 1 }}>
+            Only games with icon support are shown
+          </Typography>
+        )}
       </Paper>
 
       {/* Game browser */}
@@ -217,15 +224,16 @@ function HomePage() {
         ) : (
           <>
             {!isSearching && (
-              <Box sx={{ display: 'flex', alignItems: 'center', borderBottom: 1, borderColor: 'divider' }}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
                   value={activeCategory}
                   onChange={(_, v) => setActiveCategory(v)}
                   variant="scrollable"
                   scrollButtons="auto"
+                  allowScrollButtonsMobile
                   textColor="secondary"
                   indicatorColor="secondary"
-                  sx={{ px: 1, flex: 1 }}
+                  sx={{ px: 1 }}
                 >
                   {categories.map(cat => {
                     const count = filterGames(cat.games).length;
@@ -233,14 +241,11 @@ function HomePage() {
                       <Tab
                         key={cat.category_name}
                         label={`${cat.category_name} (${count})`}
-                        sx={{ fontSize: 13 }}
+                        sx={{ fontSize: { xs: 11, sm: 13 }, minWidth: { xs: 'auto', sm: 90 }, px: { xs: 1, sm: 2 } }}
                       />
                     );
                   })}
                 </Tabs>
-                <Typography variant="caption" color="text.secondary" sx={{ px: 2, whiteSpace: 'nowrap' }}>
-                  {filterGames(categories.flatMap(c => c.games)).length} games
-                </Typography>
               </Box>
             )}
 
@@ -252,16 +257,16 @@ function HomePage() {
 
             <Box
               sx={{
-                p: 2,
-                display: 'flex',
-                flexWrap: 'wrap',
+                p: { xs: 1, sm: 2 },
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
                 gap: 1,
                 minHeight: 160,
                 alignContent: 'flex-start',
               }}
             >
               {currentGames.length === 0 ? (
-                <Typography color="text.disabled" sx={{ alignSelf: 'center', mx: 'auto', py: 4 }}>
+                <Typography color="text.disabled" sx={{ alignSelf: 'center', mx: 'auto', py: 4, gridColumn: '1 / -1' }}>
                   No games found
                 </Typography>
               ) : (
