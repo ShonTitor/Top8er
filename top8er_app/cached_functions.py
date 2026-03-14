@@ -5,6 +5,13 @@ import requests
 from django.conf import settings
 from django.core.cache import cache
 
+def slug_to_code(slug):
+    """Resolve a game slug or code to the canonical folder code."""
+    for s, code in settings.GAMES:
+        if slug == s or slug == code:
+            return code
+    return None
+
 def read_game_data(game):
     if game not in [g for _, g in settings.GAMES]:
         return None
@@ -14,7 +21,7 @@ def read_game_data(game):
     if game_data is None or settings.DEBUG:
         data_path = os.path.join(settings.APP_BASE_DIR, "generar", "assets", game, "game.json")
 
-        with open(data_path, "r") as f:
+        with open(data_path, "r", encoding="utf-8") as f:
             game_data = f.read()
 
         game_data = json.loads(game_data)
@@ -31,7 +38,7 @@ def read_template_data(template, complete=False):
     if template_data is None or settings.DEBUG:
         data_path = os.path.join(settings.APP_BASE_DIR, "generar", "templates", template, "template.json")
 
-        with open(data_path, "r") as f:
+        with open(data_path, "r", encoding="utf-8") as f:
             template_data = f.read()
 
         template_data = json.loads(template_data)
@@ -41,11 +48,67 @@ def read_template_data(template, complete=False):
         template_data.pop("layers")
     return template_data
 
+def read_templates_metadata():
+    templates_meta = cache.get("templates_metadata")
+    if templates_meta is not None and not settings.DEBUG:
+        return templates_meta
+
+    templates_meta = []
+    for name in settings.GRAPHIC_TEMPLATES:
+        data = read_template_data(name)
+        templates_meta.append({
+            "name": name,
+            "label": data.get("label", name),
+            "player_number": data.get("player_number", 0),
+            "requiresIcons": data.get("requiresIcons", False),
+        })
+
+    cache.set("templates_metadata", templates_meta, 60*60)
+    return templates_meta
+
+def read_games_data():
+    games_data = cache.get("games_data")
+    if games_data is not None and not settings.DEBUG:
+        return games_data
+
+    minimal_game_data = {}
+    for slug, code in settings.GAMES:
+        game_data = read_game_data(code)
+        minimal_game_data[slug] = {
+            "path": code,
+            "full_name": game_data["name"],
+            "slug": slug,
+            "hasIcons": game_data.get("hasIcons", False),
+        }
+
+    CATEGORY_ORDER = ["2D Fighter", "Platform Fighter", "3D Fighter", "TCG", "Other"]
+    categories = sorted(
+        [
+            {
+                "category_name": cat,
+                "games": sorted([
+                    {
+                        "slug": slug,
+                        "path": path,
+                        "full_name": minimal_game_data[slug]["full_name"],
+                        "hasIcons": minimal_game_data[slug]["hasIcons"],
+                    }
+                    for slug, path in games
+                ], key=lambda x: x["full_name"])
+            }
+            for cat, games in settings.CATEGORIES.items()
+        ],
+        key=lambda c: CATEGORY_ORDER.index(c["category_name"]) if c["category_name"] in CATEGORY_ORDER else 999,
+    )
+
+    cache.set("games_data", categories, 60*60)
+    return categories
+
 def read_home_data():
     home_data = cache.get("home_data")
     if home_data is not None and not settings.DEBUG:
         return home_data
-    
+
     home_data = {
         "templates": settings.GRAPHIC_TEMPLATES,
     }
@@ -96,7 +159,7 @@ def get_sgg_videogame_data():
     if sgg_videogame_data:
         return sgg_videogame_data
     
-    videogame_data = json.loads(requests.get(url="https://api.start.gg/videogames").content)
+    videogame_data = json.loads(requests.get(url="https://api.start.gg/videogames", timeout=10).content)
     videogame_data = videogame_data["entities"]["videogame"]
 
     game_dict = {
@@ -113,7 +176,7 @@ def get_sgg_char_data():
     if sgg_char_data:
         return sgg_char_data
 
-    char_data = json.loads(requests.get(url="https://api.start.gg/characters").content)
+    char_data = json.loads(requests.get(url="https://api.start.gg/characters", timeout=10).content)
     char_data = char_data["entities"]["character"]
     game_ids = set(c["videogameId"] for c in char_data)
 

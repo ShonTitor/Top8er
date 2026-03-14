@@ -4,6 +4,7 @@ import os
 import re
 from io import BytesIO
 
+from django.conf import settings
 from django.shortcuts import render
 
 from top8er_app.cached_functions import game_data_from_json, read_home_data
@@ -174,7 +175,7 @@ def hestia(request, game, FormClass,
                     init_data["player"+str(i+1)]["char"] = datos["players"][i].get("char", [None])[0]
                     init_data["player"+str(i+1)]["color"] = datos["players"][i].get("color", 0)
                     init_data["player"+str(i+1)]["flag"] = datos["players"][i].get("flag", "None")
-                except :
+                except Exception:
                     pass
             
             context = { "hasextra" : has_extra,
@@ -213,7 +214,7 @@ def hestia(request, game, FormClass,
                         if f in request.POST :
                             init_data["player{}".format(i)][field] = request.POST[f]
                             
-                except :
+                except Exception:
                     pass
 
             context = { "hasextra" : has_extra,
@@ -254,6 +255,7 @@ def hestia(request, game, FormClass,
     else :
         form = FormClass()
         form2 = SmashggForm()
+    game_slug = next((slug for slug, code in settings.GAMES if code == game), game)
     context = {
                "form" : form,
                "form2" : form2,
@@ -262,6 +264,7 @@ def hestia(request, game, FormClass,
                "color_guide" : color_guide,
                "color_dict" : color_dict,
                "game" : game,
+               "game_slug" : game_slug,
                "result" : None,
                "base_url" : request.get_host(),
                "games_categories": games_categories,

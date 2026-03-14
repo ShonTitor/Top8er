@@ -15,8 +15,10 @@ frontend/dist/*
 *.log
 *.sqlite3
 .vscode
+.claude
 
 /venv/*
 /.env
 /gato.py
+/vaca.py
 /stuff.json

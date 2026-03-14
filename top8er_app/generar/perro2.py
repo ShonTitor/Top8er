@@ -1,8 +1,7 @@
 import os
 import io
 import json
-import requests
-import re
+import tempfile
 
 try:
     from utils.font import best_font, fit_text
@@ -22,20 +21,16 @@ class RereadableFile(io.BytesIO) :
         return content
 
 def get_image(thing, folder):
+    if isinstance(thing, list):
+        thing = thing[0] if thing else None
+    if thing is None:
+        return None
     if type(thing) is tuple:
         route = os.path.join(folder, thing[0], f"{thing[1]}.png")
         img = Image.open(route)
     elif type(thing) is str:
-        url_pattern = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
-        if re.match(url_pattern, thing):
-            r = requests.get(thing, headers={'User-agent': 'Mozilla/5.0'})
-            print(r.status_code)
-            img = Image.open(io.BytesIO(r.content))
-            #r = requests.get(thing).content
-            #img = Image.open(io.BytesIO(r))
-        else:
-            route = os.path.join(folder, f"{thing}.png")
-            img = Image.open(route)
+        route = os.path.join(folder, f"{thing}.png")
+        img = Image.open(route)
     elif hasattr(thing, "read"):
         img = Image.open(thing)
     else:
@@ -186,6 +181,8 @@ def draw_image_layer(canvas, layer, data, path_dict, player_index=None, multiple
     name = get_attr("name")
     if name:
         part = get_image(name, file_path)
+        if part is None:
+            return
     elif "filename" in layer:
         filename = get_attr("filename")
         if filename is None:
@@ -272,6 +269,8 @@ def draw_text_layer(draw, layer, data, path_dict, fonts, player_index=None, mult
     if font_shadow_condition:
         font_shadow_color = get_attr("font_shadow_color")
         font_shadow_offset = get_attr("font_shadow_offset", [0.55, 0.55])
+        if not isinstance(font_shadow_offset, (list, tuple)):
+            font_shadow_offset = [0.55, 0.55]
     else:
         font_shadow_color = None
         font_shadow_offset = None
@@ -289,7 +288,9 @@ def draw_text_layer(draw, layer, data, path_dict, fonts, player_index=None, mult
         outline_thickness = 0
         outline_color = None
 
-    fit_text(draw, textbox, text, font, guess=10000,
+    guess = get_attr("font_guess", 10000)
+
+    fit_text(draw, textbox, text, font, guess=guess,
             align=align, alignv=alignv,
             fill=font_color, shadow=font_shadow_color, shadow_offset=font_shadow_offset,
             outline_thickness=outline_thickness, outline_color=outline_color)
@@ -317,13 +318,27 @@ def generate_graphic(data):
     # Path to the template directory
     template_name = data.get("template", "default")
     template_path = os.path.join(path, "templates", template_name)
-    with open(os.path.join(template_path, "template.json"), "r") as f:
+    with open(os.path.join(template_path, "template.json"), "r", encoding="utf-8") as f:
         template_data = json.loads(f.read())
 
     available_fonts = template_data["available_fonts"]
     fonts = {}
     for key, value in available_fonts.items():
         fonts[key] = os.path.join(template_path, value)
+
+    # Register any uploaded font files from options
+    _temp_font_files = []
+    for option in template_data.get("options", []):
+        if option.get("type") == "font":
+            opt_name = option["name"]
+            opt_val = data["options"].get(opt_name)
+            if opt_val is not None and hasattr(opt_val, "read"):
+                tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".ttf")
+                tmp.write(opt_val.read())
+                tmp.close()
+                _temp_font_files.append(tmp.name)
+                fonts["__uploaded__"] = tmp.name
+                data["options"][opt_name] = "__uploaded__"
 
     # Choosing the best font based on the amount of missing special characters
     text_blob = ""
@@ -410,7 +425,38 @@ def generate_graphic(data):
                 for i in range(PLAYER_NUMBER):
                     draw_rectangle_layer(draw, layer, data, player_index=i)
                     
+        elif layer_type == "per_player_option":
+            # Dispatches a different sub-layer per player based on a computed key.
+            # key starting with "#" counts non-null values in player_data[field].
+            key_expr = layer["key"]
+            max_choice = max((int(k) for k in layer["choices"] if k.isdigit()), default=1)
+            for i in range(PLAYER_NUMBER):
+                player_data = data["players"][i]
+                if key_expr.startswith("#"):
+                    field = key_expr[1:]
+                    values = player_data.get(field, [])
+                    count = sum(1 for v in values if v is not None) if isinstance(values, list) else (1 if values is not None else 0)
+                    key = str(min(max(count, 1), max_choice))
+                else:
+                    key = str(evaluate_str_exp(key_expr, player_data, data["options"], layer, i, None))
+                sublayer = layer["choices"].get(key)
+                if sublayer is None:
+                    continue
+                multiple = sublayer.get("multiple", False)
+                if multiple:
+                    amount = evaluate_attribute("amount", data, sublayer, i, None)
+                    for j in range(amount):
+                        draw_image_layer(canvas, sublayer, data, path_dict, player_index=i, multiple_index=j)
+                else:
+                    draw_image_layer(canvas, sublayer, data, path_dict, player_index=i)
+
         else:
             print("NOT IMPLEMENTED", layer_type)
 
-    return canvas.convert("RGB")
+    result = canvas.convert("RGB")
+    for tmp_path in _temp_font_files:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
+    return result

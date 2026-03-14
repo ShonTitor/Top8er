@@ -31,9 +31,14 @@ export function buildPlayerFields(templateData: TemplateData, gameData: GameData
           betterField.characters = gameData.characters;
           betterField.colors = gameData.colors;
         } else if (field.image_types[i] === "icons") {
-          if (gameData.hasIcons && gameData.iconColors) {
-            betterField.characters = Object.keys(gameData.iconColors);
-            betterField.colors = gameData.iconColors;
+          if (gameData.hasIcons) {
+            if (gameData.iconColors) {
+              betterField.characters = Object.keys(gameData.iconColors);
+              betterField.colors = gameData.iconColors;
+            } else {
+              betterField.characters = gameData.characters;
+              betterField.colors = {};
+            }
           } else {
             return;
           }
@@ -56,9 +61,14 @@ export function buildPlayerFields(templateData: TemplateData, gameData: GameData
               finalField.characters = gameData.characters;
               finalField.colors = gameData.colors;
             } else if (field.image_types[i][j] === "icons") {
-              if (gameData.hasIcons && gameData.iconColors) {
-                finalField.characters = Object.keys(gameData.iconColors);
-                finalField.colors = gameData.iconColors;
+              if (gameData.hasIcons) {
+                if (gameData.iconColors) {
+                  finalField.characters = Object.keys(gameData.iconColors);
+                  finalField.colors = gameData.iconColors;
+                } else {
+                  finalField.characters = gameData.characters;
+                  finalField.colors = {};
+                }
               } else {
                 return;
               }
@@ -146,6 +156,23 @@ export function buildInitialState(playerFields: Field[][], templateData: Templat
           break;
       }
     }
+    const gameDefaultKey = templateData.game_defaults?.[options[i].name];
+    if (gameDefaultKey !== undefined) {
+      let gameVal: any;
+      if (Array.isArray(gameDefaultKey)) {
+        const arr = (gameData as any)[gameDefaultKey[0]];
+        gameVal = Array.isArray(arr) ? arr[gameDefaultKey[1]] : undefined;
+      } else {
+        gameVal = (gameData as any)[gameDefaultKey];
+      }
+      if (gameVal !== undefined && gameVal !== null) {
+        if (options[i].type === "color" && typeof gameVal === "string" && !gameVal.startsWith("#")) {
+          gameVal = "#" + gameVal;
+        }
+        field_initial = gameVal;
+      }
+    }
+
     initial_state.options[options[i].name] = field_initial;
   }
   return initial_state;

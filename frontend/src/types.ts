@@ -21,6 +21,11 @@ export interface TemplateData {
   options: Field[];
   player_fields: Field[];
   available_fonts: Record<string, any>;
+  tournament_aliases?: {
+    player: Record<string, string[]>;
+    options: Record<string, string[]>;
+  };
+  game_defaults?: Record<string, string | [string, number]>;
 }
 
 export interface GameData {
@@ -28,6 +33,15 @@ export interface GameData {
   colors: Record<string, string[]>;
   hasIcons?: boolean;
   iconColors?: Record<string, string[]>;
+  defaultLayoutColors?: string[];
+  blackSquares?: boolean;
+}
+
+export interface ApiError {
+  scope: 'root' | 'options' | 'player_fields';
+  field: string;
+  message: string;
+  player_index?: number;
 }
 
 export interface FormState {
@@ -37,7 +51,7 @@ export interface FormState {
 
 export interface PageState {
   success: boolean;
-  error_message: string;
+  errors: ApiError[];
   loading: boolean;
   result_img_src: string;
 }

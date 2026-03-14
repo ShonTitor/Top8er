@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.test import Client
-from django.test import tag
+from django.test import tag, override_settings
+from django.core.cache import cache
 
 from django.conf import settings
 
@@ -19,6 +20,7 @@ def random_hex_rgb():
         s += random.choice(A)
     return s
 
+@override_settings(REST_FRAMEWORK={'DEFAULT_THROTTLE_CLASSES': [], 'DEFAULT_THROTTLE_RATES': {}})
 class Top8erTests(TestCase):
 
     @parameterized.expand([slug for slug, _ in settings.GAMES])
@@ -123,7 +125,11 @@ class Top8erTests(TestCase):
         self.assertIsNotNone(result_h1)
 
 
+@override_settings(REST_FRAMEWORK={'DEFAULT_THROTTLE_CLASSES': [], 'DEFAULT_THROTTLE_RATES': {}})
 class Top8erAPITests(TestCase):
+
+    def setUp(self):
+        cache.clear()
 
     @parameterized.expand([game for _, game in settings.GAMES])
     @tag("api")

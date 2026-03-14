@@ -337,7 +337,7 @@ def check_event(slug):
     }
     '''
     payload = {"query" : query, "variables" : {"slug" : slug}}
-    response = requests.post(url=url, headers=headers, json=payload)
+    response = requests.post(url=url, headers=headers, json=payload, timeout=10)
     try:
         event = json.loads(response.content)["data"]["event"]
     except Exception as e:
@@ -358,7 +358,7 @@ def check_challonge(slug, org=None) :
         slug = org+"-"+slug
     url = "https://api.challonge.com/v1/tournaments/" + slug + ".json?api_key=" + challonge_key + "&include_participants=1"
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=10)
         datos = json.loads(response.content)
     except Exception:
         return False
@@ -385,7 +385,7 @@ def get_tonamel_token(force_new=False) :
             }
 
     r = requests.post("https://op.tonamel.com/oauth2/token",
-                    headers=headers, data=data)
+                    headers=headers, data=data, timeout=10)
 
     access_token = json.loads(r.content)['access_token']
     tonamel_token = access_token
@@ -401,12 +401,12 @@ def check_tonamel(competition_id) :
             }
     url = f"https://op.tonamel.com/api/v1/competition_result/{competition_id}"
 
-    r = requests.get(url, headers=headers)
-    
+    r = requests.get(url, headers=headers, timeout=10)
+
     if r.status_code == 401:
         access_token = get_tonamel_token(force_new=True)
         headers["Authorization"] = f"Bearer {access_token}"
-        r = requests.get(url, headers=headers)
+        r = requests.get(url, headers=headers, timeout=10)
                         
     return r.status_code == 200
 
@@ -420,7 +420,7 @@ def tonamel_data(competition_id) :
             }
 
     r = requests.get(f"https://op.tonamel.com/api/v1/competition_result/{competition_id}",
-                    headers=headers)
+                    headers=headers, timeout=10)
     data = json.loads(r.content)
     players = [
         {
@@ -487,7 +487,7 @@ def event_query(slug) :
     	}
     '''
     payload = {"query" : query, "variables" : {"slug" : slug}}
-    response = requests.post(url=url, headers=headers, json=payload)
+    response = requests.post(url=url, headers=headers, json=payload, timeout=10)
     return json.loads(response.content)
 
 def event_data(slug) :
@@ -496,7 +496,7 @@ def event_data(slug) :
     data = data["data"]
     try :
         if data["event"] is None : return None
-        char_data = json.loads(requests.get(url="https://api.smash.gg/characters").content)
+        char_data = json.loads(requests.get(url="https://api.smash.gg/characters", timeout=10).content)
         for node in data["event"]["sets"]['nodes'] :
             if node["games"] is None : continue
             for game in node["games"] :
@@ -531,7 +531,7 @@ def event_data(slug) :
         char_names[-1] = "Random"
 
         vaina = {p:char_names[i] for p,i in most.items()}
-    except :
+    except Exception:
         vaina = {}
     players = []
     for p in data["event"]["standings"]["nodes"] :
@@ -587,7 +587,7 @@ def challonge_data(slug, org=None) :
     if org:
         slug = f'{org}-{slug}'
     url = "https://api.challonge.com/v1/tournaments/"+slug+".json?api_key="+challonge_key+"&include_participants=1"
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, timeout=10)
     datos = json.loads(response.content)
     if "tournament" in datos :
         datos = datos["tournament"]
@@ -634,7 +634,7 @@ def check_sgg(slug) :
     }
     '''
     payload = {"query" : query, "variables" : {"slug" : slug}}
-    response = requests.post(url=url, headers=headers, json=payload)
+    response = requests.post(url=url, headers=headers, json=payload, timeout=10)
     event = json.loads(response.content)["data"]["event"]
     if event is None :
       return None
@@ -688,7 +688,7 @@ def sgg_query(slug) :
     }
     '''
     payload = {"query" : query, "variables" : {"slug" : slug}}
-    response = requests.post(url=url, headers=headers, json=payload)
+    response = requests.post(url=url, headers=headers, json=payload, timeout=10)
     return json.loads(response.content)
 
 def sgg_sets_query(slug) :
@@ -723,7 +723,7 @@ def sgg_sets_query(slug) :
     max_page = 3
     while True:
         payload = {"query" : query, "variables" : {"slug" : slug, "page": page}}
-        response = requests.post(url=url, headers=headers, json=payload)
+        response = requests.post(url=url, headers=headers, json=payload, timeout=10)
         data = json.loads(response.content)
         new_sets = data["data"]["event"]["sets"]["nodes"]
         if len(new_sets) == 0:
@@ -745,7 +745,7 @@ def sgg_char_freq(sets, gameId):
         if node["games"] is None : continue
         entrant_1_player = None
         for slot in node["slots"] :
-            if slot["slotIndex"] is 0 :
+            if slot["slotIndex"] == 0 :
                 entrant_1_player = slot["entrant"]["name"]
         if entrant_1_player is None : continue
         for game in node["games"] :
@@ -754,7 +754,7 @@ def sgg_char_freq(sets, gameId):
                     player = selection["entrant"]["name"]
                     char = selection["selectionValue"]
                     score = game["entrant1Score"] if player == entrant_1_player else game["entrant2Score"]
-                    color = math.floor(score / 100) - 1 if gameId is 1 and type(score) is int and score >= 100 else 0
+                    color = math.floor(score / 100) - 1 if gameId == 1 and type(score) is int and score >= 100 else 0
                     if player in freq :
                         if char in freq[player] :
                             freq[player][char][0] += 1

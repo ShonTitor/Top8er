@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { useTheme } from '@mui/material/styles';
+import { Typography } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -20,19 +21,19 @@ function Top8erFieldAccordion({ fields, value, onChange, summary, name, defaultE
   const [expanded, setExpanded] = useState(defaultExpanded !== undefined ? defaultExpanded : true);
   const theme = useTheme();
 
-  const handleChangeAccordion = () => {
-    setExpanded(!expanded);
-  };
+  const handleChangeAccordion = useCallback(() => {
+    setExpanded(e => !e);
+  }, []);
 
-  const handleChange = (field_name: string, val: any, multiple_index?: number) => {
+  const handleChange = useCallback((field_name: string, val: any, multiple_index?: number) => {
     if (multiple_index === undefined) {
       onChange(name, { ...value, [field_name]: val }, playerIndex);
     } else {
-      const stateCopy = JSON.parse(JSON.stringify(value));
-      stateCopy[field_name][multiple_index] = val;
-      onChange(name, stateCopy, playerIndex, multiple_index);
+      const newArr = [...value[field_name]];
+      newArr[multiple_index] = val;
+      onChange(name, { ...value, [field_name]: newArr }, playerIndex, multiple_index);
     }
-  };
+  }, [onChange, name, value, playerIndex]);
 
   let ready = !!value;
   if (ready) {
@@ -49,11 +50,26 @@ function Top8erFieldAccordion({ fields, value, onChange, summary, name, defaultE
   }
 
   return (
-    <Accordion sx={{ width: 1 }} expanded={expanded} onChange={handleChangeAccordion}>
-      <AccordionSummary sx={{ backgroundColor: theme.palette.primary.main }} expandIcon={<ExpandMoreIcon />}>
-        {summary}
+    <Accordion
+      sx={{ width: 1, '&:before': { display: 'none' }, borderRadius: '4px !important', mb: 0.5 }}
+      expanded={expanded}
+      onChange={handleChangeAccordion}
+      disableGutters
+    >
+      <AccordionSummary
+        sx={{
+          backgroundColor: theme.palette.primary.main,
+          borderRadius: expanded ? '4px 4px 0 0' : '4px',
+          minHeight: 44,
+          '& .MuiAccordionSummary-content': { my: 0.75 },
+        }}
+        expandIcon={<ExpandMoreIcon />}
+      >
+        <Typography variant="subtitle2" fontWeight={600} letterSpacing={0.5}>
+          {summary}
+        </Typography>
       </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails sx={{ display: 'flex', flexWrap: 'wrap', px: 2, pt: 0.5, pb: 1.5 }}>
         {fields.map((field_data, i) => (
           <Top8erField
             key={i}
@@ -67,4 +83,4 @@ function Top8erFieldAccordion({ fields, value, onChange, summary, name, defaultE
   );
 }
 
-export default Top8erFieldAccordion;
+export default memo(Top8erFieldAccordion);

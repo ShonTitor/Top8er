@@ -1,5 +1,6 @@
-from top8er_app.cached_functions import read_game_data, read_home_data, read_template_data
-from top8er_app.generar.getsets import sgg_data
+from top8er_app.cached_functions import read_game_data, read_home_data, read_template_data, read_templates_metadata, read_games_data, slug_to_code
+from top8er_app.generar.getsets import sgg_data, challonge_data, tonamel_data, parrygg_data
+from .forms import identify_slug
 from .utils import graphic_from_request, response_from_json, is_url
 from .generar.perro2 import generate_graphic
 
@@ -13,10 +14,14 @@ from rest_framework import permissions
 from io import BytesIO
 from itertools import product
 
+from PIL import Image as PilImage
+
 import base64
 import json
+import logging
 import os
-import requests
+
+logger = logging.getLogger(__name__)
 
 class salu2(APIView):
     permission_classes = [permissions.AllowAny]
@@ -27,18 +32,19 @@ class salu2(APIView):
             return Response({
                 "base64_img": img
                 })
-        except Exception as e:
-            return Response({"jaja": "salu2", "error": str(e)}, status=500)
+        except Exception:
+            logger.exception("salu2 generation failed")
+            return Response({"error": "Image generation failed"}, status=500)
         
 class api_game_data(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, game):
-        if game in [g for _, g in settings.GAMES]:
-            game_data = read_game_data(game)
-            return Response(game_data)
-        else:
+        game = slug_to_code(game)
+        if game is None:
             return Response({}, status=404)
+        game_data = read_game_data(game)
+        return Response(game_data)
         
 class api_template_data(APIView):
     permission_classes = [permissions.AllowAny]
@@ -54,13 +60,13 @@ class api_games(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
-        return Response(settings.GAMES)
-        
+        return Response(read_games_data())
+
 class api_templates(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
-        return Response(settings.GRAPHIC_TEMPLATES)
+        return Response(read_templates_metadata())
     
 class api_home_data(APIView):
     permission_classes = [permissions.AllowAny]
@@ -78,13 +84,46 @@ class api_results(APIView):
         data = sgg_data(slug, "ggst")
         return Response(data)
 
+class api_tournament_data(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        url = request.GET.get("url")
+        game = slug_to_code(request.GET.get("game", ""))
+
+        if not url:
+            return Response({"error": "Missing 'url' query parameter"}, status=400)
+
+        slug_type, slug = identify_slug(url)
+
+        if slug_type is None:
+            return Response({"error": "Unrecognized tournament URL"}, status=400)
+
+        try:
+            data_functions = {
+                "startgg": lambda s: sgg_data(s, game),
+                "challonge": challonge_data,
+                "tonamel": tonamel_data,
+                "parrygg": parrygg_data,
+            }
+            data = data_functions[slug_type](slug)
+        except Exception:
+            logger.exception("Tournament data fetch failed")
+            return Response({"error": "Could not retrieve tournament data"}, status=500)
+
+        if data is None or data is False:
+            return Response({"error": "Could not retrieve tournament data"}, status=404)
+
+        return Response(data)
+
 class api_generate(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, template, game):
 
+        game = slug_to_code(game)
         template_data = read_template_data(template, complete=True)
-        game_data = read_game_data(game)
+        game_data = read_game_data(game) if game else None
 
         if template_data is None or game_data is None:
             return Response({}, status=404)
@@ -126,7 +165,12 @@ class api_generate(APIView):
 
         if len(errors) > 0:
             return Response(errors, 400)
-        
+
+        if not isinstance(request_data.get("options"), dict):
+            return Response([{"scope": "root", "field": "options", "message": "'options' must be a JSON object"}], 400)
+        if not isinstance(request_data.get("players"), list):
+            return Response([{"scope": "root", "field": "players", "message": "'players' must be a JSON array"}], 400)
+
         for option in options:
             required = option.get("required", False)
             name = option["name"]
@@ -135,28 +179,38 @@ class api_generate(APIView):
 
             is_image = False
             if is_url(value) and option["type"] != "text":
-                with requests.get(value, stream=True) as r:
-                    request_size = int(r.headers['content-length'])
-                if request_size > 10485760: # 10 MB
-                    errors.append({
-                        "scope": "player_fields",
-                        "field": name,
-                        "message": "Images must not be over 10 MB"
-                    })
-                is_image = True
+                errors.append({
+                    "scope": "options",
+                    "field": name,
+                    "message": "URL images are not supported; please provide images as base64"
+                })
+                value = None
             elif hasattr(value, "read"):
                 is_image = True
             elif value and isinstance(value, dict) and 'base64' in value:
                 try:
                     value = ContentFile(base64.b64decode(value['base64']), name=value.get('name', f"option_{name}.png"))
                     is_image = True
-                except Exception as e:
-                    print(f"Error decoding base64 for option {name}: {e}")
+                except Exception:
+                    logger.exception("Base64 decode failed for option %s", name)
                     errors.append({
                         "scope": "options",
                         "field": name,
-                        "message": f"Error decoding base64: {str(e)}"
+                        "message": "Invalid base64 data"
                     })
+
+            if is_image and option["type"] != "font":
+                try:
+                    PilImage.open(value).verify()
+                    value.seek(0)
+                except Exception:
+                    errors.append({
+                        "scope": "options",
+                        "field": name,
+                        "message": "Invalid or corrupt image file"
+                    })
+                    value = None
+                    is_image = False
 
             if is_image and not enable_image_uploading:
                 errors.append({
@@ -190,8 +244,17 @@ class api_generate(APIView):
             return Response(errors, 400)
         
         for player_field, i in product(player_fields, range(player_number)):
+            errors_before = len(errors)
             field_type = player_field["type"]
             name = player_field["name"]
+            if not isinstance(players[i], dict):
+                errors.append({
+                    "scope": "root",
+                    "field": "players",
+                    "message": f"Player at index {i} must be a JSON object",
+                    "player_index": i
+                })
+                continue
             value = players[i].get(name)
             enable_image_uploading = player_field.get("enable_image_uploading", False)
             multiple = player_field.get("multiple", False)
@@ -223,15 +286,15 @@ class api_generate(APIView):
                             if len(value) < j+1:
                                 value += [None for _ in range(j+1-len(value))]
                             value[j] = request.FILES[file_key]
-                        elif value[j] and isinstance(value[j], dict) and 'base64' in value[j]:
+                        elif j < len(value) and value[j] and isinstance(value[j], dict) and 'base64' in value[j]:
                             try:
                                 value[j] = ContentFile(base64.b64decode(value[j]['base64']), name=value[j].get('name', f"player_{i}_{name}_{j}.png"))
-                            except Exception as e:
-                                print(f"Error decoding base64 for player {i} field {name} index {j}: {e}")
+                            except Exception:
+                                logger.exception("Base64 decode failed for player %d field %s index %d", i, name, j)
                                 errors.append({
                                     "scope": "player_fields",
                                     "field": name,
-                                    "message": f"Error decoding base64: {str(e)}"
+                                    "message": "Invalid base64 data"
                                 })
                 else:
                     file_key = f"player_{i}_{name}"
@@ -240,28 +303,36 @@ class api_generate(APIView):
                     elif value[0] and isinstance(value[0], dict) and 'base64' in value[0]:
                         try:
                             value = [ContentFile(base64.b64decode(value[0]['base64']), name=value[0].get('name', f"player_{i}_{name}.png"))]
-                        except Exception as e:
-                            print(f"Error decoding base64 for player {i} field {name}: {e}")
+                        except Exception:
+                            logger.exception("Base64 decode failed for player %d field %s", i, name)
                             errors.append({
                                 "scope": "player_fields",
                                 "field": name,
-                                "message": f"Error decoding base64: {str(e)}"
+                                "message": "Invalid base64 data"
                             })
 
-            for v in value:
+            for k, v in enumerate(value):
                 is_image = False
                 if is_url(v):
-                    with requests.get(v, stream=True) as r:
-                        request_size = int(r.headers['content-length'])
-                    if request_size > 10485760: # 10 MB
+                    errors.append({
+                        "scope": "player_fields",
+                        "field": name,
+                        "message": "URL images are not supported; please provide images as base64"
+                    })
+                    value[k] = None
+                elif hasattr(v, "read"):
+                    is_image = True
+                    try:
+                        PilImage.open(v).verify()
+                        v.seek(0)
+                    except Exception:
                         errors.append({
                             "scope": "player_fields",
                             "field": name,
-                            "message": "Images must not be over 10 MB"
+                            "message": "Invalid or corrupt image file"
                         })
-                    is_image = True
-                elif hasattr(v, "read"):
-                    is_image = True
+                        value[k] = None
+                        is_image = False
 
                 if is_image and not enable_image_uploading:
                     errors.append({
@@ -321,29 +392,40 @@ class api_generate(APIView):
                         if multiple:
                             image_type = image_types[i][j]
                         else:
-                            image_type[i]
+                            image_type = image_types[i]
                         
                         if image_type == "icons":
-                            icon_colors = game_data.get("iconColors", {})
-                            if not game_data.get("hasIcons") or\
-                               char[0] not in icon_colors:
+                            icon_colors = game_data.get("iconColors") or {}
+                            if not game_data.get("hasIcons"):
                                 errors.append({
                                     "scope": "player_fields",
                                     "field": name,
                                     "message": f"There is no icon image available for character {char[0]}"
                                 })
-                            if len(icon_colors.get(char[0], [None])) <= char[1]:
-                                errors.append({
-                                    "scope": "player_fields",
-                                    "field": name,
-                                    "message": f"There is no icon image available for {char[0]} with index {char[1]}"
-                                })
+                            elif icon_colors:
+                                if char[0] not in icon_colors:
+                                    errors.append({
+                                        "scope": "player_fields",
+                                        "field": name,
+                                        "message": f"There is no icon image available for character {char[0]}"
+                                    })
+                                if len(icon_colors.get(char[0], [None])) <= char[1]:
+                                    errors.append({
+                                        "scope": "player_fields",
+                                        "field": name,
+                                        "message": f"There is no icon image available for {char[0]} with index {char[1]}"
+                                    })
+                            else:
+                                characters = game_data.get("characters", [])
+                                if char[0] not in characters:
+                                    errors.append({
+                                        "scope": "player_fields",
+                                        "field": name,
+                                        "message": f"There is no icon image available for character {char[0]}"
+                                    })
                         elif image_type == "portraits":
                             characters = game_data.get("characters", [])
-                            colors = game_data.get("colors", {})
-                            if colors is None:
-                                colors = {}
-                            assert colors is not None
+                            colors = game_data.get("colors") or {}
                             if char[0] not in characters:
                                 errors.append({
                                     "scope": "player_fields",
@@ -357,26 +439,41 @@ class api_generate(APIView):
                                     "message": f"There is no portrait image available for {char[0]} with index {char[1]}"
                                 })
                         else:
-                            char_path = os.path.join(settings.APP_BASE_DIR, "generar", "assets", game, char[0], f"{char[1]}.png")
-                            if not os.path.exists(char_path):
+                            characters = game_data.get("characters", [])
+                            if char[0] not in characters:
                                 errors.append({
                                     "scope": "player_fields",
                                     "field": name,
-                                    "message": f"There is no {image_type} image available for {char[0]}"
+                                    "message": f"Character {char[0]} is not valid"
                                 })
+                            else:
+                                char_path = os.path.join(settings.APP_BASE_DIR, "generar", "assets", game, char[0], f"{char[1]}.png")
+                                if not os.path.exists(char_path):
+                                    errors.append({
+                                        "scope": "player_fields",
+                                        "field": name,
+                                        "message": f"There is no {image_type} image available for {char[0]}"
+                                    })
 
             if not multiple:
                 value = value[0]
 
             if value is not None:
                 data["players"][i][name] = value
-        
+
+            for err in errors[errors_before:]:
+                err["player_index"] = i
+
         if len(errors) > 0:
             return Response(errors, 400)
-        img = generate_graphic(data)
-        buffered = BytesIO()
-        img.save(buffered, format="PNG")
-        b64_img = base64.b64encode(buffered.getvalue())
+        try:
+            img = generate_graphic(data)
+            buffered = BytesIO()
+            img.save(buffered, format="PNG")
+            b64_img = base64.b64encode(buffered.getvalue())
+        except Exception:
+            logger.exception("Graphic generation failed")
+            return Response({"error": "Graphic generation failed"}, status=500)
         return Response({"base64_img": b64_img})
 
 def response_from_game_path(game):

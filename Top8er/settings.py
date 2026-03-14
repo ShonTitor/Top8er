@@ -195,3 +195,12 @@ CATEGORIES = {key:sorted(value) for key, value in CATEGORIES.items()} # Sort the
 GAMES = [g for cat in CATEGORIES for g in CATEGORIES[cat]]
 
 APP_BASE_DIR = os.path.join(BASE_DIR, 'top8er_app')
+
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '30/min',
+    },
+}
