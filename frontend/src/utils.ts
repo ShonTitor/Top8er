@@ -154,6 +154,9 @@ export function buildInitialState(playerFields: Field[][], templateData: Templat
           field_initial = null;
           options[i].options = Object.keys(templateData.available_fonts);
           break;
+        default:
+          field_initial = null;
+          break;
       }
     }
     const gameDefaultKey = templateData.game_defaults?.[options[i].name];
