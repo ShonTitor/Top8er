@@ -204,7 +204,11 @@ def validate_players(players_data, player_fields, player_number, game_data, requ
                 })
 
         if multiple:
-            required_many = player_field.get("required_many", [player_field.get("required", False) for _ in range(amount)])
+            required_field = player_field.get("required", False)
+            if isinstance(required_field, list) and len(required_field) > 0 and isinstance(required_field[0], list):
+                required_many = required_field[i]
+            else:
+                required_many = player_field.get("required_many", [required_field for _ in range(amount)])
             for k in range(amount):
                 if (len(value) > k and value[k] is None and required_many[k]) or \
                         (len(value) <= k and required_many[k]):
