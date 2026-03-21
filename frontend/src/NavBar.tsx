@@ -14,9 +14,11 @@ import logo from './assets/top8er_square_white.svg';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 
 const pages = [
-  { label: 'Home', path: '/beta/' },
-  { label: 'About', path: '/beta/about' },
-  { label: 'Special Thanks', path: '/beta/special-thanks' },
+  { label: 'Home', path: '/' },
+  { label: 'About', path: '/about' },
+  { label: 'Special Thanks', path: '/special-thanks' },
+  { label: 'Blog', path: '/blog' },
+  { label: 'Contact', path: '/contact' },
 ];
 
 function NavBar() {
@@ -40,13 +42,13 @@ function NavBar() {
 
           {/* Desktop: logo + title */}
           <Icon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
-            <img src={logo} />
+            <img src={logo} alt="Top8er logo" />
           </Icon>
           <Typography
             variant="h6"
             noWrap
             component={RouterLink}
-            to="/beta/"
+            to="/"
             sx={{
               mr: 3,
               display: { xs: 'none', md: 'flex' },
@@ -90,13 +92,13 @@ function NavBar() {
 
           {/* Mobile: centered logo + title */}
           <Icon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
-            <img src={logo} />
+            <img src={logo} alt="Top8er logo" />
           </Icon>
           <Typography
             variant="h6"
             noWrap
             component={RouterLink}
-            to="/beta/"
+            to="/"
             sx={{
               flexGrow: 1,
               display: { xs: 'flex', md: 'none' },

@@ -4,8 +4,8 @@ import envCompatible from 'vite-plugin-env-compatible'
 import { resolve } from 'path'
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react(), envCompatible()],
-  base: '/static/',
+  base: command === 'serve' ? '/beta/' : '/static/',
   envDir: resolve(__dirname, '..'), // Specify the parent directory
-})
+}))

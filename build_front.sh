@@ -3,16 +3,15 @@
 # Navigate to the frontend directory
 cd frontend
 
-# Install the required Node packages
-npm install
+# Install the required Node packages (uses lockfile exactly)
+npm ci
 
 # Build the frontend assets
 npm run build
 
-# Ensure the static/assets directory exists
+# Clear old assets and copy the new build
+rm -rf ../static/assets
 mkdir -p ../static/assets
-
-# Copy the built assets to the static folder
 cp -r dist/assets/* ../static/assets
 
 echo "Frontend build complete and assets copied to static folder."

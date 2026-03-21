@@ -1,25 +1,26 @@
 from top8er_app.cached_functions import read_game_data, read_home_data, read_template_data, read_templates_metadata, read_games_data, slug_to_code
 from top8er_app.generar.getsets import sgg_data, challonge_data, tonamel_data, parrygg_data
 from .forms import identify_slug
-from .utils import graphic_from_request, response_from_json, is_url
+from .utils import graphic_from_request, response_from_json
 from .generar.perro2 import generate_graphic
+from .validators import validate_options, validate_players
 
 from django.conf import settings
 from django.shortcuts import render
-from django.core.files.base import ContentFile
+from django.core.paginator import Paginator
+from django.utils.html import escape
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
 
-from io import BytesIO
-from itertools import product
+from .models import BlogPost, Category, Author
 
-from PIL import Image as PilImage
+from io import BytesIO
 
 import base64
 import json
 import logging
-import os
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -74,15 +75,6 @@ class api_home_data(APIView):
     def get(self, request):
         home_data = read_home_data()
         return Response(home_data)
-
-class api_results(APIView):
-    permission_classes = [permissions.AllowAny]
-
-    def get(self, request):
-        slug = request.GET.get("slug")
-        slug = "tournament/gaita-gear/event/las-gaitas-de-strive"
-        data = sgg_data(slug, "ggst")
-        return Response(data)
 
 class api_tournament_data(APIView):
     permission_classes = [permissions.AllowAny]
@@ -140,332 +132,45 @@ class api_generate(APIView):
                 return Response("Could not parse the value of the key 'data', must be json", status=400)
         
         player_fields = template_data["player_fields"]
-        options = template_data["options"]
+        options_schema = template_data["options"]
         player_number = template_data["player_number"]
 
-        data = {
-            "game": game,
-            "template": template,
-            "players": [{} for _ in range(player_number)],
-            "options": {}
-        }
-        errors = []
-
-        base_keys = ["players", "options"]
-
-        for key in base_keys:
-            if key in request_data:
-                continue
-
-            errors.append({
-                "scope": "root",
-                "field": key,
-                "message": "This key is required"
-            })
-
-        if len(errors) > 0:
-            return Response(errors, 400)
+        missing_keys = [k for k in ("players", "options") if k not in request_data]
+        if missing_keys:
+            return Response([{"scope": "root", "field": k, "message": "This key is required"} for k in missing_keys], 400)
 
         if not isinstance(request_data.get("options"), dict):
             return Response([{"scope": "root", "field": "options", "message": "'options' must be a JSON object"}], 400)
         if not isinstance(request_data.get("players"), list):
             return Response([{"scope": "root", "field": "players", "message": "'players' must be a JSON array"}], 400)
 
-        for option in options:
-            required = option.get("required", False)
-            name = option["name"]
-            value = request_data["options"].get(name)
-            enable_image_uploading = option.get("enable_image_uploading", False)
+        options_data, opt_errors = validate_options(request_data["options"], options_schema, request.FILES)
 
-            is_image = False
-            if is_url(value) and option["type"] != "text":
-                errors.append({
-                    "scope": "options",
-                    "field": name,
-                    "message": "URL images are not supported; please provide images as base64"
-                })
-                value = None
-            elif hasattr(value, "read"):
-                is_image = True
-            elif value and isinstance(value, dict) and 'base64' in value:
-                try:
-                    value = ContentFile(base64.b64decode(value['base64']), name=value.get('name', f"option_{name}.png"))
-                    is_image = True
-                except Exception:
-                    logger.exception("Base64 decode failed for option %s", name)
-                    errors.append({
-                        "scope": "options",
-                        "field": name,
-                        "message": "Invalid base64 data"
-                    })
-
-            if is_image and option["type"] != "font":
-                try:
-                    PilImage.open(value).verify()
-                    value.seek(0)
-                except Exception:
-                    errors.append({
-                        "scope": "options",
-                        "field": name,
-                        "message": "Invalid or corrupt image file"
-                    })
-                    value = None
-                    is_image = False
-
-            if is_image and not enable_image_uploading:
-                errors.append({
-                    "scope": "options",
-                    "field": name,
-                    "message": "Image uploading is not allowed for this field"
-                })
-
-            if required and value is None:
-                errors.append({
-                    "scope": "options",
-                    "field": name,
-                    "message": "This field is required"
-                })
-            
-            if value is None and "default" in option:
-                value = option["default"]
-            
-            if value is not None:
-                data["options"][name] = value
-
-        players = request_data.get("players")
-        if len(players) != player_number:
-            errors.append({
+        players_data = request_data["players"]
+        if len(players_data) != player_number:
+            return Response([{
                 "scope": "root",
                 "field": "players",
                 "message": f"Number of players doesn't match, must be {player_number}"
-            })
-        
-        if len(errors) > 0:
-            return Response(errors, 400)
-        
-        for player_field, i in product(player_fields, range(player_number)):
-            errors_before = len(errors)
-            field_type = player_field["type"]
-            name = player_field["name"]
-            if not isinstance(players[i], dict):
-                errors.append({
-                    "scope": "root",
-                    "field": "players",
-                    "message": f"Player at index {i} must be a JSON object",
-                    "player_index": i
-                })
-                continue
-            value = players[i].get(name)
-            enable_image_uploading = player_field.get("enable_image_uploading", False)
-            multiple = player_field.get("multiple", False)
-            if multiple:
-                amount = player_field["amount"]
-                if type(amount) is list:
-                    amount = amount[i]
-                else:
-                    amount = amount
+            }], 400)
 
-            if type(value) is list and len(value) == 2 and\
-                type(value[0]) is str and type(value[1]) is int:
-                    value = tuple(value)
-            
-            if type(value) is not list:
-                value = [value]
+        if opt_errors:
+            return Response(opt_errors, 400)
 
-            for k, element in enumerate(value):
-                if type(element) is list and len(element) == 2 and\
-                   type(element[0]) is str and type(element[1]) is int:
-                    value[k] = tuple(value[k])
+        validated_players, player_errors = validate_players(
+            players_data, player_fields, player_number, game_data, request.FILES, game=game
+        )
 
-            if enable_image_uploading:
-                if multiple:
-                    file_key = ""
-                    for j in range(amount):
-                        file_key = f"player_{i}_{name}_{j}"
-                        if file_key in request.FILES:
-                            if len(value) < j+1:
-                                value += [None for _ in range(j+1-len(value))]
-                            value[j] = request.FILES[file_key]
-                        elif j < len(value) and value[j] and isinstance(value[j], dict) and 'base64' in value[j]:
-                            try:
-                                value[j] = ContentFile(base64.b64decode(value[j]['base64']), name=value[j].get('name', f"player_{i}_{name}_{j}.png"))
-                            except Exception:
-                                logger.exception("Base64 decode failed for player %d field %s index %d", i, name, j)
-                                errors.append({
-                                    "scope": "player_fields",
-                                    "field": name,
-                                    "message": "Invalid base64 data"
-                                })
-                else:
-                    file_key = f"player_{i}_{name}"
-                    if file_key in request.FILES:
-                        value = [request.FILES[file_key]]
-                    elif value[0] and isinstance(value[0], dict) and 'base64' in value[0]:
-                        try:
-                            value = [ContentFile(base64.b64decode(value[0]['base64']), name=value[0].get('name', f"player_{i}_{name}.png"))]
-                        except Exception:
-                            logger.exception("Base64 decode failed for player %d field %s", i, name)
-                            errors.append({
-                                "scope": "player_fields",
-                                "field": name,
-                                "message": "Invalid base64 data"
-                            })
+        if player_errors:
+            return Response(player_errors, 400)
 
-            for k, v in enumerate(value):
-                is_image = False
-                if is_url(v):
-                    errors.append({
-                        "scope": "player_fields",
-                        "field": name,
-                        "message": "URL images are not supported; please provide images as base64"
-                    })
-                    value[k] = None
-                elif hasattr(v, "read"):
-                    is_image = True
-                    try:
-                        PilImage.open(v).verify()
-                        v.seek(0)
-                    except Exception:
-                        errors.append({
-                            "scope": "player_fields",
-                            "field": name,
-                            "message": "Invalid or corrupt image file"
-                        })
-                        value[k] = None
-                        is_image = False
+        data = {
+            "game": game,
+            "template": template,
+            "players": validated_players,
+            "options": options_data,
+        }
 
-                if is_image and not enable_image_uploading:
-                    errors.append({
-                        "scope": "player_fields",
-                        "field": name,
-                        "message": "Image uploading is not allowed for this field"
-                    })
-
-            if multiple:
-                required_many = player_field.get("required_many", [required for _ in range(amount)])
-                for k in range(amount):
-                    if (len(value) > k and value[k] is None and required_many[k]) or\
-                       (len(value) <= k and required_many[k]):
-                        errors.append({
-                            "scope": "player_fields",
-                            "field": name,
-                            "message": f"{name} with index {k} is required"
-                        })
-            else:
-                required = player_field.get("required", False)
-                if required and value[0] is None:
-                    errors.append({
-                        "scope": "player_fields",
-                        "field": name,
-                        "message": "This field is required"
-                    })
-
-            if value[0] is None and "default" in player_field:
-                default = player_field["default"]
-                if multiple:
-                    value = [default for _ in range(amount)]
-                else:
-                    value = [default]
-
-            if field_type == "select":
-                choices = player_field["options"]
-                if choices == "flags":
-                    choices = settings.FLAGS
-                
-                for v in value:
-                    if v is not None and not v in choices\
-                        and not(is_image and enable_image_uploading):
-                        errors.append({
-                            "scope": "player_fields",
-                            "field": name,
-                            "message": f"{v} is not a valid option, options are {choices}"
-                        })
-            
-            elif field_type == "character":
-                for j, char in enumerate(value):
-                    if "image_types" in player_field:
-                        image_types = player_field["image_types"]
-                    else:
-                        image_types = player_field["image_types_multiple"]
-
-                    if type(char) is tuple:
-                        if multiple:
-                            image_type = image_types[i][j]
-                        else:
-                            image_type = image_types[i]
-                        
-                        if image_type == "icons":
-                            icon_colors = game_data.get("iconColors") or {}
-                            if not game_data.get("hasIcons"):
-                                errors.append({
-                                    "scope": "player_fields",
-                                    "field": name,
-                                    "message": f"There is no icon image available for character {char[0]}"
-                                })
-                            elif icon_colors:
-                                if char[0] not in icon_colors:
-                                    errors.append({
-                                        "scope": "player_fields",
-                                        "field": name,
-                                        "message": f"There is no icon image available for character {char[0]}"
-                                    })
-                                if len(icon_colors.get(char[0], [None])) <= char[1]:
-                                    errors.append({
-                                        "scope": "player_fields",
-                                        "field": name,
-                                        "message": f"There is no icon image available for {char[0]} with index {char[1]}"
-                                    })
-                            else:
-                                characters = game_data.get("characters", [])
-                                if char[0] not in characters:
-                                    errors.append({
-                                        "scope": "player_fields",
-                                        "field": name,
-                                        "message": f"There is no icon image available for character {char[0]}"
-                                    })
-                        elif image_type == "portraits":
-                            characters = game_data.get("characters", [])
-                            colors = game_data.get("colors") or {}
-                            if char[0] not in characters:
-                                errors.append({
-                                    "scope": "player_fields",
-                                    "field": name,
-                                    "message": f"There is no portrait image available for character {char[0]}"
-                                })
-                            if len(colors.get(char[0], [None])) <= char[1]:
-                                errors.append({
-                                    "scope": "player_fields",
-                                    "field": name,
-                                    "message": f"There is no portrait image available for {char[0]} with index {char[1]}"
-                                })
-                        else:
-                            characters = game_data.get("characters", [])
-                            if char[0] not in characters:
-                                errors.append({
-                                    "scope": "player_fields",
-                                    "field": name,
-                                    "message": f"Character {char[0]} is not valid"
-                                })
-                            else:
-                                char_path = os.path.join(settings.APP_BASE_DIR, "generar", "assets", game, char[0], f"{char[1]}.png")
-                                if not os.path.exists(char_path):
-                                    errors.append({
-                                        "scope": "player_fields",
-                                        "field": name,
-                                        "message": f"There is no {image_type} image available for {char[0]}"
-                                    })
-
-            if not multiple:
-                value = value[0]
-
-            if value is not None:
-                data["players"][i][name] = value
-
-            for err in errors[errors_before:]:
-                err["player_index"] = i
-
-        if len(errors) > 0:
-            return Response(errors, 400)
         try:
             img = generate_graphic(data)
             buffered = BytesIO()
@@ -480,4 +185,188 @@ def response_from_game_path(game):
     return lambda x: response_from_json(x, game)
 
 def react_view(request):
-    return render(request, 'index.html')
+    response = render(request, 'index.html')
+
+    blog_post_match = re.match(r'^/beta/blog/(?!category/|author/)([^/]+?)/?$', request.path)
+    if blog_post_match:
+        slug = blog_post_match.group(1)
+        try:
+            post = BlogPost.objects.get(slug=slug, published=True)
+            og_parts = [
+                '<meta property="og:type" content="article">',
+                f'<meta property="og:title" content="{escape(post.title)}">',
+                f'<meta property="og:url" content="{request.build_absolute_uri()}">',
+            ]
+            if post.excerpt:
+                og_parts.append(f'<meta property="og:description" content="{escape(post.excerpt)}">')
+            if post.main_image:
+                og_parts.append(f'<meta property="og:image" content="{request.build_absolute_uri(post.main_image.url)}">')
+            og_html = '\n    '.join(og_parts)
+            content = response.content.decode('utf-8')
+            response.content = content.replace('</head>', f'    {og_html}\n  </head>', 1).encode()
+        except BlogPost.DoesNotExist:
+            pass
+
+    return response
+
+
+def _make_content_urls_absolute(content, request):
+    """Rewrite relative src attributes in HTML content to absolute URLs."""
+    return re.sub(
+        r'src="(/[^"]*)"',
+        lambda m: f'src="{request.build_absolute_uri(m.group(1))}"',
+        content,
+    )
+
+def _abs_url(request, file_field):
+    if not file_field:
+        return None
+    return request.build_absolute_uri(file_field.url)
+
+def _serialize_post_summary(post, request):
+    return {
+        'title': post.title,
+        'slug': post.slug,
+        'excerpt': post.excerpt,
+        'published_at': post.published_at or post.created_at,
+        'main_image': _abs_url(request, post.main_image),
+        'categories': list(post.categories.values('name', 'slug')),
+        'author': _serialize_author_brief(post.author, request) if post.author else None,
+    }
+
+def _serialize_author_brief(author, request):
+    if author is None:
+        return None
+    return {
+        'username': author.user.username if author.user else None,
+        'display_name': author.display_name,
+        'profile_picture': _abs_url(request, author.profile_picture),
+    }
+
+def _serialize_author_full(author, request):
+    return {
+        'username': author.user.username if author.user else None,
+        'display_name': author.display_name,
+        'profile_picture': _abs_url(request, author.profile_picture),
+        'description': author.description,
+        'twitter': author.twitter,
+        'instagram': author.instagram,
+        'twitch': author.twitch,
+        'youtube': author.youtube,
+        'bluesky': author.bluesky,
+        'discord': author.discord,
+    }
+
+def _get_published_posts():
+    return BlogPost.objects.filter(published=True).select_related('author__user').prefetch_related('categories')
+
+
+PAGE_SIZE = 10
+
+class api_flags(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        return Response(settings.FLAGS)
+
+
+class api_blog_list(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        qs = _get_published_posts()
+        q = request.GET.get('q', '').strip()
+        category = request.GET.get('category', '').strip()
+        if q:
+            qs = qs.filter(title__icontains=q) | qs.filter(content__icontains=q) | qs.filter(excerpt__icontains=q)
+        if category:
+            qs = qs.filter(categories__slug=category)
+        qs = qs.distinct()
+
+        paginator = Paginator(qs, PAGE_SIZE)
+        try:
+            page = int(request.GET.get('page', 1))
+        except (ValueError, TypeError):
+            page = 1
+        page = max(1, min(page, paginator.num_pages))
+        page_obj = paginator.page(page)
+
+        return Response({
+            'count': paginator.count,
+            'total_pages': paginator.num_pages,
+            'page': page,
+            'results': [_serialize_post_summary(p, request) for p in page_obj],
+        })
+
+
+class api_blog_categories(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        cats = Category.objects.filter(posts__published=True).distinct()
+        return Response(list(cats.values('name', 'slug')))
+
+
+class api_blog_by_category(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, slug):
+        try:
+            cat = Category.objects.get(slug=slug)
+        except Category.DoesNotExist:
+            return Response({'error': 'Not found'}, status=404)
+        qs = _get_published_posts().filter(categories=cat)
+        paginator = Paginator(qs, PAGE_SIZE)
+        try:
+            page = int(request.GET.get('page', 1))
+        except (ValueError, TypeError):
+            page = 1
+        page = max(1, min(page, paginator.num_pages or 1))
+        page_obj = paginator.page(page)
+        return Response({
+            'category': {'name': cat.name, 'slug': cat.slug},
+            'count': paginator.count,
+            'total_pages': paginator.num_pages,
+            'page': page,
+            'results': [_serialize_post_summary(p, request) for p in page_obj],
+        })
+
+
+class api_blog_by_author(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, username):
+        try:
+            author = Author.objects.select_related('user').get(user__username=username)
+        except Author.DoesNotExist:
+            return Response({'error': 'Not found'}, status=404)
+        qs = _get_published_posts().filter(author=author)
+        paginator = Paginator(qs, PAGE_SIZE)
+        try:
+            page = int(request.GET.get('page', 1))
+        except (ValueError, TypeError):
+            page = 1
+        page = max(1, min(page, paginator.num_pages or 1))
+        page_obj = paginator.page(page)
+        return Response({
+            'author': _serialize_author_full(author, request),
+            'count': paginator.count,
+            'total_pages': paginator.num_pages,
+            'page': page,
+            'results': [_serialize_post_summary(p, request) for p in page_obj],
+        })
+
+
+class api_blog_post(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, slug):
+        try:
+            post = _get_published_posts().get(slug=slug)
+        except BlogPost.DoesNotExist:
+            return Response({'error': 'Not found'}, status=404)
+        data = _serialize_post_summary(post, request)
+        data['content'] = _make_content_urls_absolute(post.content, request)
+        if post.author:
+            data['author'] = _serialize_author_full(post.author, request)
+        return Response(data)

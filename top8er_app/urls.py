@@ -5,7 +5,6 @@ from django.views.decorators.cache import never_cache
 from django.conf import settings
 
 from . import views
-from django.conf import settings
 
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
@@ -15,11 +14,17 @@ urlpatterns = [
     path('api/templates/', views.api_templates.as_view()),
     path('api/template_data/<str:template>/', views.api_template_data.as_view()),
     path('api/generate/<str:template>/<str:game>/', views.api_generate.as_view()),
-    path('api/results/', views.api_results.as_view()),
-    path('api/tournament_data/', views.api_tournament_data.as_view()),
+path('api/tournament_data/', views.api_tournament_data.as_view()),
     path('api/home_data/', views.api_home_data.as_view()),
+    path('api/flags/', views.api_flags.as_view()),
+    path('api/blog/', views.api_blog_list.as_view()),
+    path('api/blog/categories/', views.api_blog_categories.as_view()),
+    path('api/blog/category/<slug:slug>/', views.api_blog_by_category.as_view()),
+    path('api/blog/author/<str:username>/', views.api_blog_by_author.as_view()),
+    path('api/blog/<slug:slug>/', views.api_blog_post.as_view()),
 
     path('test_api/', TemplateView.as_view(template_name="test_api.html")),
+    path('beta', RedirectView.as_view(url='/beta/')),
     re_path(r'beta/.*', views.react_view),
 
     #path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),

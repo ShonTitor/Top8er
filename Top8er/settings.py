@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', 'dev-insecure-key-do-not-use-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
@@ -66,9 +66,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     'top8er_app',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'django_ckeditor_5',
 ]
 
 MIDDLEWARE = [
@@ -161,6 +163,9 @@ CACHES = {
 
 STATIC_URL = 'static/'
 
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 if DEBUG:
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'static'),
@@ -196,11 +201,42 @@ GAMES = [g for cat in CATEGORIES for g in CATEGORIES[cat]]
 
 APP_BASE_DIR = os.path.join(BASE_DIR, 'top8er_app')
 
+CKEDITOR_5_UPLOAD_FILE_VIEW_PERMISSION = 'staff'
+
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': {
+            'items': [
+                'heading', '|',
+                'bold', 'italic', 'underline', 'strikethrough', '|',
+                'link', 'blockQuote', '|',
+                'bulletedList', 'numberedList', '|',
+                'insertImage', 'mediaEmbed', '|',
+                'insertTable', 'tableColumn', 'tableRow', 'mergeTableCells', '|',
+                'codeBlock', 'horizontalLine', '|',
+                'undo', 'redo',
+            ],
+        },
+        'image': {
+            'toolbar': [
+                'imageTextAlternative', 'imageTitle', '|',
+                'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+                'toggleImageCaption', 'resizeImage',
+            ],
+        },
+        'table': {
+            'contentToolbar': ['tableColumn', 'tableRow', 'mergeTableCells'],
+        },
+        'height': 400,
+        'width': '100%',
+    },
+}
+
 REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '30/min',
+        'anon': '120/min',
     },
 }

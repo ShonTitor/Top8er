@@ -104,7 +104,11 @@ def resize_image(img, new_size, fit_method, align, alignv):
 def evaluate_str_exp(strexp, player_data, options, layer, player_index, multiple_index):
     if type(strexp) is not str:
         return strexp
-    
+
+    negate = strexp.startswith("!")
+    if negate:
+        strexp = strexp[1:]
+
     multiple = layer.get("multiple", False) and multiple_index is not None
 
     value = None
@@ -120,7 +124,7 @@ def evaluate_str_exp(strexp, player_data, options, layer, player_index, multiple
     else:
         value = strexp
 
-    return value
+    return not bool(value) if negate else value
 
 def evaluate_path_exp(pathexp, path_dict):
     if pathexp.startswith("@"):

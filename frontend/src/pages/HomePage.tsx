@@ -7,6 +7,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/top8er_square_white.svg';
+import { apiURL, staticRoot } from '../api';
 
 interface Game {
   slug: string;
@@ -28,9 +29,6 @@ interface TemplateMeta {
 }
 
 function GameCard({ game, onClick }: { game: Game; onClick: () => void }) {
-  const apiURL = import.meta.env.VITE_TOP8ER_API_URL as string;
-  // Strip "/api" suffix to get the static root
-  const staticRoot = apiURL.replace(/\/api$/, '');
   const logoSrc = `${staticRoot}/static/logos/${game.path}.png`;
 
   return (
@@ -83,10 +81,7 @@ function GameCard({ game, onClick }: { game: Game; onClick: () => void }) {
 }
 
 function HomePage() {
-  const apiURL = import.meta.env.VITE_TOP8ER_API_URL as string;
-
   useEffect(() => { document.title = 'Top8er | Tournament Graphic Generator'; }, []);
-  const staticRoot = apiURL.replace(/\/api$/, '');
   const navigate = useNavigate();
 
   const [templates, setTemplates] = useState<TemplateMeta[]>([]);
@@ -117,7 +112,7 @@ function HomePage() {
   };
 
   const handleGameClick = (game: Game) => {
-    navigate(`/beta/template/${selectedTemplate}/game/${game.slug || game.path}`);
+    navigate(`/template/${selectedTemplate}/game/${game.slug || game.path}`);
   };
 
   const isSearching = search.trim().length > 0;
