@@ -80,6 +80,10 @@ class SmashggForm(forms.Form) :
     event = forms.RegexField(label="External link",
                              regex = "|".join([startgg_re, challonge_re, tonamel_re, parrygg_re]),
                              max_length=200)
+    side_event_link = forms.RegexField(label="Side Event External link (optional)",
+                             regex = "|".join([startgg_re, challonge_re, tonamel_re, parrygg_re]),
+                             max_length=200,
+                             required=False)
     def clean(self):
         cleaned_data = super().clean()
         try:
@@ -252,6 +256,44 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
             self.run_validators(out)
             return out
 
+    class SidePlayerField(forms.MultiValueField):
+        """Optional player field for side events - all subfields are optional"""
+        def __init__(self, *args, **kwargs):
+            # Create optional versions of player fields
+            optional_player_fields = {
+                'name': forms.CharField(label='Player Name', max_length=40, required=False),
+                'twitter': forms.CharField(label='Twitter Handle', max_length=25, required=False),
+                'char': forms.ChoiceField(label='Main Character', choices=chars, required=False),
+                'color': forms.ChoiceField(label='Main Character Color', choices=numeritos, required=False),
+                'portrait': forms.ImageField(label="Upload your own portrait", required=False),
+                'flag': forms.ChoiceField(label='Flag', choices=flag_choices, required=False),
+                'custom_flag': forms.ImageField(label="Upload your own flag", required=False)
+            }
+            if hasextra:
+                optional_player_fields['extra1'] = forms.ChoiceField(label=extra_label1, choices=e_chars, required=False)
+                optional_player_fields['extra_color1'] = forms.ChoiceField(label='Secondary Character Color', choices=num_e, required=False)
+                optional_player_fields['extra2'] = forms.ChoiceField(label=extra_label2, choices=e_chars, required=False)
+                optional_player_fields['extra_color2'] = forms.ChoiceField(label='Tertiary Character Color', choices=num_e, required=False)
+            if game == "efz":
+                optional_player_fields['palette'] = forms.FileField(label="Color Palette", required=False)
+            
+            fields = tuple(optional_player_fields.values())
+            super().__init__(fields, 
+                             require_all_fields=False, 
+                             required=False,
+                             widget=PlayerWidget(), 
+                             *args, **kwargs)
+ 
+        def compress(self, data_list):
+            return {key: data_list[i] for i, key in enumerate(player_fields.keys())}
+
+        def clean(self, value):
+            # If completely empty, just return empty dict
+            if not value or not [v for v in value if v not in self.empty_values]:
+                return self.compress([])
+            # Otherwise use parent validation
+            return super().clean(value)
+
     class PlayerWidget(forms.MultiWidget):
         if hasextra :
             template_name = "player_form_with_extra.html"
@@ -301,6 +343,17 @@ def makeform(chars=None, numerito=None, numerito_extra=None,
         ttext = forms.CharField(label='Top Left Text', max_length=256, required=False)
         btext = forms.CharField(label='Bottom Text', max_length=256, required=False)
         url = forms.CharField(label='Top Right', max_length=256, required=False, initial="https://top8er.com/")
+
+        # Side event fields
+        side_event_title = forms.CharField(label='Side Event Title', max_length=256, required=False, widget=forms.TextInput)
+        side_player1 = SidePlayerField()
+        side_player2 = SidePlayerField()
+        side_player3 = SidePlayerField()
+        side_player4 = SidePlayerField()
+        side_player5 = SidePlayerField()
+        side_player6 = SidePlayerField()
+        side_player7 = SidePlayerField()
+        side_player8 = SidePlayerField()
 
     return GenForm
 
