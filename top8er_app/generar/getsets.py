@@ -695,7 +695,7 @@ def sgg_sets_query(slug) :
     query = '''
     query SetsQuery($slug: String, $page: Int) {
       event(slug: $slug) {
-        sets(page: $page, perPage: 50, sortType: MAGIC) {
+        sets(page: $page, perPage: 45, sortType: MAGIC) {
           nodes {
             slots {
               slotIndex

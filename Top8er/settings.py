@@ -167,15 +167,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-if DEBUG:
-    STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, 'static'),
-        FRONTEND_DIR
-    ]
-else:
-    STATICFILES_DIRS = [
-        FRONTEND_DIR
-    ]
+STATICFILES_DIRS = [
+    FRONTEND_DIR
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
