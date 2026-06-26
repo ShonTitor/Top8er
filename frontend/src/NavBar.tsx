@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Icon from '@mui/material/Icon';
 import logo from './assets/top8er_square_white.svg';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useMatch } from 'react-router-dom';
 
 const pages = [
   { label: 'Home', path: '/' },
@@ -24,6 +24,10 @@ const pages = [
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const location = useLocation();
+  const templateMatch = useMatch('/template/:template/game/:gameName');
+  const classicSiteHref = templateMatch?.params.gameName
+    ? `/old/${templateMatch.params.gameName}`
+    : '/old/ssbu';
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -87,6 +91,9 @@ function NavBar() {
                   <Typography textAlign="center">{page.label}</Typography>
                 </MenuItem>
               ))}
+              <MenuItem onClick={handleCloseNavMenu} component="a" href={classicSiteHref}>
+                <Typography textAlign="center">Classic Site</Typography>
+              </MenuItem>
             </Menu>
           </Box>
 
@@ -132,6 +139,21 @@ function NavBar() {
                 {page.label}
               </Button>
             ))}
+            <Button
+              component="a"
+              href={classicSiteHref}
+              sx={{
+                color: 'white',
+                fontWeight: 400,
+                opacity: 0.75,
+                borderBottom: '2px solid transparent',
+                borderRadius: 0,
+                px: 1.5,
+                '&:hover': { opacity: 1, bgcolor: 'rgba(255,255,255,0.08)' },
+              }}
+            >
+              Classic Site
+            </Button>
           </Box>
 
         </Toolbar>
