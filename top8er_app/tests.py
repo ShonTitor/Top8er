@@ -23,10 +23,10 @@ def random_hex_rgb():
 @override_settings(REST_FRAMEWORK={'DEFAULT_THROTTLE_CLASSES': [], 'DEFAULT_THROTTLE_RATES': {}})
 class Top8erTests(TestCase):
 
-    @parameterized.expand([slug for slug, _ in settings.GAMES])
-    def test_get(self, slug):
+    @parameterized.expand(settings.GAMES)
+    def test_get(self, slug, game):
         c = Client()
-        r = c.get(f"/{slug}")
+        r = c.get(f"/old/{slug or game}")
         assert r.status_code == 200
 
     @parameterized.expand(settings.GAMES)
@@ -115,7 +115,7 @@ class Top8erTests(TestCase):
             data[f"player{i}_extra2"] = "None"
 
         c = Client()
-        r = c.post(f"/{slug}", data)
+        r = c.post(f"/old/{slug or game}", data)
 
         assert r.status_code == 200
 
