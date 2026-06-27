@@ -695,7 +695,7 @@ def sgg_sets_query(slug) :
     query = '''
     query SetsQuery($slug: String, $page: Int) {
       event(slug: $slug) {
-        sets(page: $page, perPage: 45, sortType: MAGIC) {
+        sets(page: $page, perPage: 35, sortType: MAGIC) {
           nodes {
             slots {
               slotIndex
@@ -725,6 +725,7 @@ def sgg_sets_query(slug) :
         payload = {"query" : query, "variables" : {"slug" : slug, "page": page}}
         response = requests.post(url=url, headers=headers, json=payload, timeout=10)
         data = json.loads(response.content)
+        print(data)
         new_sets = data["data"]["event"]["sets"]["nodes"]
         if len(new_sets) == 0:
             break

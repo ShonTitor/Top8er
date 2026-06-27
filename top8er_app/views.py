@@ -5,7 +5,10 @@ from .utils import graphic_from_request, response_from_json
 from .generar.perro2 import generate_graphic
 from .validators import validate_options, validate_players
 
+import os
+
 from django.conf import settings
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.utils.html import escape
@@ -185,9 +188,12 @@ def response_from_game_path(game):
     return lambda x: response_from_json(x, game)
 
 def react_view(request):
-    response = render(request, 'index.html')
+    index_path = os.path.join(settings.FRONTEND_DIR, 'index.html')
+    with open(index_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    response = HttpResponse(content, content_type='text/html')
 
-    blog_post_match = re.match(r'^/beta/blog/(?!category/|author/)([^/]+?)/?$', request.path)
+    blog_post_match = re.match(r'^/blog/(?!category/|author/)([^/]+?)/?$', request.path)
     if blog_post_match:
         slug = blog_post_match.group(1)
         try:

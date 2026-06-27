@@ -336,9 +336,9 @@
 <body>
 
     <div style="background-color:#1565c0;color:#fff;text-align:center;padding:10px 16px;font-size:15px;">
-        Check out the new Top8er beta site! &nbsp;
-        <a href="/beta/template/top8er/game/{% if game_slug %}{{game_slug}}{% else %}ssbu{% endif %}" style="color:#90caf9;font-weight:bold;text-decoration:underline;">
-            Try it here
+        Visit the new Top8er site! &nbsp;
+        <a href="/" style="color:#90caf9;font-weight:bold;text-decoration:underline;">
+            Go to top8er.com
         </a>
     </div>
 
@@ -607,7 +607,7 @@
 			<h3>{{ cat.category_name }}</h3>
 			{% for g in cat.games %}
 				<div class="logo-container">
-					<a href="/{{ g.slug }}">
+					<a href="/old/{{ g.slug|default:g.path }}">
 						<img class="logo" src="{% static 'logos' %}/{{ g.path }}.png">
 						<div>{{ g.full_name }}</div>
 					</a>
