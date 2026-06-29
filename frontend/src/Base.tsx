@@ -17,6 +17,13 @@ function Base() {
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <NavBar />
       <Box sx={{ height: '80px', flexShrink: 0 }} />
+      <Box sx={{ bgcolor: '#d32f2f', color: '#fff', textAlign: 'center', py: 1, px: 2, fontSize: '0.95rem', fontWeight: 500 }}>
+        🇻🇪 Venezuela earthquake relief. Please consider{' '}
+        <Link href="https://www.gofundme.com/f/venezuela-fg-community-earthquake-relief" target="_blank" rel="noopener noreferrer" sx={{ color: '#fff', fontWeight: 700, textDecorationColor: '#fff' }}>
+          donating to the venezuelan FGC community relief fund
+        </Link>
+        .
+      </Box>
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Container sx={{ flex: 1 }}>
           <Outlet />

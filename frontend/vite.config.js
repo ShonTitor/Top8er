@@ -8,15 +8,17 @@ export default defineConfig(({ command }) => ({
   plugins: [react(), envCompatible()],
   base: command === 'serve' ? '/' : '/static/',
   envDir: resolve(__dirname, '..'), // Specify the parent directory
+  optimizeDeps: {
+    include: [
+      '@emotion/react',
+      '@emotion/styled',
+      '@mui/material',
+      '@mui/material/styles',
+      '@mui/system',
+      '@mui/icons-material',
+    ],
+  },
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-mui': ['@mui/material', '@emotion/react', '@emotion/styled'],
-          'vendor-mui-icons': ['@mui/icons-material'],
-        },
-      },
-    },
+    rollupOptions: {},
   },
 }))
