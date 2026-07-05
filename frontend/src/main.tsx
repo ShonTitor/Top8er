@@ -8,6 +8,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import ErrorBoundary from './ErrorBoundary';
 
 const TemplateForm = lazy(() => import('./TemplateForm'));
+const TemplateGamePicker = lazy(() => import('./pages/TemplateGamePicker'));
 const HomePage = lazy(() => import('./pages/HomePage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
@@ -36,7 +37,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                 <Route path="blog/category/:slug" element={<BlogCategoryPage />} />
                 <Route path="blog/author/:username" element={<BlogAuthorPage />} />
                 <Route path="blog/:slug" element={<BlogPostPage />} />
-                <Route path="template/:template" element={<TemplateForm />} />
+                <Route path="template/:template" element={<TemplateGamePicker />} />
                 <Route path="template/:template/game/:gameName" element={<TemplateForm />} />
               </Route>
             </Routes>

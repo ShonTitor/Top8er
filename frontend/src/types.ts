@@ -17,6 +17,8 @@ export interface Field {
 }
 
 export interface TemplateData {
+  label?: string;
+  requiresIcons?: boolean;
   player_number: number;
   options: Field[];
   player_fields: Field[];

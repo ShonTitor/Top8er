@@ -56,6 +56,8 @@ def read_templates_metadata():
     templates_meta = []
     for name in settings.GRAPHIC_TEMPLATES:
         data = read_template_data(name)
+        if data.get("hidden", False):
+            continue
         templates_meta.append({
             "name": name,
             "label": data.get("label", name),
