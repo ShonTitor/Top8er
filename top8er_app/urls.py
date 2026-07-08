@@ -39,10 +39,10 @@ urlpatterns = [
     for slug, code in settings.GAMES
 ] + urlpatterns
 
-if settings.DEBUG:
-    urlpatterns += [
-        re_path(r'^static/(?P<path>.*)$', never_cache(serve_static))
-    ]
+#if settings.DEBUG:
+#    urlpatterns += [
+#        re_path(r'^static/(?P<path>.*)$', never_cache(serve_static))
+#    ]
 
 # Redirect old game URLs (/<slug>) to their React equivalents.
 # Empty-slug games (ssbu) had the root '/' as their old URL — now the React home — so skip those.

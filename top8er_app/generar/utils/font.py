@@ -4,29 +4,80 @@ from fontTools.unicode import Unicode
 
 def draw_text(draw, pos, text, font,
               fill=(255, 255, 255), shadow=None, shadow_offset=(0.55, 0.55),
-              outline_thickness=0, outline_color=None):
+              outline_thickness=0, outline_color=None, supersample=4, canvas=None):
     """
-    Draws text on an image on the given position, with an optional shadow.
-  
+    Draws text on an image on the given position, with an optional shadow
+    and outline.
+
+    If `canvas` is given, the text (and its outline/shadow) is rendered at
+    `supersample` times the target resolution and then downsampled with a
+    high-quality filter, so that the outline stroke and curved glyph edges
+    come out smooth instead of jagged/pixelated. If `canvas` is not given,
+    falls back to drawing directly with `draw` (no supersampling).
+
     Parameters:
-    draw (ImageDraw): Draw object that will be used to render the text on the image
+    draw (ImageDraw): Draw object that will be used to render/measure the text
     pos (tuple): Coordinates in pixels where the text will be drawn
     text (str): String of text to be drawn
     font (ImageFont): Font object to be used to draw the text
     fill (tuple): Color tuple (or string) to be used as font color, defaults to white
     shadow (tuple): Color tuple (or string) to be used as font shadow color.
                     If the value is None, no shadow will be drawn.
-    """  
+    outline_thickness (int): Width in pixels of the outline stroke around the text.
+    outline_color (tuple): Color of the outline. Defaults to `fill` if not given.
+    canvas (Image): The image `draw` is bound to. Required to enable the
+                    supersampled/anti-aliased rendering path.
+    """
+    if canvas is None:
+        if shadow:
+            offset_x = int((font.size**0.5)*shadow_offset[0])
+            offset_y = int((font.size**0.5)*shadow_offset[1])
+            draw.text((pos[0]+offset_x, pos[1]+offset_y), text, font=font, fill=shadow,
+                      stroke_width=outline_thickness, stroke_fill=shadow
+                      )
+        draw.text(pos, text, font=font, fill=fill,
+                  stroke_width=outline_thickness, stroke_fill=(outline_color or fill)
+                  )
+        return
+
+    shadow_pos = None
     if shadow:
         offset_x = int((font.size**0.5)*shadow_offset[0])
         offset_y = int((font.size**0.5)*shadow_offset[1])
-        draw.text((pos[0]+offset_x, pos[1]+offset_y), text, font=font, fill=shadow,
-                  stroke_width=outline_thickness, stroke_fill=shadow
-                  )
+        shadow_pos = (pos[0]+offset_x, pos[1]+offset_y)
 
-    draw.text(pos, text, font=font, fill=fill, 
-              stroke_width=outline_thickness, stroke_fill=(outline_color or fill)
-              )
+    # Bounding box (in canvas coordinates) that needs to be covered by the
+    # supersampled render: the main text plus, if present, the shadow copy.
+    boxes = [draw.textbbox(pos, text, font=font, stroke_width=outline_thickness)]
+    if shadow_pos:
+        boxes.append(draw.textbbox(shadow_pos, text, font=font, stroke_width=outline_thickness))
+
+    x0 = min(box[0] for box in boxes)
+    y0 = min(box[1] for box in boxes)
+    x1 = max(box[2] for box in boxes)
+    y1 = max(box[3] for box in boxes)
+
+    if x1 <= x0 or y1 <= y0:
+        # Nothing to draw (e.g. empty text)
+        return
+
+    width, height = x1-x0, y1-y0
+    big_font = ImageFont.truetype(font.path, int(font.size*supersample))
+
+    layer = Image.new('RGBA', (width*supersample, height*supersample), (0, 0, 0, 0))
+    layer_draw = ImageDraw.Draw(layer)
+
+    if shadow_pos:
+        shadow_layer_pos = ((shadow_pos[0]-x0)*supersample, (shadow_pos[1]-y0)*supersample)
+        layer_draw.text(shadow_layer_pos, text, font=big_font, fill=shadow,
+                         stroke_width=outline_thickness*supersample, stroke_fill=shadow)
+
+    text_layer_pos = ((pos[0]-x0)*supersample, (pos[1]-y0)*supersample)
+    layer_draw.text(text_layer_pos, text, font=big_font, fill=fill,
+                     stroke_width=outline_thickness*supersample, stroke_fill=(outline_color or fill))
+
+    layer = layer.resize((width, height), resample=Image.LANCZOS)
+    canvas.paste(layer, (x0, y0), mask=layer)
 
 
 def has_glyph(font, glyph):
@@ -118,13 +169,13 @@ def fitting_font(draw, width, height, text, fontdir, guess) :
    
 def fit_text(draw, box, text, fontdir, guess=30, align="left", alignv="top",
              fill=(255, 255, 255), shadow=(0,0,0), shadow_offset=(0.55, 0.55), forcedfont=None,
-             outline_thickness=0, outline_color=None):
+             outline_thickness=0, outline_color=None, canvas=None):
     """
     Draws text to an image with the biggest possible font size
     to fit inside a giving rectangle.
-  
+
     Parameters:
-    Draw object that will be used to render the text on the image
+    draw (ImageDraw): Draw object that will be used to render the text on the image
     box (tuple): bounding box for the text as a 4-tuple
     fontdir (path): Path to the font file to be used
     guess (int): Upper bound to the font size
@@ -135,6 +186,8 @@ def fit_text(draw, box, text, fontdir, guess=30, align="left", alignv="top",
                     If the value is None, no shadow will be drawn
     forcedfont (TTFont): If given, ignores fontdir and is used instead
                          No size calculations are performed in this case
+    canvas (Image): The image `draw` is bound to. If given, enables the
+                    supersampled/anti-aliased rendering path (see draw_text).
     """
     x1,y1,x2,y2 = box
     # width and height of the bounding box
@@ -162,4 +215,4 @@ def fit_text(draw, box, text, fontdir, guess=30, align="left", alignv="top",
         posy += (height-y)//2
 
     draw_text(draw, (posx, posy), text, fuente, fill=fill, shadow=shadow, shadow_offset=shadow_offset,
-              outline_thickness=outline_thickness, outline_color=outline_color)
+              outline_thickness=outline_thickness, outline_color=outline_color, canvas=canvas)

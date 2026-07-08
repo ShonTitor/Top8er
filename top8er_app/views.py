@@ -1,5 +1,5 @@
 from top8er_app.cached_functions import read_game_data, read_home_data, read_template_data, read_templates_metadata, read_games_data, slug_to_code
-from top8er_app.generar.getsets import sgg_data, challonge_data, tonamel_data, parrygg_data
+from top8er_app.generar.getsets import sgg_data, challonge_data, tonamel_data, parrygg_data, limitless_data, TournamentDataError
 from .forms import identify_slug
 from .utils import graphic_from_request, response_from_json
 from .generar.perro2 import generate_graphic
@@ -100,8 +100,11 @@ class api_tournament_data(APIView):
                 "challonge": challonge_data,
                 "tonamel": tonamel_data,
                 "parrygg": parrygg_data,
+                "limitless": lambda s: limitless_data(s, game),
             }
             data = data_functions[slug_type](slug)
+        except TournamentDataError as e:
+            return Response({"error": str(e)}, status=400)
         except Exception:
             logger.exception("Tournament data fetch failed")
             return Response({"error": "Could not retrieve tournament data"}, status=500)

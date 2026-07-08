@@ -17,6 +17,7 @@ const tournamentUrlPatterns = [
   /^https:\/\/([^.]*\.)?challonge\.com\/.+/,
   /^https:\/\/tonamel\.com\/competition\/[^/]+/,
   /^https:\/\/parry\.gg\/[^/]+\/[^/]+/,
+  /^https:\/\/(play\.)?limitlesstcg\.com\/tournament\/[^/]+/,
 ];
 const isValidTournamentUrl = (url: string) => tournamentUrlPatterns.some(re => re.test(url));
 
@@ -80,7 +81,7 @@ function TemplateForm() {
     if (!tournamentUrl) return;
     if (!isValidTournamentUrl(tournamentUrl)) {
       setTournamentStatus('error');
-      setTournamentError('Unrecognized tournament URL. Supported: start.gg, challonge, tonamel, parry.gg');
+      setTournamentError('Unrecognized tournament URL. Supported: start.gg, challonge, tonamel, parry.gg, limitlesstcg');
       return;
     }
     setTournamentStatus('loading');
@@ -111,6 +112,7 @@ function TemplateForm() {
           applyAliases(next.players[i], playerAliases, apiPlayer);
           // Fix multiple fields (arrays of slots) that received a single value from the API
           const isCharTuple = (v: any) => Array.isArray(v) && v.length === 2 && typeof v[0] === 'string' && typeof v[1] === 'number';
+          const isCharTupleList = (v: any) => Array.isArray(v) && v.length > 0 && v.every(isCharTuple);
           for (const key of Object.keys(next.players[i])) {
             const prevVal = prev.players[i][key];
             const nextVal = next.players[i][key];
@@ -118,6 +120,10 @@ function TemplateForm() {
             if (nextVal === null) {
               // null → all slots null (= "None" for each slot)
               next.players[i][key] = prevVal.map(() => null);
+            } else if (isCharTupleList(nextVal)) {
+              // Full team (e.g. a Pokemon decklist) → fill as many slots as
+              // are available, leaving the rest null
+              next.players[i][key] = prevVal.map((_: any, idx: number) => nextVal[idx] ?? null);
             } else if (isCharTuple(nextVal)) {
               // Single char tuple → first slot filled, rest null
               next.players[i][key] = [nextVal, ...prevVal.slice(1).map(() => null)];
@@ -204,8 +210,8 @@ function TemplateForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Grid container alignItems="stretch" justifyContent="center" spacing={1}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+      <Grid container alignItems="flex-start" justifyContent="center" spacing={1} sx={{ flex: 1 }}>
         {/* Left panel — player data */}
         <Grid item xs={12} md={6}>
           <Paper elevation={3} sx={{ width: '100%', overflow: 'hidden' }}>
@@ -216,7 +222,19 @@ function TemplateForm() {
                 overflowY: 'auto',
                 p: 1,
                 gap: 0.5,
-                '@media (min-width: 900px)': { height: 'calc(100vh - 128px)' },
+                // Sticks below the navbar+banner and caps its own height to
+                // whatever viewport space remains. --chrome-height is the
+                // *measured* (ResizeObserver, see Base.tsx) height of the
+                // navbar+banner, so this stays correct regardless of how
+                // tall that content happens to be — no guessed constants,
+                // and (using alignItems="flex-start" above instead of
+                // "stretch") this panel no longer forces the main content
+                // column to match its height or vice versa.
+                '@media (min-width: 900px)': {
+                  position: 'sticky',
+                  top: 'calc(var(--chrome-height, 64px) + 16px)',
+                  maxHeight: 'calc(100vh - var(--chrome-height, 64px) - 32px)',
+                },
               }}
             >
               {([...Array(playerNumber).keys()]).map((_field_data, i) => (
@@ -270,7 +288,7 @@ function TemplateForm() {
                 LOAD FROM TOURNAMENT URL
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', mb: 1 }}>
-                Supports: start.gg · challonge · tonamel · parry.gg
+                Supports: start.gg · challonge · tonamel · parry.gg · limitlesstcg
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
                 <TextField
@@ -344,7 +362,7 @@ function TemplateForm() {
           </Box>
         </Grid>
       </Grid>
-    </form>
+    </Box>
   );
 }
 

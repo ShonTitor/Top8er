@@ -939,3 +939,89 @@ def parrygg_data(slug):
 def check_parrygg(slug):
     response = parrygg_data(slug)
     return response
+
+class TournamentDataError(Exception):
+    """Raised when a tournament provider gives a specific, user-facing reason for failure."""
+    pass
+
+def limitless_data(slug, game=None):
+    base_url = f"https://play.limitlesstcg.com/api/tournaments/{slug}"
+
+    response = requests.get(f"{base_url}/standings", timeout=10)
+    if not response.ok:
+        try:
+            message = response.json()
+        except ValueError:
+            message = None
+        if isinstance(message, str):
+            raise TournamentDataError(message)
+        response.raise_for_status()
+
+    entries = json.loads(response.content)
+
+    if not entries or not isinstance(entries, list):
+        return False
+
+    def sort_key(entry):
+        placing = entry.get("placing")
+        return (placing is None, placing if placing is not None else 0)
+
+    entries = sorted(entries, key=sort_key)[:8]
+
+    possible_chars = list(game_data_from_json(game)["characters"]) if game else []
+
+    players = []
+    for entry in entries:
+        # Limitless hosts more than just Pokemon VGC (TCGs like Digimon use a
+        # dict-shaped "decklist" with card lists, not a list of Pokemon) — only
+        # attempt character import when the shape actually looks like a VGC team.
+        decklist = entry.get("decklist")
+        char = None
+        if isinstance(decklist, list):
+            char = []
+            for pokemon in decklist:
+                if not isinstance(pokemon, dict):
+                    continue
+                name = pokemon.get("name")
+                if not name:
+                    continue
+                if possible_chars and name not in possible_chars:
+                    match = process.extract(name, possible_chars, limit=1)
+                    name = match[0][0]
+                char.append((name, 0))
+            char = char or None
+
+        name = entry.get("name") or ""
+        player = entry.get("player") or ""
+        # "name" is often just the player's nickname re-cased with no actual
+        # real name ever entered — only treat it as a real name when it
+        # differs from the nickname.
+        is_real_name = bool(name) and name.strip().lower() != player.strip().lower()
+
+        players.append({
+            "tag": player or name or "",
+            "realname": name if is_real_name else "",
+            "flag": parrygg_countries_dict.get(entry.get("country")),
+            "char": char
+        })
+
+    npart = len(entries)
+    ttext = slug
+    try:
+        details = requests.get(f"{base_url}/details", timeout=10)
+        ttext = json.loads(details.content).get("name", slug)
+    except requests.RequestException:
+        pass
+
+    datos = {
+        "players": players,
+        "toptext": ttext,
+        "bottomtext": f"{npart} participants",
+        "url": f"https://play.limitlesstcg.com/tournament/{slug}/standings",
+        "game": "idk"
+    }
+    return datos
+
+def check_limitless(slug):
+    response = limitless_data(slug)
+    return response

@@ -167,9 +167,23 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATICFILES_DIRS = [
-    FRONTEND_DIR
-]
+if DEBUG:
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static'),
+        FRONTEND_DIR
+    ]
+else:
+    STATICFILES_DIRS = [
+        FRONTEND_DIR
+    ]
+
+# STATICFILES_DIRS intentionally also points at STATIC_ROOT in DEBUG mode:
+# hand-placed assets (logos/, template_samples/, etc.) live directly inside
+# static/ rather than a separate source dir, so the dev server's staticfiles
+# finders need to look there too. Harmless overlap (collectstatic just
+# re-copies those files onto themselves), but Django's check doesn't know
+# that, so it's silenced here.
+SILENCED_SYSTEM_CHECKS = ['staticfiles.E002']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

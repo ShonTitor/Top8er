@@ -249,7 +249,7 @@ def draw_image_layer(canvas, layer, data, path_dict, player_index=None, multiple
     else :
         canvas.paste(part, position, mask=part)
 
-def draw_text_layer(draw, layer, data, path_dict, fonts, player_index=None, multiple_index=None):
+def draw_text_layer(canvas, draw, layer, data, path_dict, fonts, player_index=None, multiple_index=None):
     get_attr = get_attr_fun(data, layer, player_index, multiple_index)
 
     condition = get_attr("condition", True)
@@ -297,7 +297,7 @@ def draw_text_layer(draw, layer, data, path_dict, fonts, player_index=None, mult
     fit_text(draw, textbox, text, font, guess=guess,
             align=align, alignv=alignv,
             fill=font_color, shadow=font_shadow_color, shadow_offset=font_shadow_offset,
-            outline_thickness=outline_thickness, outline_color=outline_color)
+            outline_thickness=outline_thickness, outline_color=outline_color, canvas=canvas)
 
 def draw_rectangle_layer(draw, layer, data, player_index=None, multiple_index=None):
     get_attr = get_attr_fun(data, layer, player_index, multiple_index)
@@ -349,10 +349,16 @@ def generate_graphic(data):
     for option in template_data["options"]:
         if option["type"] == "text":
             text_blob += data["options"][option["name"]]
-    for player in data['players'] :
-        text_blob += player['name']
-    the_font = best_font(text_blob, list(fonts.values()))
-    fonts["auto"] = the_font
+    player_text_fields = [f["name"] for f in template_data.get("player_fields", []) if f.get("type") == "text"]
+    for player in data['players']:
+        for field_name in player_text_fields:
+            value = player.get(field_name)
+            if isinstance(value, list):
+                text_blob += "".join(v for v in value if isinstance(v, str))
+            elif isinstance(value, str):
+                text_blob += value
+    if fonts:
+        fonts["auto"] = best_font(text_blob, list(fonts.values()))
 
     # Constants
     SIZE = template_data["canvas_size"] # Size of the whole canvas
@@ -402,18 +408,18 @@ def generate_graphic(data):
                     draw_image_layer(canvas, layer, data, path_dict, player_index=i, multiple_index=None)
         
         elif layer_type == "text":
-            draw_text_layer(draw, layer, data, path_dict, fonts, player_index=None, multiple_index=None)            
-            
+            draw_text_layer(canvas, draw, layer, data, path_dict, fonts, player_index=None, multiple_index=None)
+
         elif layer_type == "player_text":
             multiple = layer.get("multiple", False)
             if multiple:
                 for i in range(PLAYER_NUMBER):
                     amount = evaluate_attribute("amount", data, layer, i, None)
                     for j in range(amount):
-                        draw_text_layer(draw, layer, data, path_dict, fonts, player_index=i, multiple_index=j)
+                        draw_text_layer(canvas, draw, layer, data, path_dict, fonts, player_index=i, multiple_index=j)
             else:
                 for i in range(PLAYER_NUMBER):
-                    draw_text_layer(draw, layer, data, path_dict, fonts, player_index=i)
+                    draw_text_layer(canvas, draw, layer, data, path_dict, fonts, player_index=i)
 
         elif layer_type == "rectangle":
             draw_rectangle_layer(draw, layer, data)

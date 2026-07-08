@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Base from './Base';
@@ -25,23 +25,21 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <CssBaseline />
       <ErrorBoundary>
         <BrowserRouter>
-          <Suspense fallback={null}>
-            <Routes>
-              <Route path="/" element={<Base />}>
-                <Route index element={<HomePage />} />
-                <Route path="about" element={<AboutPage />} />
-                <Route path="privacy" element={<PrivacyPage />} />
-                <Route path="special-thanks" element={<SpecialThanksPage />} />
-                <Route path="contact" element={<ContactPage />} />
-                <Route path="blog" element={<BlogPage />} />
-                <Route path="blog/category/:slug" element={<BlogCategoryPage />} />
-                <Route path="blog/author/:username" element={<BlogAuthorPage />} />
-                <Route path="blog/:slug" element={<BlogPostPage />} />
-                <Route path="template/:template" element={<TemplateGamePicker />} />
-                <Route path="template/:template/game/:gameName" element={<TemplateForm />} />
-              </Route>
-            </Routes>
-          </Suspense>
+          <Routes>
+            <Route path="/" element={<Base />}>
+              <Route index element={<HomePage />} />
+              <Route path="about" element={<AboutPage />} />
+              <Route path="privacy" element={<PrivacyPage />} />
+              <Route path="special-thanks" element={<SpecialThanksPage />} />
+              <Route path="contact" element={<ContactPage />} />
+              <Route path="blog" element={<BlogPage />} />
+              <Route path="blog/category/:slug" element={<BlogCategoryPage />} />
+              <Route path="blog/author/:username" element={<BlogAuthorPage />} />
+              <Route path="blog/:slug" element={<BlogPostPage />} />
+              <Route path="template/:template" element={<TemplateGamePicker />} />
+              <Route path="template/:template/game/:gameName" element={<TemplateForm />} />
+            </Route>
+          </Routes>
         </BrowserRouter>
       </ErrorBoundary>
     </ThemeProvider>

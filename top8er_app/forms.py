@@ -5,7 +5,7 @@ from django import forms
 from collections.abc import Mapping
 from typing import Type
 from colorful.forms import RGBColorField
-from .generar.getsets import resolve_startgg_slug, check_event, check_challonge, check_parrygg, check_tonamel
+from .generar.getsets import resolve_startgg_slug, check_event, check_challonge, check_parrygg, check_tonamel, check_limitless
 from django.core.exceptions import ValidationError
 
 # The tournament url could be missing the `tournament` subpath
@@ -14,6 +14,7 @@ startgg_re = r"https://(www\.)?(smash|start)\.gg/(?P<event_slug>(tournament/)?[^
 challonge_re = r"https://([^\.]*)\.?challonge\.com/(.+)"
 tonamel_re = r"https://tonamel\.com/competition/([^/]+)"
 parrygg_re = r"https://parry\.gg/([^/]+)/([^/]+).*"
+limitless_re = r"https://(play\.)?limitlesstcg\.com/tournament/([^/]+)"
 
 
 def identify_slug(url):
@@ -58,6 +59,11 @@ def identify_slug(url):
         }
         return "parrygg", slug
 
+    limitless_match = re.match(limitless_re, url)
+    if limitless_match:
+        slug = limitless_match.group(2)
+        return "limitless", slug
+
     return None, None
 
 class AncestorForm(forms.Form) :
@@ -78,7 +84,7 @@ class AncestorForm(forms.Form) :
 class SmashggForm(forms.Form) :
 
     event = forms.RegexField(label="External link",
-                             regex = "|".join([startgg_re, challonge_re, tonamel_re, parrygg_re]),
+                             regex = "|".join([startgg_re, challonge_re, tonamel_re, parrygg_re, limitless_re]),
                              max_length=200)
     def clean(self):
         cleaned_data = super().clean()
@@ -89,7 +95,8 @@ class SmashggForm(forms.Form) :
                 "startgg": check_event,
                 "challonge": check_challonge,
                 "tonamel": check_tonamel,
-                "parrygg": check_parrygg
+                "parrygg": check_parrygg,
+                "limitless": check_limitless
             }
 
             slug_type, slug = identify_slug(url)
