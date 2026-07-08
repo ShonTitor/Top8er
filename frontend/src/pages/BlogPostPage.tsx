@@ -250,7 +250,14 @@ function BlogPostPage() {
         <Divider sx={{ mb: 4 }} />
 
         <Box
-          sx={{ color: 'text.primary', lineHeight: 1.8, '& p': { mb: 2 }, '& h2,h3': { mt: 3, mb: 1 } }}
+          sx={{
+            color: 'text.primary',
+            lineHeight: 1.8,
+            '& p': { mb: 2 },
+            '& h2,h3': { mt: 3, mb: 1 },
+            '& a': { color: 'secondary.main' },
+            '& a:visited': { color: 'secondary.main' },
+          }}
           dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
         />
 
