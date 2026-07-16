@@ -15,9 +15,10 @@ interface Top8erFieldAccordionProps {
   name: string;
   defaultExpanded?: boolean;
   playerIndex?: number;
+  children?: React.ReactNode;
 }
 
-function Top8erFieldAccordion({ fields, value, onChange, summary, name, defaultExpanded, playerIndex }: Top8erFieldAccordionProps) {
+function Top8erFieldAccordion({ fields, value, onChange, summary, name, defaultExpanded, playerIndex, children }: Top8erFieldAccordionProps) {
   const [expanded, setExpanded] = useState(defaultExpanded !== undefined ? defaultExpanded : true);
   const theme = useTheme();
 
@@ -70,6 +71,7 @@ function Top8erFieldAccordion({ fields, value, onChange, summary, name, defaultE
         </Typography>
       </AccordionSummary>
       <AccordionDetails sx={{ display: 'flex', flexWrap: 'wrap', px: 2, pt: 0.5, pb: 1.5 }}>
+        {children}
         {fields.map((field_data, i) => (
           <Top8erField
             key={i}

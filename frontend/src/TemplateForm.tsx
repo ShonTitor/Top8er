@@ -1,14 +1,21 @@
 import { useState, useEffect, useMemo, useCallback, FormEvent } from 'react';
-import { Button, Divider, Grid, Paper, TextField, CircularProgress, Alert, Typography } from '@mui/material';
+import {
+  Button, Divider, Grid, Paper, TextField, CircularProgress, Alert, Typography,
+  FormControl, InputLabel, MenuItem, IconButton,
+} from '@mui/material';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useTheme } from '@mui/material/styles';
 import { Box } from '@mui/system';
 import { LinearProgress } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
+import SaveIcon from '@mui/icons-material/Save';
+import RestoreIcon from '@mui/icons-material/Restore';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Top8erFieldAccordion from './fields/Top8erFieldAccordion';
 import { useParams } from "react-router-dom";
 import { TemplateData, GameData, FormState, PageState, Field, ApiError } from './types';
-import { buildPlayerFields, buildInitialState } from './utils';
+import { buildPlayerFields, buildInitialState, fetchImageUrlAsBase64 } from './utils';
 import { apiURL, staticRoot } from './api';
 
 
@@ -141,6 +148,139 @@ function TemplateForm() {
     }
   };
 
+  // Saved Options presets are kept in localStorage as a name → options map,
+  // namespaced per template so switching templates doesn't leak one
+  // template's option values into another's (they don't necessarily share
+  // the same option schema), and so each template can hold several
+  // independently named presets rather than a single save slot.
+  const savedOptionsKey = `top8er:savedOptions:${templateName}`;
+  const [savedPresets, setSavedPresets] = useState<Record<string, any>>({});
+  const [presetNameInput, setPresetNameInput] = useState('');
+  const [selectedPreset, setSelectedPreset] = useState('');
+  const [savedOptionsStatus, setSavedOptionsStatus] = useState<'idle' | 'saved' | 'savedNoImages' | 'loaded' | 'error'>('idle');
+  const [savedOptionsError, setSavedOptionsError] = useState('');
+
+  // An image-type option value is a plain {base64, name[, url]} object (see
+  // ImageField). Only ones fetched via "Image link" mode carry a url.
+  const isImageValue = (v: any) => !!v && typeof v === 'object' && !Array.isArray(v) && 'base64' in v;
+
+  const readPresets = (): Record<string, any> => {
+    const raw = localStorage.getItem(savedOptionsKey);
+    if (!raw) return {};
+    try {
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  };
+
+  useEffect(() => {
+    setSavedPresets(readPresets());
+    setSelectedPreset('');
+    setSavedOptionsStatus('idle');
+  }, [savedOptionsKey]);
+
+  const presetNames = Object.keys(savedPresets);
+
+  const handleSavePreset = () => {
+    const name = presetNameInput.trim();
+    if (!name) return;
+
+    const persist = (options: Record<string, any>) => {
+      const next = { ...savedPresets, [name]: options };
+      localStorage.setItem(savedOptionsKey, JSON.stringify(next));
+      setSavedPresets(next);
+      setSelectedPreset(name);
+      setPresetNameInput('');
+    };
+
+    try {
+      persist(formState.options);
+      setSavedOptionsStatus('saved');
+      return;
+    } catch (e: any) {
+      // Most commonly a quota error: uploaded/linked images are embedded as
+      // base64 in the options, which can push a preset past localStorage's
+      // per-origin size limit (~5-10MB).
+      const isQuotaError = e && (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED');
+      if (!isQuotaError) {
+        setSavedOptionsError('Could not save preset to this browser.');
+        setSavedOptionsStatus('error');
+        return;
+      }
+    }
+
+    // Retry with images slimmed down: a url-linked image is kept as just
+    // its {url, name} (tiny) instead of the full embedded base64, and an
+    // uploaded image with no url is dropped entirely since there's no
+    // lightweight representation for it.
+    const slimOptions: Record<string, any> = {};
+    let droppedAny = false;
+    for (const [key, val] of Object.entries(formState.options)) {
+      if (isImageValue(val)) {
+        if ((val as any).url) {
+          slimOptions[key] = { url: (val as any).url, name: (val as any).name };
+        } else {
+          droppedAny = true;
+        }
+      } else {
+        slimOptions[key] = val;
+      }
+    }
+
+    try {
+      persist(slimOptions);
+      setSavedOptionsError(
+        droppedAny
+          ? 'Some uploaded images were too large to save locally and were left out. Use an image link (URL) instead of uploading so it can be included in saved presets.'
+          : 'Images were saved as URL references instead of embedded copies to fit browser storage.'
+      );
+      setSavedOptionsStatus('savedNoImages');
+    } catch {
+      setSavedOptionsError('Could not save: browser storage limit reached even after removing images.');
+      setSavedOptionsStatus('error');
+    }
+  };
+
+  const handleLoadPreset = async () => {
+    if (!selectedPreset || !(selectedPreset in savedPresets)) return;
+    const preset = savedPresets[selectedPreset];
+
+    // A saved value that's {url, name} with no base64 was slimmed down at
+    // save time (see handleSavePreset) - re-fetch it now so the form has
+    // real image data to submit, same as picking it in ImageField directly.
+    const resolved: Record<string, any> = { ...preset };
+    const urlOnlyEntries = Object.entries(preset).filter(
+      ([, v]) => v && typeof v === 'object' && !Array.isArray(v) && (v as any).url && !(v as any).base64
+    );
+    if (urlOnlyEntries.length > 0) {
+      await Promise.all(urlOnlyEntries.map(async ([key, v]) => {
+        try {
+          const { base64, name } = await fetchImageUrlAsBase64((v as any).url);
+          resolved[key] = { base64, name, url: (v as any).url };
+        } catch {
+          // Can't reconstitute this one (dead link, CORS, etc.) - leave it
+          // out rather than submitting a broken value.
+          delete resolved[key];
+        }
+      }));
+    }
+
+    setFormState(prev => ({ ...prev, options: { ...prev.options, ...resolved } }));
+    setSavedOptionsStatus('loaded');
+  };
+
+  const handleDeletePreset = () => {
+    if (!selectedPreset) return;
+    const next = { ...savedPresets };
+    delete next[selectedPreset];
+    localStorage.setItem(savedOptionsKey, JSON.stringify(next));
+    setSavedPresets(next);
+    setSelectedPreset('');
+    setSavedOptionsStatus('idle');
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPageState(prev => ({ ...prev, loading: true }));
@@ -257,7 +397,87 @@ function TemplateForm() {
                 onChange={handleChange}
                 value={formState['options']}
                 playerIndex={undefined}
-              />
+              >
+                {/* Save/load named Options presets locally */}
+                <Paper data-testid="saved-options-panel" variant="outlined" sx={{ p: 1.5, width: 1, mb: 1 }}>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', letterSpacing: 0.5, display: 'block' }}>
+                    SAVED OPTIONS (THIS BROWSER)
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', mb: 1 }}>
+                    Save this template's Options under a name to reload later, on this device only
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start', mb: 1 }}>
+                    <TextField
+                      placeholder="Preset name"
+                      value={presetNameInput}
+                      onChange={e => setPresetNameInput(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleSavePreset(); } }}
+                      size="small"
+                      color="secondary"
+                      fullWidth
+                    />
+                    <Button
+                      type="button"
+                      variant="outlined"
+                      color="secondary"
+                      onClick={handleSavePreset}
+                      disabled={!presetNameInput.trim()}
+                      startIcon={<SaveIcon />}
+                      sx={{ flexShrink: 0 }}
+                    >
+                      Save
+                    </Button>
+                  </Box>
+                  <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                    <FormControl fullWidth size="small" disabled={presetNames.length === 0}>
+                      <InputLabel id="saved-presets-label" color="secondary">Saved presets</InputLabel>
+                      <Select
+                        labelId="saved-presets-label"
+                        label="Saved presets"
+                        color="secondary"
+                        value={selectedPreset}
+                        onChange={(e: SelectChangeEvent) => { setSelectedPreset(e.target.value); setSavedOptionsStatus('idle'); }}
+                      >
+                        {presetNames.map(name => (
+                          <MenuItem key={name} value={name}>{name}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <Button
+                      type="button"
+                      variant="outlined"
+                      color="secondary"
+                      onClick={handleLoadPreset}
+                      disabled={!selectedPreset}
+                      startIcon={<RestoreIcon />}
+                      sx={{ flexShrink: 0 }}
+                    >
+                      Load
+                    </Button>
+                    <IconButton
+                      type="button"
+                      color="secondary"
+                      onClick={handleDeletePreset}
+                      disabled={!selectedPreset}
+                      aria-label="Delete selected preset"
+                    >
+                      <DeleteOutlineIcon />
+                    </IconButton>
+                  </Box>
+                  {savedOptionsStatus === 'saved' && (
+                    <Alert severity="success" sx={{ mt: 1 }}>Preset saved to this browser</Alert>
+                  )}
+                  {savedOptionsStatus === 'savedNoImages' && (
+                    <Alert severity="warning" sx={{ mt: 1 }}>{savedOptionsError}</Alert>
+                  )}
+                  {savedOptionsStatus === 'loaded' && (
+                    <Alert severity="success" sx={{ mt: 1 }}>Saved preset loaded</Alert>
+                  )}
+                  {savedOptionsStatus === 'error' && (
+                    <Alert severity="error" sx={{ mt: 1 }}>{savedOptionsError}</Alert>
+                  )}
+                </Paper>
+              </Top8erFieldAccordion>
             </Box>
           </Paper>
         </Grid>
@@ -301,6 +521,7 @@ function TemplateForm() {
                   fullWidth
                 />
                 <Button
+                  type="button"
                   variant="outlined"
                   color="secondary"
                   onClick={handleLoadTournament}

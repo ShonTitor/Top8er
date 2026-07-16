@@ -1,5 +1,25 @@
 import { TemplateData, GameData, Field, FormState } from './types';
 
+// Fetches an image URL client-side and converts it to base64 - used both by
+// ImageField's "link" mode and by preset loading (when a saved preset only
+// kept a lightweight URL reference instead of the full embedded image).
+export async function fetchImageUrlAsBase64(url: string): Promise<{ base64: string; name: string }> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Failed to fetch image');
+  const blob = await res.blob();
+  const base64 = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      resolve(result.includes(',') ? result.split(',')[1] : result);
+    };
+    reader.onerror = reject;
+  });
+  const name = url.split('/').pop() || 'image';
+  return { base64, name };
+}
+
 export function buildPlayerFields(templateData: TemplateData, gameData: GameData, flags: string[]): Field[][] {
   const playerFields: Field[][] = [];
   for (let i = 0; i < templateData.player_number; i++) {

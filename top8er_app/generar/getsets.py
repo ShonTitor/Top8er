@@ -966,6 +966,7 @@ def limitless_data(slug, game=None):
         placing = entry.get("placing")
         return (placing is None, placing if placing is not None else 0)
 
+    total_entrants = len(entries)
     entries = sorted(entries, key=sort_key)[:8]
 
     possible_chars = list(game_data_from_json(game)["characters"]) if game else []
@@ -1005,7 +1006,7 @@ def limitless_data(slug, game=None):
             "char": char
         })
 
-    npart = len(entries)
+    npart = total_entrants
     ttext = slug
     try:
         details = requests.get(f"{base_url}/details", timeout=10)

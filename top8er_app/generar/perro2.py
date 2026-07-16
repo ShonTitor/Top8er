@@ -4,15 +4,15 @@ import json
 import tempfile
 
 try:
-    from utils.font import best_font, fit_text
+    from utils.font import best_font, fit_text, get_text_dimensions
     from utils.efz import efz_swap
     from utils.team_mode import team_portrait
 except ModuleNotFoundError:
-    from .utils.font import best_font, fit_text
+    from .utils.font import best_font, fit_text, get_text_dimensions
     from .utils.efz import efz_swap
     from .utils.team_mode import team_portrait
 
-from PIL import Image, ImageDraw, ImageChops
+from PIL import Image, ImageDraw, ImageChops, ImageColor, ImageFont
  
 class RereadableFile(io.BytesIO) :
     def read(self) :
@@ -131,9 +131,11 @@ def evaluate_path_exp(pathexp, path_dict):
         return path_dict.get(pathexp, pathexp)
     return os.path.join(path_dict["@template"], pathexp)
 
+_MISSING = object()
+
 def evaluate_attribute(attribute, data, layer, player_index, multiple_index):
     if attribute not in layer:
-        return
+        return _MISSING
 
     multiple = layer.get("multiple", False) and multiple_index is not None
 
@@ -164,12 +166,223 @@ def evaluate_attribute(attribute, data, layer, player_index, multiple_index):
 def get_attr_fun(data, layer, player_index, multiple_index):
     def get_attr(attr, default=None):
         val = evaluate_attribute(attr, data, layer, player_index, multiple_index)
-        if val is None:
+        if val is _MISSING:
             return default
         return val
     return get_attr
 
-def draw_image_layer(canvas, layer, data, path_dict, player_index=None, multiple_index=None):
+def compute_distributed_layout(layer, data, player_index, amount, player_number):
+    """
+    For a "player_images" layer with multiple items per player and
+    "distribute_evenly" set, works out where (and, optionally, how big) each
+    *filled* slot (skipping any that are None/empty for this player) should
+    draw so they're spread evenly across a span instead of sitting at fixed
+    per-slot coordinates. Returns {slot_index: {"x": ..., "y"?: ..., "width"?: ..., "height"?: ...}},
+    only for slots that should draw - keys other than "x" are only present
+    when the corresponding "distribute_*" attribute below opts into them, so
+    old callers that only ever set distribute_size/x1/x2 get identical
+    behavior to before (fixed size, x-only repositioning).
+
+    "distribute_size"/"distribute_x1"/"distribute_x2"/"distribute_x1_no_flag"/
+    "distribute_row_top"/"distribute_row_height" may each be either a single
+    value (applies to every player) or a player_number-length list (a
+    different span/size/row per player row) - the latter lets one layer mix
+    e.g. a wide full-row span for some players with a narrow half-width span
+    for others.
+
+    If "distribute_max_size" is set, item size becomes dynamic instead of
+    fixed: each item grows to fill the row (up to that cap) as the actual
+    count drops below `amount`, rather than staying a constant size with
+    more gap around it. "distribute_gap" (default 0) sets the spacing kept
+    between items while they're growing. Vertical centering only follows
+    that dynamic size when "distribute_row_top"/"distribute_row_height" are
+    both given - otherwise the y from the layer's static "position" list is
+    left untouched, since it was computed for a fixed size.
+
+    Once items hit their cap (or there's only one), the leftover span isn't
+    split evenly on both sides - the block is right-aligned to distribute_x2
+    instead. This is what makes it safe for another layer (a name box, a
+    flag) to expand rightward into the space *before* the block via
+    dynamic_x2_layer/dynamic_x_layer below: that space would otherwise be
+    split half-and-half, leaving an equal, unusable gap on the far side.
+
+    "distribute_max_size" caps item *height* (and is the width cap too,
+    keeping items square, unless "distribute_max_width" is also given).
+    When "distribute_max_width" is set higher than "distribute_max_size",
+    items are allowed to grow wider than they are tall - up to that cap -
+    to use up horizontal space a fixed-height square wouldn't have filled,
+    instead of only stretch-filling by adding more gap. Height still shrinks
+    below "distribute_max_size" (staying square) in the crowded case where
+    even the minimum width doesn't fit the span at the nominal gap.
+
+    The span's left edge can optionally shrink further left to reclaim the
+    space a hidden flag/icon would have taken - but only when no player
+    shares that value, so the portrait columns stay aligned. "distribute_group"
+    (a player_number-length list of arbitrary group ids) scopes that check to
+    only the current player's group instead of all players, for layouts where
+    unrelated groups of rows shouldn't have to agree on flag presence.
+
+    Returns a (layout, start_x) tuple - start_x is where the first *drawn*
+    item actually starts (the left edge of the item block, after any
+    centering), or the resolved distribute_x1 when nothing draws at all.
+    Other layers (e.g. a name textbox or a flag) can use start_x to adapt
+    their own position/size to how much room the items ended up using,
+    instead of assuming they always reach all the way to distribute_x1.
+    """
+    def resolve(attr_name, default=None):
+        val = layer.get(attr_name, default)
+        if isinstance(val, list):
+            return val[player_index] if player_index < len(val) else default
+        return val
+
+    field = layer.get("name", "")
+    field_name = field[1:] if field.startswith(("%", "$")) else field
+    player_data = data["players"][player_index]
+    values = player_data.get(field_name) or []
+
+    filled_slots = [j for j in range(amount) if j < len(values) and values[j] is not None]
+    count = len(filled_slots)
+
+    x1 = resolve("distribute_x1", 0)
+
+    flag_field = layer.get("distribute_flag_field")
+    if flag_field:
+        groups = layer.get("distribute_group")
+        if groups:
+            group_id = groups[player_index] if player_index < len(groups) else None
+            group_indices = [k for k in range(player_number) if k < len(groups) and groups[k] == group_id]
+        else:
+            group_indices = list(range(player_number))
+        flag_reserved = any(data["players"][k].get(flag_field) for k in group_indices)
+        if not flag_reserved:
+            x1 = resolve("distribute_x1_no_flag", x1)
+
+    if count == 0:
+        return {}, x1
+
+    max_size = resolve("distribute_max_size")
+    dynamic_size = max_size is not None
+    gap_setting = resolve("distribute_gap", 0)
+    max_width = resolve("distribute_max_width", max_size) if dynamic_size else None
+    if dynamic_size:
+        x2 = resolve("distribute_x2", x1)
+        span = x2 - x1
+        if count == 1:
+            item_width = min(max_width, span)
+        else:
+            ideal = (span - (count - 1) * gap_setting) / count
+            item_width = min(max_width, ideal)
+        # Height only follows max_size (the "square" cap) up to it - if
+        # width had to shrink below it to fit (crowded case), height shrinks
+        # to match and items stay square, same as the legacy fixed-size
+        # behavior. Otherwise height stays fixed at max_size while width is
+        # free to grow past it (up to max_width), widening the item instead.
+        item_height = min(max_size, item_width)
+    else:
+        item_size = resolve("distribute_size", 0)
+        x2 = resolve("distribute_x2", x1 + item_size)
+        span = x2 - x1
+        item_width = item_height = item_size
+
+    if count == 1 and not dynamic_size:
+        xs = [x1 + (span - item_width) / 2]
+    elif count == 1:
+        # Right-align rather than center: dynamic_x2_layer callers (a name
+        # box, a flag) already expand into whatever room is left of this
+        # item's start, so centering it would leave the space on *both*
+        # sides unused - anchoring to x2 lets those other layers claim it.
+        xs = [x2 - item_width]
+    elif dynamic_size and item_width >= max_width:
+        # Items are already at their cap - rather than stretch-justify them
+        # across the whole (possibly much wider) span, which would leave
+        # huge gaps, keep the nominal gap and right-align the resulting
+        # block (see the count == 1 comment above for why not centered).
+        content_width = count * item_width + (count - 1) * gap_setting
+        start = x2 - content_width
+        xs = [start + i * (item_width + gap_setting) for i in range(count)]
+    else:
+        gap = (span - count * item_width) / (count - 1)
+        xs = [x1 + i * (item_width + gap) for i in range(count)]
+
+    row_top = resolve("distribute_row_top")
+    row_height = resolve("distribute_row_height")
+    y = row_top + (row_height - item_height) / 2 if row_top is not None and row_height is not None else None
+
+    result = {}
+    for rank, slot in enumerate(filled_slots):
+        entry = {"x": round(xs[rank])}
+        if y is not None:
+            entry["y"] = round(y)
+        if dynamic_size:
+            entry["width"] = round(item_width)
+            entry["height"] = round(item_height)
+        result[slot] = entry
+    return result, round(xs[0])
+
+def resolve_distribute_text_guard(layer, data, player_number, fonts):
+    """
+    If "distribute_text_field" is set on a distribute_evenly player_images
+    layer, returns a per-player list to use as its "distribute_x1": each
+    player's span start is pushed right far enough to guarantee room for
+    that player's own text field (e.g. "tag") at its *worst-case* rendered
+    width - the width it still comes out to when the text layer's own
+    min_font_size floor overrides the normal fit-to-box search (see
+    fitting_font: "a readability floor takes priority over strictly fitting
+    the box"). Without this, an unusually long name can silently render
+    wider than the box it was given and run into the flag/portraits, no
+    matter how generous that box's *nominal* width is - a fixed-width box
+    can never guarantee fitting arbitrary-length text at a fixed minimum
+    readable size, so the portrait span has to be willing to yield room
+    instead. Because the flag and the name box's own right edge already
+    follow this same layer's start_x via "dynamic_x_layer"/
+    "dynamic_x2_layer", pushing just this one value is enough to cascade
+    the extra room to all three.
+
+    "distribute_text_x1"/"distribute_text_min_size"/"distribute_text_margin"
+    should mirror the guarded text layer's own left edge, min_font_size,
+    and the gap kept before the span (each scalar or a player_number-length
+    list, same convention as the other distribute_* attributes).
+    "distribute_text_font" names an entry in `fonts` (defaults to "auto").
+
+    The push is capped so at least MIN_SPAN of the span survives (using
+    this layer's own "distribute_x2") - an absurdly long name should still
+    never overlap anything, but it also shouldn't be able to invert the
+    span and crash the resize; portraits just bottom out tiny instead.
+
+    Returns the layer's original "distribute_x1" unchanged when
+    "distribute_text_field" isn't set.
+    """
+    MIN_SPAN = 40
+
+    base_x1 = layer.get("distribute_x1", 0)
+    text_field = layer.get("distribute_text_field")
+    if not text_field:
+        return base_x1
+
+    def resolve(val, i):
+        return val[i] if isinstance(val, list) else val
+
+    font_path = fonts.get(layer.get("distribute_text_font", "auto")) or fonts.get("auto")
+
+    result = []
+    players = data.get("players", [])
+    for i in range(player_number):
+        x1 = resolve(base_x1, i)
+        min_size = resolve(layer.get("distribute_text_min_size", 0), i)
+        text_value = players[i].get(text_field) if i < len(players) else None
+        if font_path and min_size and text_value:
+            font = ImageFont.truetype(font_path, min_size)
+            text_w, _ = get_text_dimensions(str(text_value), font)
+            text_x1 = resolve(layer.get("distribute_text_x1", 0), i)
+            margin = resolve(layer.get("distribute_text_margin", 0), i)
+            required = text_x1 + text_w + margin
+            if required > x1:
+                x2 = resolve(layer.get("distribute_x2", required), i)
+                x1 = min(required, x2 - MIN_SPAN)
+        result.append(x1)
+    return result
+
+def draw_image_layer(canvas, layer, data, path_dict, player_index=None, multiple_index=None, position_override=None, size_override=None):
     get_attr = get_attr_fun(data, layer, player_index, multiple_index)
 
     condition = get_attr("condition", True)
@@ -204,11 +417,33 @@ def draw_image_layer(canvas, layer, data, path_dict, player_index=None, multiple
         part = Image.blend(black, part, 1-proportion)
 
     position = get_attr("position", (0,0))
+    # "dynamic_x_layer" centers this image between another distribute_evenly
+    # layer's actual per-player start_x and a matching dynamic name box -
+    # used to keep the flag equidistant from the name text and the first
+    # character portrait even as that gap grows/shrinks per player. Mirrors
+    # draw_text_layer's "dynamic_x2_layer"/"dynamic_x2_margin" - pass the
+    # same margin to both so the flag centers in the same gap the name box
+    # stopped short of.
+    # Read straight off the layer (not via get_attr) - this is a literal
+    # layer-name reference, not player data, and get_attr would otherwise
+    # mistake a "%"-prefixed name for a "%field" player-data lookup.
+    dynamic_layer = layer.get("dynamic_x_layer")
+    if dynamic_layer and position_override is None and player_index is not None:
+        starts = data.get("_distribute_starts", {}).get(dynamic_layer)
+        if starts is not None:
+            margin = get_attr("dynamic_x_margin", 0)
+            own_size = get_attr("size")
+            own_width = own_size[0] if own_size else 0
+            new_x = starts[player_index] - (margin + own_width) / 2
+            position = (round(new_x), position[1])
+    if position_override is not None:
+        ox, oy = position_override
+        position = (ox, position[1] if oy is None else oy)
     fit_type = get_attr("fit_type", "fit")
     align = get_attr("align", "center")
     alignv = get_attr("alignv", "middle")
 
-    size = get_attr("size")
+    size = size_override if size_override is not None else get_attr("size")
     if size:
         part = resize_image(part, size, fit_type, align, alignv)
 
@@ -256,7 +491,21 @@ def draw_text_layer(canvas, draw, layer, data, path_dict, fonts, player_index=No
     if not condition:
         return
 
-    textbox = tuple(get_attr("textbox"))
+    textbox = list(get_attr("textbox"))
+    # "dynamic_x2_layer" lets this box's right edge follow another
+    # distribute_evenly layer's actual per-player start_x (see the
+    # pre-pass in generate_graphic) instead of a fixed x2 - so e.g. a name
+    # box can widen into space a below-max item count left unused. Read
+    # straight off the layer (not via get_attr) since this is a literal
+    # layer-name reference, not player data - get_attr would otherwise
+    # mistake a "%"-prefixed name for a "%field" player-data lookup.
+    dynamic_layer = layer.get("dynamic_x2_layer")
+    if dynamic_layer and player_index is not None:
+        starts = data.get("_distribute_starts", {}).get(dynamic_layer)
+        if starts is not None:
+            margin = get_attr("dynamic_x2_margin", 0)
+            textbox[2] = starts[player_index] - margin
+    textbox = tuple(textbox)
 
     text = get_attr("content")
     if text is None:
@@ -293,13 +542,16 @@ def draw_text_layer(canvas, draw, layer, data, path_dict, fonts, player_index=No
         outline_color = None
 
     guess = get_attr("font_guess", 10000)
+    min_font_size = get_attr("font_min_size")
+    max_font_size = get_attr("font_max_size")
 
     fit_text(draw, textbox, text, font, guess=guess,
             align=align, alignv=alignv,
             fill=font_color, shadow=font_shadow_color, shadow_offset=font_shadow_offset,
-            outline_thickness=outline_thickness, outline_color=outline_color, canvas=canvas)
+            outline_thickness=outline_thickness, outline_color=outline_color, canvas=canvas,
+            min_font_size=min_font_size, max_font_size=max_font_size)
 
-def draw_rectangle_layer(draw, layer, data, player_index=None, multiple_index=None):
+def draw_rectangle_layer(draw, layer, data, player_index=None, multiple_index=None, canvas=None):
     get_attr = get_attr_fun(data, layer, player_index, multiple_index)
 
     condition = get_attr("condition", True)
@@ -307,11 +559,51 @@ def draw_rectangle_layer(draw, layer, data, player_index=None, multiple_index=No
         return
 
     color = get_attr("color", "#000000")
+    opacity = get_attr("opacity", 1.0)
+    stroke_width = get_attr("stroke_width")
 
     shape = get_attr("shape")
 
-    if shape:
+    if not shape:
+        return
+
+    # Same "dynamic_x_layer" convention as draw_image_layer - recenters this
+    # box's x-span (keeping its authored width) around a distribute_evenly
+    # layer's actual per-player start_x, e.g. so a flag's border tracks the
+    # flag when the flag itself is dynamically repositioned. Read straight
+    # off the layer (not via get_attr) since this is a literal layer-name
+    # reference, not player data - get_attr would otherwise mistake a
+    # "%"-prefixed name for a "%field" player-data lookup.
+    dynamic_layer = layer.get("dynamic_x_layer")
+    if dynamic_layer and player_index is not None:
+        starts = data.get("_distribute_starts", {}).get(dynamic_layer)
+        if starts is not None:
+            shape = list(shape)
+            margin = get_attr("dynamic_x_margin", 0)
+            width = shape[2] - shape[0]
+            new_x1 = starts[player_index] - (margin + width) / 2
+            shape[0] = new_x1
+            shape[2] = new_x1 + width
+
+    if stroke_width:
+        # Stroke-only (no fill): PIL draws this inward from the given
+        # bounds, so callers wanting a border centered on an edge should
+        # pass the outer bounds with stroke_width = 2x the desired pad.
+        draw.rectangle(shape, outline=color, width=stroke_width)
+        return
+
+    if opacity >= 1 or canvas is None:
         draw.rectangle(shape, fill=color)
+        return
+
+    # Partial opacity needs real alpha-compositing against whatever is
+    # already on the canvas; ImageDraw.rectangle would just overwrite the
+    # pixels (including alpha) instead of blending with layers below it.
+    r, g, b = ImageColor.getrgb(color)[:3]
+    alpha = max(0, min(255, round(opacity * 255)))
+    overlay = Image.new('RGBA', canvas.size, (0, 0, 0, 0))
+    ImageDraw.Draw(overlay).rectangle(shape, fill=(r, g, b, alpha))
+    canvas.alpha_composite(overlay)
 
 def generate_graphic(data):
 
@@ -378,6 +670,39 @@ def generate_graphic(data):
         "@social": social_path
     }
 
+    # Pre-pass: for every distribute_evenly player_images layer with
+    # "distribute_text_field" set, widen its own "distribute_x1" (in place,
+    # on this request's own copy of template_data) to guarantee room for
+    # that player's text at its worst-case (min-font-size) rendered width -
+    # see resolve_distribute_text_guard. Must run before the start_x
+    # pre-pass below, since that's what "dynamic_x2_layer"/"dynamic_x_layer"
+    # read to position the name box and flag - widening distribute_x1 here
+    # is what lets a long name push both of them out of its way.
+    for layer in template_data["layers"]:
+        if layer.get("type") == "player_images" and layer.get("multiple") and layer.get("distribute_evenly") \
+                and layer.get("distribute_text_field"):
+            layer["distribute_x1"] = resolve_distribute_text_guard(layer, data, PLAYER_NUMBER, fonts)
+
+    # Pre-pass: for every distribute_evenly player_images layer, work out
+    # per-player where its item block actually starts (see
+    # compute_distributed_layout's start_x). Other layers (a name textbox,
+    # a flag) can key off this via "dynamic_x2_layer"/"dynamic_x_layer" to
+    # adapt their own position to how much room the items ended up using -
+    # e.g. widening into space a below-max character count left unused.
+    distribute_starts = {}
+    for layer in template_data["layers"]:
+        if layer.get("type") == "player_images" and layer.get("multiple") and layer.get("distribute_evenly"):
+            layer_name = layer.get("name")
+            if not layer_name:
+                continue
+            starts = []
+            for i in range(PLAYER_NUMBER):
+                amount = evaluate_attribute("amount", data, layer, i, None)
+                _, start_x = compute_distributed_layout(layer, data, i, amount, PLAYER_NUMBER)
+                starts.append(start_x)
+            distribute_starts[layer_name] = starts
+    data["_distribute_starts"] = distribute_starts
+
     # The final image will be stored in this variable
     canvas = Image.new('RGBA', SIZE, (0, 0, 0))
 
@@ -399,10 +724,18 @@ def generate_graphic(data):
         elif layer_type == "player_images":
             multiple = layer.get("multiple", False)
             if multiple:
+                distribute = layer.get("distribute_evenly", False)
                 for i in range(PLAYER_NUMBER):
                     amount = evaluate_attribute("amount", data, layer, i, None)
-                    for j in range(amount):
-                        draw_image_layer(canvas, layer, data, path_dict, player_index=i, multiple_index=j)
+                    if distribute:
+                        layout, _ = compute_distributed_layout(layer, data, i, amount, PLAYER_NUMBER)
+                        for j, entry in layout.items():
+                            size_override = (entry["width"], entry["height"]) if "width" in entry else None
+                            draw_image_layer(canvas, layer, data, path_dict, player_index=i, multiple_index=j,
+                                              position_override=(entry["x"], entry.get("y")), size_override=size_override)
+                    else:
+                        for j in range(amount):
+                            draw_image_layer(canvas, layer, data, path_dict, player_index=i, multiple_index=j)
             else:
                 for i in range(PLAYER_NUMBER):
                     draw_image_layer(canvas, layer, data, path_dict, player_index=i, multiple_index=None)
@@ -422,18 +755,18 @@ def generate_graphic(data):
                     draw_text_layer(canvas, draw, layer, data, path_dict, fonts, player_index=i)
 
         elif layer_type == "rectangle":
-            draw_rectangle_layer(draw, layer, data)
-        
+            draw_rectangle_layer(draw, layer, data, canvas=canvas)
+
         elif layer_type == "player_rectangles":
             multiple = layer.get("multiple", False)
             if multiple:
                 for i in range(PLAYER_NUMBER):
                     amount = evaluate_attribute("amount", data, layer, i, None)
                     for j in range(amount):
-                        draw_rectangle_layer(draw, layer, data, player_index=i, multiple_index=j)
+                        draw_rectangle_layer(draw, layer, data, player_index=i, multiple_index=j, canvas=canvas)
             else:
                 for i in range(PLAYER_NUMBER):
-                    draw_rectangle_layer(draw, layer, data, player_index=i)
+                    draw_rectangle_layer(draw, layer, data, player_index=i, canvas=canvas)
                     
         elif layer_type == "per_player_option":
             # Dispatches a different sub-layer per player based on a computed key.
