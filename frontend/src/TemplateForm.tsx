@@ -125,8 +125,10 @@ function TemplateForm() {
             const nextVal = next.players[i][key];
             if (!Array.isArray(prevVal) || prevVal.length === 0) continue;
             if (nextVal === null) {
-              // null → all slots null (= "None" for each slot)
-              next.players[i][key] = prevVal.map(() => null);
+              const fallback = isCharTuple(prevVal[0])
+                ? (gameData?.characters.includes('Random') ? ['Random', 0] : prevVal[0])
+                : null;
+              next.players[i][key] = prevVal.map((_: any, idx: number) => idx === 0 ? fallback : null);
             } else if (isCharTupleList(nextVal)) {
               // Full team (e.g. a Pokemon decklist) → fill as many slots as
               // are available, leaving the rest null
