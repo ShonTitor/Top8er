@@ -123,7 +123,9 @@ function TemplateForm() {
           for (const key of Object.keys(next.players[i])) {
             const prevVal = prev.players[i][key];
             const nextVal = next.players[i][key];
-            if (!Array.isArray(prevVal) || prevVal.length === 0) continue;
+            // A single (non-multiple) character field holds one [char, color]
+            // tuple, not an array of slots, so it isn't handled here
+            if (!Array.isArray(prevVal) || prevVal.length === 0 || isCharTuple(prevVal)) continue;
             if (nextVal === null) {
               const fallback = isCharTuple(prevVal[0])
                 ? (gameData?.characters.includes('Random') ? ['Random', 0] : prevVal[0])
@@ -137,6 +139,20 @@ function TemplateForm() {
               // Single char tuple → first slot filled, rest null
               next.players[i][key] = [nextVal, ...prevVal.slice(1).map(() => null)];
             }
+          }
+          // Some sources lack character data and send "Random", which may not
+          // exist for this field (e.g. no Random portrait) → use the field's
+          // first character instead
+          for (const field of playerFields[i] ?? []) {
+            if (field.type !== 'character' || !field.characters?.length) continue;
+            const isMultiSlot = field.multiple && typeof field.multipleIndex === 'number';
+            const val = isMultiSlot
+              ? next.players[i][field.name]?.[field.multipleIndex as number]
+              : next.players[i][field.name];
+            if (!isCharTuple(val) || field.characters.includes(val[0])) continue;
+            const replacement = [field.characters[0], 0];
+            if (isMultiSlot) next.players[i][field.name][field.multipleIndex as number] = replacement;
+            else next.players[i][field.name] = replacement;
           }
         });
         applyAliases(next.options, optionAliases, data);
